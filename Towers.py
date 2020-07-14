@@ -10,7 +10,7 @@ class Towers:
     Angry Cat
     """
 
-    def __init__():
+    def __init__(self):
         self.temp = 1
         
         
@@ -23,7 +23,8 @@ class PistolCat(Towers):
     def __init__(self, startPos):
         self.location = math.Vector2(startPos)
         self.range = 10 # 1 range unit = 10 pixel radius
-        self.damage = 1 # Damage is equal to units unravelled per attack
+        self.damage = 1  # Damage is equal to units unravelled per attack
+        #pygame.draw.sprite("")
 
         
     
