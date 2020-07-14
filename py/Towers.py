@@ -1,9 +1,12 @@
 from pygame import math
 
+########################################################################################################
+#                                           - Main Class -                                             #
+########################################################################################################
 
 class Towers:
     """
-    Classes of towers:
+    Types of towers:
     Pistol Cat
     Rifler Cat
     Ranger Cat
@@ -12,10 +15,11 @@ class Towers:
 
     def __init__(self):
         self.temp = 1
-        
-        
+ 
+########################################################################################################
+#                                           - Tower Types -                                            #
+########################################################################################################
 
-#Towers 
 class PistolCat(Towers):
 
     sprite = "Sprites\Towers\PistolCatSprite.png"
@@ -26,13 +30,10 @@ class PistolCat(Towers):
         self.damage = 1  # Damage is equal to units unravelled per attack
         #pygame.draw.sprite("")
 
-        
-    
     @classmethod
     def GetSprite(cls):
         return cls.sprite
 
-#Towers 
 class AngryCat(Towers):
 
     sprite = "Sprites\Towers\AngryCatSprite.png"

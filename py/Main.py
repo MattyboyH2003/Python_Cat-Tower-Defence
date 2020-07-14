@@ -8,23 +8,28 @@ from Towers import *
 
 if __name__ == "__main__":
     pygame.init()
+
     resolution = (1280, 720)
     pygame.display.set_caption("Cat Shooty Game")
     window = pygame.display.set_mode(resolution)
     windowIcon = pygame.image.load("Sprites\GUI\WindowIcon.png")
     pygame.display.set_icon(windowIcon)
     background = pygame.image.load("Sprites\Maps\map.png")
+
     clock = pygame.time.Clock()
+
     towers = Towers()
     currentTower = PistolCat
+    
     TowersList = []
+
+    #Colours
     red = (200,0,0)
     green = (0,200,0)
     bright_red = (255,0,0)
     bright_green = (0,255,0)
     white = (255,255,255)
     black = (0,0,0)
-
 else:
     exit()
 
@@ -40,13 +45,12 @@ def PlaceTower():
     To place a tower you will need:
     A sprite (defined in the tower's class data)
     The Location of the tower (Defined by the mouse position)
-    The Screen to place it on
+    To Create an instance of that towers class
     """
 
 def button(msg,x,y,w,h,ic,ac,action=None):
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
-    print(click)
     if x+w > mouse[0] > x and y+h > mouse[1] > y:
         pygame.draw.rect(window, ac,(x,y,w,h))
 
@@ -59,7 +63,6 @@ def button(msg,x,y,w,h,ic,ac,action=None):
     textSurf, textRect = text_objects(msg, smallText)
     textRect.center = ( (x+(w/2)), (y+(h/2)) )
     window.blit(textSurf, textRect)
-
 def text_objects(text, font):
     textSurface = font.render(text, True, black)
     return textSurface, textSurface.get_rect()
@@ -94,6 +97,7 @@ def gameLoop():
     running = True
     while running == True:
 
+        #Checking for events each frame
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -111,10 +115,7 @@ def gameLoop():
         pygame.display.update()
         clock.tick(30)
 
-        
-
-
 game_intro()
-#gameLoop()
-quit()        
+
 pygame.quit()
+quit()
