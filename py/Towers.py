@@ -14,8 +14,9 @@ class Towers(pygame.sprite.Sprite):
     Angry Cat
     """
 
-    def __init__(self):
-        self.temp = 1
+    def RemoveExistance(self):
+        self.kill()
+        del self
  
 ########################################################################################################
 #                                           - Tower Types -                                            #

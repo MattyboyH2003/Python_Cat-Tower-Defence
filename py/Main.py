@@ -16,9 +16,7 @@ if __name__ == "__main__":
     pygame.display.set_icon(windowIcon)
     background = pygame.image.load("Sprites\Maps\map.png")
 
-    clock = pygame.time.Clock()
-
-    
+    clock = pygame.time.Clock() 
 else:
     exit()
 
@@ -39,7 +37,10 @@ class Main():
     currentTower = PistolCat
     towers = Towers()
 
-    TowerSpritesList = pygame.sprite.Group()
+    towerSpritesList = pygame.sprite.Group()
+    tileSpritesList = pygame.sprite.Group()
+    collisionSpritesList = pygame.sprite.Group()
+    allSpritesList = pygame.sprite.Group()
 
     def gameIntro(self): #The Menu screen Loop, called on play
         intro = True
@@ -87,15 +88,21 @@ class Main():
         counter = 0
         for char in mapString:
             if char == "#":
-                nextTile = pygame.image.load("Sprites\Tiles\Grass.png")
+                nextTile = Ground
             elif char == "P":
-                nextTile = pygame.image.load("Sprites\Tiles\Path.png")
+                nextTile = Path
             elif char == "/":
-                nextTile = pygame.image.load("Sprites\Tiles\StartDown.png")
+                nextTile = StartDown
             elif char == "6":
-                nextTile = pygame.image.load("Sprites\Tiles\EndDown.png")
-            location = [(counter%54)*20, (counter//54)*20]
-            window.blit(nextTile, location)
+                nextTile = EndDown
+            location = [((counter%54)*20)+10, ((counter//54)*20)+10]
+            tile = nextTile(location, self.white)
+
+            self.allSpritesList.add(tile)
+            self.tileSpritesList.add(tile)
+
+            if nextTile != Ground:
+                self.collisionSpritesList.add(tile)
 
             counter += 1
         
@@ -110,7 +117,7 @@ class Main():
                 if event.type == pygame.QUIT:
                     running = False
                 
-                if event.type == pygame.MOUSEBUTTONUP:
+                if event.type == pygame.MOUSEBUTTONDOWN:
                     self.PlaceTower()
                 
                 if event.type == pygame.KEYDOWN:
@@ -120,7 +127,7 @@ class Main():
                         self.currentTower = AngryCat
 
             pygame.display.update()
-            self.TowerSpritesList.draw(window)
+            self.allSpritesList.draw(window)
             clock.tick(30)
 
     def PlaceTower(self): #Ran to spawn towers at the mouse position upon click
@@ -133,8 +140,14 @@ class Main():
 
         mousePositon = pygame.mouse.get_pos()
         tower = self.currentTower(mousePositon, self.white)
-        self.TowerSpritesList.add(tower)
-        
+
+        if pygame.sprite.spritecollide(tower, self.collisionSpritesList, True) == []:
+            self.towerSpritesList.add(tower)
+            self.collisionSpritesList.add(tower)
+            self.allSpritesList.add(tower)
+        else:
+            tower.kill()
+            del tower
 
         #window.blit(pygame.image.load(self.currentTower.GetSprite()), mousePositon) #Need to replace blits with sprites
 
