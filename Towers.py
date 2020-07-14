@@ -19,10 +19,11 @@ class PistolCat(Towers):
 
     sprite = "Sprites\Towers\PistolCatSprite.png"
 
-    def __init__(self):
+    def __init__(self, startPos):
         self.range = 10 # 1 range unit = 10 pixel radius
         self.damage = 1 # Damage is equal to units unravelled per attack
-        self.location = math.Vector2()
+        self.location = math.Vector2(startPos)
+        
     
     @classmethod
     def GetSprite(cls):

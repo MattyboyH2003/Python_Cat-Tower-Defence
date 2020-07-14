@@ -1,5 +1,5 @@
 import pygame
-from pygame import *
+#from pygame import *
 from Towers import *
 
 ########################################################################################################
@@ -13,7 +13,7 @@ if __name__ == "__main__":
     window = pygame.display.set_mode(resolution)
     windowIcon = pygame.image.load("Sprites\GUI\WindowIcon.png")
     pygame.display.set_icon(windowIcon)
-    background = pygame.image.load("Sprites\Towers\AngryCatSprite.png")
+    background = pygame.image.load("Sprites\Maps\map.png")
     clock = pygame.time.Clock()
     running = True
     towers = Towers()
@@ -22,7 +22,7 @@ if __name__ == "__main__":
 
 else:
     exit()
-    
+
 ########################################################################################################
 #                                             - Functions -                                            #
 ########################################################################################################
