@@ -1,11 +1,12 @@
 class Tiles:
     def __init__(self):
+        self.temp = 1
 
 
 class Ground(Tiles):
     def __init__(self):
-        sprite = "Sprites\Tiles\Ground.png"
+        self.sprite = "Sprites\Tiles\Ground.png"
 
 class Path(Tiles):
     def __init__(self):
-        sprite = "Sprites\Tiles\Path.png"
+        self.sprite = "Sprites\Tiles\Path.png"

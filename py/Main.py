@@ -1,11 +1,11 @@
 import pygame
-#from pygame import *
 from Towers import *
+from Tiles import *
+import time
 
 ########################################################################################################
 #                                              - Setup -                                               #
 ########################################################################################################
-
 if __name__ == "__main__":
     pygame.init()
 
@@ -19,7 +19,6 @@ if __name__ == "__main__":
     clock = pygame.time.Clock()
 
     towers = Towers()
-    currentTower = PistolCat
     
     TowersList = []
 
@@ -37,7 +36,7 @@ else:
 #                                             - Functions -                                            #
 ########################################################################################################
 
-def PlaceTower():
+def PlaceTower(currentTower):
     mousePositon = pygame.mouse.get_pos()
 
     window.blit(pygame.image.load(currentTower.GetSprite()), mousePositon)
@@ -84,16 +83,57 @@ def game_intro():
         TextRect.center = ((resolution[0]/2),(resolution[1]/2))
         window.blit(TextSurf, TextRect)
 
-        button("Play!",150,450,100,50,green,bright_green,gameLoop)
+        button("Play!",150,450,100,50,green,bright_green,GenerateMap)
         button("Quit",550,450,100,50,red,bright_red,quit)
         
         pygame.display.update()
         clock.tick(30)
 
+def GenerateMap():
+
+    """
+    Tile Key:
+    # - Grass
+    P - Path
+    < - Start From Left
+    > - Start From Right
+    ^ - Start From Bottom
+    / - Start From Top
+    , - End On Left
+    . - End On Right
+    6 - End On Bottom
+    ? - End On Top
+    """
+
+    mapFile = open("Sprites\\Maps\\map.txt", "r")
+    fileContents = mapFile.readlines()
+    mapString = ""
+    for item in fileContents:
+        mapString += item.replace("\n", "")
+
+    counter = 0
+    for char in mapString:
+        if char == "#":
+            nextTile = pygame.image.load("Sprites\Tiles\Grass.png")
+        elif char == "P":
+            nextTile = pygame.image.load("Sprites\Tiles\Path.png")
+        elif char == "/":
+            nextTile = pygame.image.load("Sprites\Tiles\StartDown.png")
+        elif char == "6":
+            nextTile = pygame.image.load("Sprites\Tiles\EndDown.png")
+        location = [(counter%54)*20, (counter//54)*20]
+        window.blit(nextTile, location)
+
+        counter += 1
+    
+    gameLoop()
+
 ########################################################################################################
 #                                             - MainLoop -                                             #
 ########################################################################################################
 def gameLoop():
+    time.sleep(1)
+    currentTower = PistolCat
     running = True
     while running == True:
 
@@ -103,7 +143,7 @@ def gameLoop():
                 running = False
             
             if event.type == pygame.MOUSEBUTTONUP:
-                PlaceTower()
+                PlaceTower(currentTower)
             
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
@@ -111,7 +151,7 @@ def gameLoop():
                 if event.key == pygame.K_RIGHT:
                     currentTower = AngryCat
 
-        window.blit(background, [0, 0])
+        #window.blit(background, [0, 0])
         pygame.display.update()
         clock.tick(30)
 

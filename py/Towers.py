@@ -1,10 +1,11 @@
-from pygame import math
+import pygame
+from pygame import *
 
 ########################################################################################################
 #                                           - Main Class -                                             #
 ########################################################################################################
 
-class Towers:
+class Towers(pygame.sprite.Sprite):
     """
     Types of towers:
     Pistol Cat
@@ -25,10 +26,14 @@ class PistolCat(Towers):
     sprite = "Sprites\Towers\PistolCatSprite.png"
 
     def __init__(self, startPos):
-        self.location = math.Vector2(startPos)
+        #Variables
+        self.location = pygame.math.Vector2(startPos)
         self.range = 10 # 1 range unit = 10 pixel radius
         self.damage = 1  # Damage is equal to units unravelled per attack
-        #pygame.draw.sprite("")
+        #Sets sprites
+
+        
+
 
     @classmethod
     def GetSprite(cls):
