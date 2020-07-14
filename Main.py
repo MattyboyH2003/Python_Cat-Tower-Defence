@@ -2,23 +2,31 @@ import pygame
 from pygame import *
 from Towers import *
 
-#Setup
+########################################################################################################
+#                                              - Setup -                                               #
+########################################################################################################
+
 if __name__ == "__main__":
     pygame.init()
     resolution = (1280, 720)
     pygame.display.set_caption("Cat Shooty Game")
     window = pygame.display.set_mode(resolution)
-    #pygame.display.set_icon(surface)
+    windowIcon = pygame.image.load("Sprites\GUI\WindowIcon.png")
+    pygame.display.set_icon(windowIcon)
     background = pygame.image.load("Sprites\Towers\AngryCatSprite.png")
     clock = pygame.time.Clock()
     running = True
-
+    towers = Towers()
     currentTower = PistolCat
     TowersList = []
+
 else:
     exit()
+    
+########################################################################################################
+#                                             - Functions -                                            #
+########################################################################################################
 
-#towers = Towers()
 def PlaceTower():
     mousePositon = pygame.mouse.get_pos()
 
@@ -30,7 +38,9 @@ def PlaceTower():
     The Screen to place it on
     """
 
-#MainLoop
+########################################################################################################
+#                                             - MainLoop -                                             #
+########################################################################################################
 while running == True:
 
     for event in pygame.event.get():
@@ -45,9 +55,6 @@ while running == True:
                 currentTower = PistolCat
             if event.key == pygame.K_RIGHT:
                 currentTower = AngryCat
-
-
-
 
     window.blit(background, [0, 0])
     pygame.display.update()
