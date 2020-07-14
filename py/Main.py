@@ -139,18 +139,17 @@ class Main():
         """
 
         mousePositon = pygame.mouse.get_pos()
-        tower = self.currentTower(mousePositon, self.white)
+        self.tower = self.currentTower(mousePositon, self.white)
 
-        if pygame.sprite.spritecollide(tower, self.collisionSpritesList, True) == []:
-            self.towerSpritesList.add(tower)
-            self.collisionSpritesList.add(tower)
-            self.allSpritesList.add(tower)
+        if pygame.sprite.spritecollide(self.tower, self.collisionSpritesList, False) == []:
+            self.towerSpritesList.add(self.tower)
+            self.collisionSpritesList.add(self.tower)
+            self.allSpritesList.add(self.tower)
         else:
-            tower.kill()
-            del tower
+            self.tower.kill()
+            del self.tower
 
         #window.blit(pygame.image.load(self.currentTower.GetSprite()), mousePositon) #Need to replace blits with sprites
-
 
 ########################################################################################################
 #                                             - Functions -                                            #
