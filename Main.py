@@ -5,7 +5,6 @@ from pygame import *
 #Setup
 if __name__ == "__main__":
     pygame.init()
-    #Screen Resolution
     resolution = (1280, 720)
     pygame.display.set_caption("Cat Shooty Game")
     window = pygame.display.set_mode(resolution)
@@ -26,7 +25,7 @@ def PlaceTower():
 
 #MainLoop
 while running == True:
-    
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
