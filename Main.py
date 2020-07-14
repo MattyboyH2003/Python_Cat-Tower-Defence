@@ -19,6 +19,10 @@ if __name__ == "__main__":
     towers = Towers()
     currentTower = PistolCat
     TowersList = []
+    red = (200,0,0)
+    green = (0,200,0)
+    bright_red = (255,0,0)
+    bright_green = (0,255,0)
 
 else:
     exit()
@@ -41,23 +45,27 @@ def PlaceTower():
 ########################################################################################################
 #                                             - MainLoop -                                             #
 ########################################################################################################
-while running == True:
+def gameLoop():
+    while running == True:
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        
-        if event.type == pygame.MOUSEBUTTONUP:
-            PlaceTower()
-        
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                currentTower = PistolCat
-            if event.key == pygame.K_RIGHT:
-                currentTower = AngryCat
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            
+            if event.type == pygame.MOUSEBUTTONUP:
+                PlaceTower()
+            
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    currentTower = PistolCat
+                if event.key == pygame.K_RIGHT:
+                    currentTower = AngryCat
 
-    window.blit(background, [0, 0])
-    pygame.display.update()
-    clock.tick(30)
-    
+        window.blit(background, [0, 0])
+        pygame.display.update()
+        clock.tick(30)
+
+game_intro()
+gameLoop()
+quit()        
 pygame.quit()

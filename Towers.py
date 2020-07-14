@@ -2,7 +2,6 @@ from pygame import math
 
 
 class Towers:
-
     """
     Classes of towers:
     Pistol Cat
@@ -11,8 +10,10 @@ class Towers:
     Angry Cat
     """
 
-    def __init__(self):
-        self.test = 1
+    def __init__():
+        self.temp = 1
+        
+        
 
 #Towers 
 class PistolCat(Towers):
@@ -20,9 +21,10 @@ class PistolCat(Towers):
     sprite = "Sprites\Towers\PistolCatSprite.png"
 
     def __init__(self, startPos):
+        self.location = math.Vector2(startPos)
         self.range = 10 # 1 range unit = 10 pixel radius
         self.damage = 1 # Damage is equal to units unravelled per attack
-        self.location = math.Vector2(startPos)
+
         
     
     @classmethod
