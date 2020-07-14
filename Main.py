@@ -5,10 +5,11 @@ from pygame import *
 #Setup
 if __name__ == "__main__":
     pygame.init()
-    displayWidth = 1280
-    displayHeight = 720
+    #Screen Resolution
+    resolution = (1280, 720)
     pygame.display.set_caption("Cat Shooty Game")
-    window = pygame.display.set_mode((displayWidth, displayHeight))
+    window = pygame.display.set_mode(resolution)
+    background = pygame.image.load("Sprites\Towers\AngryCatSprite.png")
     clock = pygame.time.Clock()
     running = True
 
@@ -29,7 +30,8 @@ while running == True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        
+    
+    window.blit(background, [0, 0])
     pygame.display.update()
     clock.tick(30)
     
