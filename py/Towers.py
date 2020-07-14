@@ -25,16 +25,24 @@ class PistolCat(Towers):
 
     sprite = "Sprites\Towers\PistolCatSprite.png"
 
-    def __init__(self, startPos):
-        #Variables
+    def __init__(self, startPos, colour):
+        #Instance Variables
         self.location = pygame.math.Vector2(startPos)
         self.range = 10 # 1 range unit = 10 pixel radius
         self.damage = 1  # Damage is equal to units unravelled per attack
+
         #Sets sprites
-
+        # Call the parent class (Sprite) constructor
+        pygame.sprite.Sprite.__init__(self)
+    
+        # Load the image
+        self.image = pygame.image.load(self.sprite).convert()
+    
+        # Set our transparent color
+        self.image.set_colorkey(colour)
+        self.rect = self.image.get_rect()
+        self.rect.center = startPos
         
-
-
     @classmethod
     def GetSprite(cls):
         return cls.sprite
@@ -43,11 +51,24 @@ class AngryCat(Towers):
 
     sprite = "Sprites\Towers\AngryCatSprite.png"
 
-    def __init__(self):
+    def __init__(self, startPos, colour):
+        #Instance Variables
+        self.location = pygame.math.Vector2(startPos)
         self.range = 2 # 1 range unit = 10 pixel radius
-        self.damage = 1 # Damage is equal to units unravelled per attack
-        self.location = math.Vector2()
+        self.damage = 1  # Damage is equal to units unravelled per attack
+
+        #Sets sprites
+        # Call the parent class (Sprite) constructor
+        pygame.sprite.Sprite.__init__(self)
     
+        # Load the image
+        self.image = pygame.image.load(self.sprite).convert()
+    
+        # Set our transparent color
+        self.image.set_colorkey(colour)
+        self.rect = self.image.get_rect()
+        self.rect.center = startPos
+        
     @classmethod
     def GetSprite(cls):
         return cls.sprite
