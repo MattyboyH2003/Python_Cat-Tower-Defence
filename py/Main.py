@@ -1,20 +1,22 @@
 import pygame
 from Towers import *
 from Tiles import *
-import time
+#from Enemies import *
+from time import sleep
 
 ########################################################################################################
 #                                              - Setup -                                               #
 ########################################################################################################
+
 if __name__ == "__main__":
     pygame.init()
 
     resolution = (1280, 720)
     pygame.display.set_caption("Cat Shooty Game")
     window = pygame.display.set_mode(resolution)
-    windowIcon = pygame.image.load("Sprites\GUI\WindowIcon.png")
+    windowIcon = pygame.image.load("Sprites\\GUI\\WindowIcon.png")
     pygame.display.set_icon(windowIcon)
-    background = pygame.image.load("Sprites\Maps\map.png")
+    background = pygame.image.load("Sprites\\Maps\\map.png")
 
     clock = pygame.time.Clock() 
 else:
@@ -35,7 +37,6 @@ class Main():
     black = (0,0,0)
 
     currentTower = PistolCat
-    towers = Towers()
 
     towerSpritesList = pygame.sprite.Group()
     tileSpritesList = pygame.sprite.Group()
@@ -81,6 +82,7 @@ class Main():
 
         mapFile = open("Sprites\\Maps\\map.txt", "r")
         fileContents = mapFile.readlines()
+        mapFile.close()
         mapString = ""
         for item in fileContents:
             mapString += item.replace("\n", "")
@@ -105,9 +107,38 @@ class Main():
                 self.collisionSpritesList.add(tile)
 
             counter += 1
-        
-        self.gameLoop()
 
+        self.GeneratePath()
+
+    def GeneratePath(self): #Ran after generating the map
+        """
+        Tile Key:
+        # - Grass
+        P - Path
+        < - Start From Left
+        > - Start From Right
+        ^ - Start From Bottom
+        / - Start From Top
+        , - End On Left
+        . - End On Right
+        6 - End On Bottom
+        ? - End On Top
+        """
+
+        mapFile = open("Sprites\\Maps\\map.txt", "r")
+        fileContents = mapFile.readlines()
+        mapFile.close()
+
+        mapArray = []
+        for item in fileContents:
+            tempList = []
+            for char in item:
+                if char != "\n":
+                    tempList.append(char)
+            mapArray.append(tempList)
+
+        print(mapArray)
+                
     def gameLoop(self): #The Main game loop, called when play is clicked  
         running = True
         while running == True:
@@ -152,7 +183,7 @@ class Main():
         #window.blit(pygame.image.load(self.currentTower.GetSprite()), mousePositon) #Need to replace blits with sprites
 
 ########################################################################################################
-#                                             - Functions -                                            #
+#                                            - Functions -                                             #
 ########################################################################################################
 
 #Used in the main menu
@@ -177,7 +208,7 @@ def text_objects(text, font):
     return textSurface, textSurface.get_rect()
 
 ########################################################################################################
-#                                             - MainLoop -                                             #
+#                                          - Call Functions -                                           #
 ########################################################################################################
 main = Main()
 main.gameIntro()

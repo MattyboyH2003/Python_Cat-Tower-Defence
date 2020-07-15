@@ -14,10 +14,10 @@ class Tiles(pygame.sprite.Sprite):
         self.rect.center = startPos
 
 class Ground(Tiles):
-    sprite = "Sprites\Tiles\Grass.png"
+    sprite = "Sprites\\Tiles\\Grass.png"
         
 class Path(Tiles):
-    sprite = "Sprites\Tiles\Path.png"
+    sprite = "Sprites\\Tiles\\Path.png"
 
 class Start(Tiles):
     pass
@@ -26,17 +26,17 @@ class StartUp(Start):
 class StartRight(Start):
     pass
 class StartDown(Start):
-    sprite = "Sprites\Tiles\StartDown.png"
+    sprite = "Sprites\\Tiles\\StartDown.png"
 class StartLeft(Start):
     pass
 
 class End(Tiles):
     pass
-class EndUp(Start):
+class EndUp(End):
     pass
-class EndRight(Start):
+class EndRight(End):
     pass
-class EndDown(Start):
-    sprite = "Sprites\Tiles\EndDown.png"
-class EndLeft(Start):
+class EndDown(End):
+    sprite = "Sprites\\Tiles\\EndDown.png"
+class EndLeft(End):
     pass
