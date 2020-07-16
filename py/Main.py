@@ -228,6 +228,9 @@ class Main():
 
     def gameLoop(self): #The Main game loop, called when play is clicked  
         global running
+        global currentWave #can be removed if an alternative can be thought of
+        global playPressed
+        currentWave = []
         running = True
         while running == True:
 
@@ -245,10 +248,35 @@ class Main():
                     if event.key == pygame.K_RIGHT:
                         self.currentTower = AngryCat
 
-
-            button("Start!",1080, 600, 200, 120,self.lavender,self.bright_lavender, self.StartWave)
+            #Ui goes here:
+            button("Start!",1080, 600, 200, 120,self.lavender,self.bright_lavender, self.StartWave(1))
             button("Back!",1230, 0, 50, 50,self.red,self.bright_red, self.BackToMenu)
 
+            #Update Wool position
+
+            #Remove Wool
+
+            '''
+            this could be done within the position update but its probably better to do separately for clarity
+            
+            this line goes at the bottom of all future code here ↓
+            if enemy spritelist is empty set playPressed to false
+            '''
+
+            #Setup Wool
+            '''
+
+
+            if length of array from startWave() > 0:
+                get first item in array from startWave(), create object of item in list with center or rect set at the center of start tile.
+                store object in enemies spritelist
+                remove that item from array and shift all items along one so the first slot isnt left empty
+
+
+            this should loop for as long as there is an enemy to spawn, and will spawn one every frame
+
+            '''
+            #Final stuff
             pygame.display.update()
             self.allSpritesList.draw(window)
             clock.tick(30)
@@ -257,7 +285,13 @@ class Main():
         global running
         running = False
 
-    def StartWave(self):
+    def StartWave(self, waveNumber):
+        global currentWave
+        global playPressed
+        playPressed = True
+        #get items on line wavenumber+34, store as an array. I think it needs to be global but there might be a different way to do that.
+        #alternatively use a list of classes instead of arrays
+
         pass
 
     def PlaceTower(self): #Ran to spawn towers at the mouse position upon click

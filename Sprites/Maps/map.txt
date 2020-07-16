@@ -28,3 +28,8 @@
 ########################P#############################
 ########################P#############################
 ########################6#############################
+
+
+
+#from here on stores data for waves, each line is a wave, letters represent different enemy types and their order, for key check ________
+aaaaaaaaaa
