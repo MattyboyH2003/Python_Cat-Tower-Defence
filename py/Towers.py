@@ -52,8 +52,6 @@ class PistolCat(Towers):
 
         Towers.__init__(self, colour)
 
-
-
 class AngryCat(Towers):
 
     sprite = "Sprites\\Towers\\AngryCatSprite.png"
