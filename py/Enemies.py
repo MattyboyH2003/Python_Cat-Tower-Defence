@@ -24,9 +24,11 @@ class Enemy(pygame.sprite.Sprite):
     def GetSprite(self):
         return self.sprite
 
+
+    #do not use
     def FrameMove(self, endPos, speed = 1):
         
-        ((speed * 20)/30) = 
+        #((speed * 20)/30) = 
         
         numOfIterations = 30
         startPos = self.rect.center

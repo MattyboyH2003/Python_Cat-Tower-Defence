@@ -30,10 +30,13 @@ class Main():
     #Colours
     red = (200,0,0)
     green = (0,200,0)
+    lavender = (150, 150, 200)
+    bright_lavender = (150, 150, 255)
     bright_red = (255,0,0)
     bright_green = (0,255,0)
     white = (255,255,255)
     black = (0,0,0)
+
 
     currentTower = PistolCat
 
@@ -136,7 +139,7 @@ class Main():
                     tempList.append(char)
             mapArray.append(tempList)
 
-        #print(mapArray)
+        print(mapArray)
         
         """
         Path Array format:
@@ -224,13 +227,14 @@ class Main():
         self.gameLoop()
 
     def gameLoop(self): #The Main game loop, called when play is clicked  
+        global running
         running = True
         while running == True:
 
             #Checking for events each frame
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    running = False
+                    quit()
                 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     self.PlaceTower()
@@ -241,9 +245,20 @@ class Main():
                     if event.key == pygame.K_RIGHT:
                         self.currentTower = AngryCat
 
+
+            button("Start!",1080, 600, 200, 120,self.lavender,self.bright_lavender, self.StartWave)
+            button("Back!",1230, 0, 50, 50,self.red,self.bright_red, self.BackToMenu)
+
             pygame.display.update()
             self.allSpritesList.draw(window)
             clock.tick(30)
+
+    def BackToMenu(self):
+        global running
+        running = False
+
+    def StartWave(self):
+        pass
 
     def PlaceTower(self): #Ran to spawn towers at the mouse position upon click
         """
