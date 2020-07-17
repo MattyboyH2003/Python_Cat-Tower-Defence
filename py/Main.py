@@ -67,8 +67,8 @@ class Main():
                         self.currentTower = AngryCat
 
             #Ui goes here:
-            #button("Start!",1080, 600, 200, 120,self.lavender,self.bright_lavender, )
-            #button("Back!",1230, 0, 50, 50,self.red,self.bright_red, self.BackToMenu)
+            button("Start!",1080, 600, 200, 120,self.lavender,self.bright_lavender, self.StartWave)
+            button("Back!",1230, 0, 50, 50,self.red,self.bright_red, self.BackToMenu)
             
             #Move Wool
             for item in self.enemySpritesList:
