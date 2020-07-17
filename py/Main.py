@@ -1,8 +1,8 @@
 import pygame
 from Towers import *
 from Tiles import *
-#from Enemies import *
-from time import sleep
+from Waves import allWaves
+from Enemies import *
 
 ########################################################################################################
 #                                              - Setup -                                               #
@@ -37,14 +37,73 @@ class Main():
     white = (255,255,255)
     black = (0,0,0)
 
-
+    enemyDict = {"a" : WoolLV1}
     currentTower = PistolCat
+    currentWave = allWaves.pop(0)
+    frameDelay = 0
 
     towerSpritesList = pygame.sprite.Group()
     tileSpritesList = pygame.sprite.Group()
     collisionSpritesList = pygame.sprite.Group()
     enemySpritesList = pygame.sprite.Group()
     allSpritesList = pygame.sprite.Group()
+    
+    def gameLoop(self): #The Main game loop, called when play is clicked
+        self.running = True
+        while self.running == True:
+
+            #Checking for events each frame
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    quit()
+                
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    self.PlaceTower()
+                
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_LEFT:
+                        self.currentTower = PistolCat
+                    if event.key == pygame.K_RIGHT:
+                        self.currentTower = AngryCat
+
+            #Ui goes here:
+            #button("Start!",1080, 600, 200, 120,self.lavender,self.bright_lavender, )
+            #button("Back!",1230, 0, 50, 50,self.red,self.bright_red, self.BackToMenu)
+            
+            #Move Wool
+            for item in self.enemySpritesList:
+                item.MoveFrame()
+
+            #Spawn Wool
+            if self.frameDelay == 0:
+                if len(self.currentWave) > 0:
+                    nextThing = self.currentWave[0]
+
+                    if type(nextThing) == type(1):
+                        self.frameDelay = int(nextThing)
+                    
+                    elif type(nextThing) == type("a"):
+                        enemy = self.enemyDict[nextThing](self.pathList, self.startTilePos, self.white)
+                        self.enemySpritesList.add(enemy)
+                        self.allSpritesList.add(enemy)
+
+                    self.currentWave.pop(0)
+            else:
+                self.frameDelay -= 1
+
+            #Remove Wool
+
+            '''
+            this could be done within the position update but its probably better to do separately for clarity
+            
+            this line goes at the bottom of all future code here ↓
+            if enemy spritelist and the remaining enemies are empty set playPressed to false
+            '''
+
+            #Final stuff
+            pygame.display.update()
+            self.allSpritesList.draw(window)
+            clock.tick(30)
 
     def gameIntro(self): #The Menu screen Loop, called on play
         intro = True
@@ -83,7 +142,7 @@ class Main():
         ? - End On Top
         """
 
-        mapFile = open("Sprites\\Maps\\map.txt", "r")
+        mapFile = open("Data\\Maps\\map.txt", "r")
         fileContents = mapFile.readlines()
         mapFile.close()
         mapString = ""
@@ -128,7 +187,7 @@ class Main():
         ? - End On Top
         """
 
-        mapFile = open("Sprites\\Maps\\map.txt", "r")
+        mapFile = open("Data\\Maps\\map.txt", "r")
         fileContents = mapFile.readlines()
         mapFile.close()
 
@@ -139,8 +198,6 @@ class Main():
                 if char != "\n":
                     tempList.append(char)
             mapArray.append(tempList)
-
-        print(mapArray)
         
         """
         Path Array format:
@@ -160,8 +217,7 @@ class Main():
             for tile in layer:
                 for item in startList:
                     if tile == item:
-                        self.pathList.append("START")
-                        self.startTilePos = [row, column]
+                        self.startTilePos = [column, row]
                         checkPos = [row, column]
 
                 column += 1
@@ -224,66 +280,19 @@ class Main():
                             self.pathList.append("R")
                             self.pathList.append("END")
                             path = False
-        print(self.pathList)
         self.gameLoop()
 
-    def gameLoop(self): #The Main game loop, called when play is clicked  
-        global running
-        global currentWave #can be removed if an alternative can be thought of
-        global playPressed
-        currentWave = []
-        running = True
-        while running == True:
-
-            #Checking for events each frame
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    quit()
-                
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    self.PlaceTower()
-                
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_LEFT:
-                        self.currentTower = PistolCat
-                    if event.key == pygame.K_RIGHT:
-                        self.currentTower = AngryCat
-
-            #Ui goes here:
-            button("Start!",1080, 600, 200, 120,self.lavender,self.bright_lavender, self.StartWave(1))
-            button("Back!",1230, 0, 50, 50,self.red,self.bright_red, self.BackToMenu)
-
-            #Update Wool position
-            for i in range (len(enemySpritesList)): #if this is causing errors its because you cant get the length of sprite group, use 'pygame.sprite.Group.sprites' to get list of sprites in group and get the length of that
-                 #do some stuff here                     
-            #Remove Wool
-
-            '''
-            this could be done within the position update but its probably better to do separately for clarity
-            
-            this line goes at the bottom of all future code here ↓
-            if enemy spritelist is empty set playPressed to false
-            '''
-
-            #Setup Wool
-            if len(currentWave) > 0:
-                enemy = currentWave[0]
-                self.enemySpritesList.add(enemy)
-                currentWave.pop(0)
-
-            #Final stuff
-            pygame.display.update()
-            self.allSpritesList.draw(window)
-            clock.tick(30)
-
     def BackToMenu(self):
-        global running
-        running = False
+        self.running = False
 
-    def StartWave(self, waveNumber):
-        global currentWave
-        global playPressed
-        playPressed = True
+    def StartWave(self):
+        print("Starting Wave")
+        self.nextWaveList = []
+        for char in self.currentWave:
+            self.nextWaveList.append(char)
+        self.currentWave = allWaves.pop(0)
+
+        self.playPressed = True
         #get items on line wavenumber+34, store as an array. I think it needs to be global but there might be a different way to do that.
         #alternatively use a list of classes instead of arrays, and calculate the classes from here
 

@@ -7,11 +7,26 @@ from pygame import *
 
 class Enemy(pygame.sprite.Sprite):
     
-    def __init__(self):
+    def __init__(self, pathData, startLocation, colour):
 
-        #Sets sprites
+        #Path stuff
+        self.pathData = pathData
+        self.location = Vector2((startLocation[0]*20)+10, (startLocation[1]*20)+10)
+        
+        if self.pathData[0] == "U":
+            self.nextLocation = self.location + Vector2(0, -20)
+        elif self.pathData[0] == "L":
+            self.nextLocation = self.location + Vector2(-20, 0)
+        elif self.pathData[0] == "R":
+            self.nextLocation = self.location + Vector2(20, 0)
+        elif self.pathData[0] == "D":
+            self.nextLocation = self.location + Vector2(0, 20)
+        else:
+            print(self.pathData[0])
+
+        #Sprite stuff
         # Call the parent class (Sprite) constructor
-        pygame.sprite.Sprite.__init__(self)    
+        pygame.sprite.Sprite.__init__(self)
     
         # Load the image
         self.image = pygame.image.load(self.sprite).convert()
@@ -20,23 +35,79 @@ class Enemy(pygame.sprite.Sprite):
         self.image.set_colorkey(colour)
         self.rect = self.image.get_rect()
         self.rect.center = self.location
+
     
     def GetSprite(self):
         return self.sprite
 
+    """
+    def MoveFrame(self):
+        print(self.pathData)
+        if self.pathData[0] == "U":
+            if self.location[1]-self.speed <= self.nextLocation[1]:
+                self.location = self.nextLocation
+                self.pathData.pop(0)
+                if self.pathData[0] == "U":
+                    self.nextLocation = self.location + Vector2(0, -20)
+                elif self.pathData[0] == "L":
+                    self.nextLocation = self.location + Vector2(-20, 0)
+                elif self.pathData[0] == "R":
+                    self.nextLocation = self.location + Vector2(20, 0)
+                elif self.pathData[0] == "D":
+                    self.nextLocation = self.location + Vector2(0, 20)
+            else:
+                self.location += Vector2(0, -self.speed)
+        
+        elif self.pathData[0] == "L":
+            if self.location[0]-self.speed <= self.nextLocation[0]:
+                self.location = self.nextLocation
+                self.pathData.pop(0)
+                if self.pathData[0] == "U":
+                    self.nextLocation = self.location + Vector2(0, -20)
+                elif self.pathData[0] == "L":
+                    self.nextLocation = self.location + Vector2(-20, 0)
+                elif self.pathData[0] == "R":
+                    self.nextLocation = self.location + Vector2(20, 0)
+                elif self.pathData[0] == "D":
+                    self.nextLocation = self.location + Vector2(0, 20)
+            else:
+                self.location = self.location + Vector2(-self.speed, 0)
+        
+        elif self.pathData[0] == "R":
+            if self.location[0]+self.speed >= self.nextLocation[0]:
+                self.location = self.nextLocation
+                self.pathData.pop(0)
+                if self.pathData[0] == "U":
+                    self.nextLocation = self.location + Vector2(0, -20)
+                elif self.pathData[0] == "L":
+                    self.nextLocation = self.location + Vector2(-20, 0)
+                elif self.pathData[0] == "R":
+                    self.nextLocation = self.location + Vector2(20, 0)
+                elif self.pathData[0] == "D":
+                    self.nextLocation = self.location + Vector2(0, 20)
+            else:
+                self.location = self.location + Vector2(self.speed, 0)
+        
+        elif self.pathData[0] == "D":
+            if self.location[1]+self.speed >= self.nextLocation[1]:
+                self.location = self.nextLocation
+                self.pathData.pop(0)
+                if self.pathData[0] == "U":
+                    self.nextLocation = self.location + Vector2(0, -20)
+                elif self.pathData[0] == "L":
+                    self.nextLocation = self.location + Vector2(-20, 0)
+                elif self.pathData[0] == "R":
+                    self.nextLocation = self.location + Vector2(20, 0)
+                elif self.pathData[0] == "D":
+                    self.nextLocation = self.location + Vector2(0, 20)
+            else:
+                self.location = self.location + Vector2(0, self.speed)
+        
+        self.rect.center = self.location
+        """
 
-    #do not use
-    def FrameMove(self, endPos, speed = 1):
-        
-        #((speed * 20)/30) = 
-        
-        numOfIterations = 30
-        startPos = self.rect.center
-        distance = 1/ numOfIterations
-        for i in range(numOfIterations):
-            self.rect.center = startPos.lerp(endPos, distance * i)
-        
-        
+        def MoveFrame(self):
+            
 ########################################################################################################
 #                                           - Enemy Types -                                            #
 ########################################################################################################
@@ -44,11 +115,10 @@ class Enemy(pygame.sprite.Sprite):
 class WoolLV1(Enemy):
 
     sprite = "Sprites\\Enemys\\Wool.png"
-    goingTo = Vector2()
-    comingFrom = Vector2()
 
-    def __init__(self, startPos, colour):
+    def __init__(self, pathData, startLocation, colour):
         #Instance Variables
         self.health = 1
+        self.speed = 1
         #could add speed later
-        Enemy.__init__(self, colour)
+        Enemy.__init__(self, pathData, startLocation, colour)
