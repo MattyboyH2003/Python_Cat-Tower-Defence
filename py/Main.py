@@ -43,6 +43,7 @@ class Main():
     towerSpritesList = pygame.sprite.Group()
     tileSpritesList = pygame.sprite.Group()
     collisionSpritesList = pygame.sprite.Group()
+    enemySpritesList = pygame.sprite.Group()
     allSpritesList = pygame.sprite.Group()
 
     def gameIntro(self): #The Menu screen Loop, called on play
@@ -254,6 +255,7 @@ class Main():
 
             #Update Wool position
 
+
             #Remove Wool
 
             '''
@@ -265,9 +267,7 @@ class Main():
 
             #Setup Wool
             '''
-
-
-            if length of array from startWave() > 0:
+             if length of array from startWave() > 0:
                 get first item in array from startWave(), create object of item in list with center or rect set at the center of start tile.
                 store object in enemies spritelist
                 remove that item from array and shift all items along one so the first slot isnt left empty
@@ -276,6 +276,11 @@ class Main():
             this should loop for as long as there is an enemy to spawn, and will spawn one every frame
 
             '''
+            if len(currentWave) > 0:
+                enemy = currentWave[0]
+                self.enemySpritesList.add(enemy)
+                currentWave.pop(0)
+
             #Final stuff
             pygame.display.update()
             self.allSpritesList.draw(window)
@@ -290,7 +295,7 @@ class Main():
         global playPressed
         playPressed = True
         #get items on line wavenumber+34, store as an array. I think it needs to be global but there might be a different way to do that.
-        #alternatively use a list of classes instead of arrays
+        #alternatively use a list of classes instead of arrays, and calculate the classes from here
 
         pass
 

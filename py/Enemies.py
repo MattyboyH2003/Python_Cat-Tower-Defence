@@ -44,6 +44,8 @@ class Enemy(pygame.sprite.Sprite):
 class WoolLV1(Enemy):
 
     sprite = "Sprites\\Enemys\\Wool.png"
+    goingTo = Vector2()
+    comingFrom = Vector2()
 
     def __init__(self, startPos, colour):
         #Instance Variables
