@@ -254,8 +254,8 @@ class Main():
             button("Back!",1230, 0, 50, 50,self.red,self.bright_red, self.BackToMenu)
 
             #Update Wool position
-
-
+            for i in range (len(enemySpritesList)): #if this is causing errors its because you cant get the length of sprite group, use 'pygame.sprite.Group.sprites' to get list of sprites in group and get the length of that
+                 #do some stuff here                     
             #Remove Wool
 
             '''
@@ -266,16 +266,6 @@ class Main():
             '''
 
             #Setup Wool
-            '''
-             if length of array from startWave() > 0:
-                get first item in array from startWave(), create object of item in list with center or rect set at the center of start tile.
-                store object in enemies spritelist
-                remove that item from array and shift all items along one so the first slot isnt left empty
-
-
-            this should loop for as long as there is an enemy to spawn, and will spawn one every frame
-
-            '''
             if len(currentWave) > 0:
                 enemy = currentWave[0]
                 self.enemySpritesList.add(enemy)
