@@ -42,16 +42,15 @@ class Main():
     currentWave = allWaves.pop(0)
     frameDelay = 0
 
-    towerSpritesList = pygame.sprite.Group()
-    tileSpritesList = pygame.sprite.Group()
-    collisionSpritesList = pygame.sprite.Group()
-    enemySpritesList = pygame.sprite.Group()
-    allSpritesList = pygame.sprite.Group()
+    towerSpritesList = pygame.sprite.Group() # stores all towers placed, currently not used though will be used to check when enemies are in range of towers
+    tileSpritesList = pygame.sprite.Group() # stores all tiles that make up the map, not currently used
+    collisionSpritesList = pygame.sprite.Group() #used in towerplacment, if anything in this list is touching a tower it will not be placed
+    enemySpritesList = pygame.sprite.Group() #used in the movement system, everything in here will follow the path and should be enemy class
+    allSpritesList = pygame.sprite.Group() #list of things to be drawn to screen
     
     def gameLoop(self): #The Main game loop, called when play is clicked
         self.running = True
         while self.running == True:
-
             #Checking for events each frame
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -69,6 +68,13 @@ class Main():
             #Ui goes here:
             button("Start!",1080, 600, 200, 120,self.lavender,self.bright_lavender, self.StartWave)
             button("Back!",1230, 0, 50, 50,self.red,self.bright_red, self.BackToMenu)
+
+            #all towers check and attack, currently prints when detects nearby towers
+            
+            for enemy in self.enemySpritesList:
+                for tower in self.towerSpritesList:
+                    tower.CheckEnemies(enemy)
+            
             
             #Move Wool
             for item in self.enemySpritesList:
@@ -160,7 +166,7 @@ class Main():
             elif char == "6":
                 nextTile = EndDown
             location = [((counter%54)*20)+10, ((counter//54)*20)+10]
-            tile = nextTile(location, self.white)
+            tile = nextTile(location, self.red)
 
             self.allSpritesList.add(tile)
             self.tileSpritesList.add(tile)
@@ -307,7 +313,7 @@ class Main():
         """
 
         mousePositon = pygame.mouse.get_pos()
-        self.tower = self.currentTower(mousePositon, self.white)
+        self.tower = self.currentTower(mousePositon, self.white, window)
 
         if pygame.sprite.spritecollide(self.tower, self.collisionSpritesList, False) == []:
             self.towerSpritesList.add(self.tower)

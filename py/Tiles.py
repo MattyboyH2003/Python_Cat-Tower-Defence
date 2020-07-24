@@ -31,7 +31,11 @@ class StartLeft(Start):
     pass
 
 class End(Tiles):
-    pass
+
+    def __init__(self, startPos, colour):
+
+        Tiles.__init__(self, startPos, colour)
+
 class EndUp(End):
     pass
 class EndRight(End):

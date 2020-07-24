@@ -36,32 +36,23 @@ class Enemy(pygame.sprite.Sprite):
         self.image.set_colorkey(colour)
         self.rect = self.image.get_rect()
         self.rect.center = self.location
-
     
     def GetSprite(self):
         return self.sprite
 
+    def GetLocation(self):
+        return self.location
+
     def MoveFrame(self):
 
+        nextDict = { "D" : Vector2(0, 20), "U" : Vector2(0, -20), "L" : Vector2(-20, 0), "R" : Vector2(20, 0) , "END" : Vector2 (0, 0)}
         self.currentDirection = self.pathData[0]
-
-        print(self.location)
-        print(self.nextLocation)
-        print(self.currentDirection)
-        print("\n")
 
         if self.currentDirection == "D":
             if self.location[1] + self.speed >= self.nextLocation[1]:
                 self.location = copy.deepcopy(self.nextLocation)
                 self.pathData.pop(0)
-                if self.pathData[0] == "U":
-                    self.nextLocation += Vector2(0, -20)
-                elif self.pathData[0] == "L":
-                    self.nextLocation += Vector2(-20, 0)
-                elif self.pathData[0] == "R":
-                    self.nextLocation += Vector2(20, 0)
-                elif self.pathData[0] == "D":
-                    self.nextLocation += Vector2(0, 20)
+                self.nextLocation += nextDict[self.pathData[0]]
             else:
                 self.location += Vector2(0, self.speed)
         
@@ -69,14 +60,7 @@ class Enemy(pygame.sprite.Sprite):
             if self.location[0] + self.speed >= self.nextLocation[0]:
                 self.location = copy.deepcopy(self.nextLocation)
                 self.pathData.pop(0)
-                if self.pathData[0] == "U":
-                    self.nextLocation += Vector2(0, -20)
-                elif self.pathData[0] == "L":
-                    self.nextLocation += Vector2(-20, 0)
-                elif self.pathData[0] == "R":
-                    self.nextLocation += Vector2(20, 0)
-                elif self.pathData[0] == "D":
-                    self.nextLocation += Vector2(0, 20)
+                self.nextLocation += nextDict[self.pathData[0]]
             else:
                 self.location += Vector2(self.speed, 0)
         
@@ -84,14 +68,7 @@ class Enemy(pygame.sprite.Sprite):
             if self.location[0] - self.speed <= self.nextLocation[0]:
                 self.location = copy.deepcopy(self.nextLocation)
                 self.pathData.pop(0)
-                if self.pathData[0] == "U":
-                    self.nextLocation += Vector2(0, -20)
-                elif self.pathData[0] == "L":
-                    self.nextLocation += Vector2(-20, 0)
-                elif self.pathData[0] == "R":
-                    self.nextLocation += Vector2(20, 0)
-                elif self.pathData[0] == "D":
-                    self.nextLocation += Vector2(0, 20)
+                self.nextLocation += nextDict[self.pathData[0]]
             else:
                 self.location += Vector2(-self.speed, 0)
         
@@ -99,18 +76,25 @@ class Enemy(pygame.sprite.Sprite):
             if self.location[1] - self.speed <= self.nextLocation[1]:
                 self.location = copy.deepcopy(self.nextLocation)
                 self.pathData.pop(0)
-                if self.pathData[0] == "U":
-                    self.nextLocation += Vector2(0, -20)
-                elif self.pathData[0] == "L":
-                    self.nextLocation += Vector2(-20, 0)
-                elif self.pathData[0] == "R":
-                    self.nextLocation += Vector2(20, 0)
-                elif self.pathData[0] == "D":
-                    self.nextLocation += Vector2(0, 20)
+                self.nextLocation += nextDict[self.pathData[0]]
             else:
                 self.location += Vector2(0, -self.speed)
         
+        elif self.currentDirection == "END":
+            self.kill()
+            del self
+
+            print("Pee Pee Poo Poo i am gone")
+            return
+            
         self.rect.center = self.location
+
+    def TakeDamage(self, damage):
+        if self.health <= damage:
+            self.kill()
+            del self
+        else:
+            self.health -= damage
 
 ########################################################################################################
 #                                           - Enemy Types -                                            #
@@ -119,10 +103,10 @@ class Enemy(pygame.sprite.Sprite):
 class WoolLV1(Enemy):
 
     sprite = "Sprites\\Enemys\\Wool.png"
+    health = 1
+    speed = 2
 
     def __init__(self, pathData, startLocation, colour):
-        #Instance Variables
-        self.health = 1
-        self.speed = 2
         #could add speed later
         Enemy.__init__(self, pathData, startLocation, colour)
+ 
