@@ -41,7 +41,7 @@ class Towers(pygame.sprite.Sprite):
         if pygame.sprite.collide_circle(self, enemy):
             if pygame.time.get_ticks() >= self.timeCache: # get_ticks will give us the amount of milliseconds since program started running
                 self.Attack(enemy) 
-                self.timeCache = pygame.time.get_ticks() + 500
+                self.timeCache = pygame.time.get_ticks() + self.delay
         
     def GetSprite(self):
         return self.sprite
@@ -54,10 +54,11 @@ class Towers(pygame.sprite.Sprite):
 #                                           - Tower Types -                                            #
 ########################################################################################################
 
-class PistolCat(Towers):
+class PistolCat(Towers): #mid range slow shooting
 
     sprite = "Sprites\\Towers\\PistolCatSprite.png"
     damage = 1  # Damage is equal to units unravelled per attack
+    delay = 500
 
     def __init__(self, startPos, colour, window):
         #Instance Variables
@@ -71,11 +72,11 @@ class PistolCat(Towers):
 
         enemy.TakeDamage(self.damage)
 
-class AngryCat(Towers):
+class AngryCat(Towers): # fast attack, very close range, needs to be directly next to a path to attack
 
     sprite = "Sprites\\Towers\\AngryCatSprite.png"
-    
     damage = 1 # Damage is equal to units unravelled per attack
+    delay = 300
 
     def __init__(self, startPos, colour, window):
         #Instance Variables

@@ -44,7 +44,9 @@ class Main():
     frameCache = 0
     lives = 100
 
-    towerSpritesList = pygame.sprite.Group() # stores all towers placed, currently not used though will be used to check when enemies are in range of towers
+    buttonList = []
+
+    towerSpritesList = pygame.sprite.Group() # stores all towers placed, used to check when enemies are in range of towers
     tileSpritesList = pygame.sprite.Group() # stores all tiles that make up the map, not currently used
     collisionSpritesList = pygame.sprite.Group() #used in towerplacment, if anything in this list is touching a tower it will not be placed
     enemySpritesList = pygame.sprite.Group() #used in the movement system, everything in here will follow the path and should be enemy class
@@ -52,6 +54,12 @@ class Main():
     
     def gameLoop(self): #The Main game loop, called when play is clicked
         self.running = True
+        self.buttonList = []
+        
+        #Adds button information to the list of buttons
+        self.buttonList.append({"text" : "Start!", "xPos" : 1080, "yPos" : 600, "width" : 200, "height" : 120, "colour" : self.lavender, "hoverColour" : self.bright_lavender, "func" : self.StartWave})
+        self.buttonList.append({"text" : "Back!", "xPos" : 1230, "yPos" : 0, "width" : 50, "height" : 50, "colour" : self.red, "hoverColour" : self.bright_red, "func" : self.BackToMenu})
+
         while self.running == True:
 
             #Checking for events each frame
@@ -60,7 +68,12 @@ class Main():
                     quit()
                 
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    self.PlaceTower()
+                    for button in self.buttonList:
+                        AreaClick(**button)
+                    
+                    mouse = pygame.mouse.get_pos()
+                    if 1080 > mouse[0] > 0 and 600 > mouse[1] > 0:
+                        self.PlaceTower()
                 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_LEFT:
@@ -69,20 +82,13 @@ class Main():
                         self.currentTower = AngryCat
 
             #Ui goes here:
-            button("Start!",1080, 600, 200, 120,self.lavender,self.bright_lavender, self.StartWave)
-            button("Back!",1230, 0, 50, 50,self.red,self.bright_red, self.BackToMenu)
-
-            largeText = pygame.font.SysFont("comicsansms",30)
-            TextSurf, TextRect = text_objects(str(self.lives), largeText)
-            TextRect.center = ((1200),(25))
-            window.blit(TextSurf, TextRect)
-
-            #all towers check and attack, currently prints when detects nearby towers
+            for button in self.buttonList:
+                ButtonVisuals(**button)
             
+            #all towers check and attack, currently prints when detects nearby towers
             for enemy in self.enemySpritesList:
                 for tower in self.towerSpritesList:
                     tower.CheckEnemies(enemy)
-            
             
             #Move Wool
             for item in self.enemySpritesList:
@@ -136,11 +142,17 @@ class Main():
     def gameIntro(self): #The Menu screen Loop, called on play
         intro = True
 
+        self.buttonList.append({"text" : "Play!", "xPos" : 150, "yPos" : 450, "width" : 100, "height" : 50, "colour" : self.green, "hoverColour" : self.bright_green, "func" : self.GenerateMap})
+        self.buttonList.append({"text" : "Quit!", "xPos" : 550, "yPos": 450, "width" : 100, "height" : 50, "colour" : self.red, "hoverColour" : self.bright_red, "func" : quit})
+        
         while intro:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     quit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    for button in self.buttonList:
+                        AreaClick(**button)
                     
             window.fill(self.white)
             largeText = pygame.font.SysFont("comicsansms",115)
@@ -148,9 +160,9 @@ class Main():
             TextRect.center = ((resolution[0]/2),(resolution[1]/2))
             window.blit(TextSurf, TextRect)
 
-            button("Play!",150,450,100,50,self.green,self.bright_green,self.GenerateMap)
-            button("Quit",550,450,100,50,self.red,self.bright_red,quit)
-            
+            for button in self.buttonList:
+                ButtonVisuals(**button)
+
             pygame.display.update()
             clock.tick(30)
 
@@ -311,18 +323,17 @@ class Main():
         self.gameLoop()
 
     def BackToMenu(self):
+        self.buttonList = []
+        self.buttonList.append({"text" : "Play!", "xPos" : 150, "yPos" : 450, "width" : 100, "height" : 50, "colour" : self.green, "hoverColour" : self.bright_green, "func" : self.GenerateMap})
+        self.buttonList.append({"text" : "Quit!", "xPos" : 550, "yPos": 450, "width" : 100, "height" : 50, "colour" : self.red, "hoverColour" : self.bright_red, "func" : quit})
         self.running = False
 
     def StartWave(self):
-        if pygame.time.get_ticks() >= self.frameCache: #ugly debouncer used instead of solving a bug
-            self.frameCache =  pygame.time.get_ticks() + 1000
-            print("Starting Wave")
-            self.nextWaveList = []
-            for char in self.currentWave:
-                self.nextWaveList.append(char)
-            self.currentWave = allWaves.pop(0)
-            print("popped:", self.currentWave)
-
+        self.nextWaveList = []
+        for char in self.currentWave:
+            self.nextWaveList.append(char)
+        ############################################if allWaves.
+        self.currentWave = allWaves.pop(0)
 
     def PlaceTower(self): #Ran to spawn towers at the mouse position upon click
         """
@@ -350,21 +361,23 @@ class Main():
 ########################################################################################################
 
 #Used in the main menu
-def button(msg,x,y,w,h,ic,ac,action=None):
+def AreaClick(xPos, yPos, width, height, func, **kwargs):
     mouse = pygame.mouse.get_pos()
-    click = pygame.mouse.get_pressed()
-    if x+w > mouse[0] > x and y+h > mouse[1] > y:
-        pygame.draw.rect(window, ac,(x,y,w,h))
+    if xPos+width > mouse[0] > xPos and yPos+height > mouse[1] > yPos:
+        func()
 
-        if click[0] == 1 and action != None:
-            action()         
+def ButtonVisuals(text, xPos, yPos, width, height , colour, hoverColour, **kwargs):
+    mouse = pygame.mouse.get_pos()
+    if xPos+width > mouse[0] > xPos and yPos+height > mouse[1] > yPos:
+        pygame.draw.rect(window, colour,(xPos,yPos,width,height))
     else:
-        pygame.draw.rect(window, ic,(x,y,w,h))
+        pygame.draw.rect(window, hoverColour,(xPos,yPos,width,height))
 
     smallText = pygame.font.SysFont("comicsansms",20)
-    textSurf, textRect = text_objects(msg, smallText)
-    textRect.center = ( (x+(w/2)), (y+(h/2)) )
+    textSurf, textRect = text_objects(text, smallText)
+    textRect.center = ( (xPos+(width/2)), (yPos+(height/2)) )
     window.blit(textSurf, textRect)
+
 def text_objects(text, font):
     black = (0,0,0)
     textSurface = font.render(text, True, black)
