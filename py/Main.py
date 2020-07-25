@@ -41,6 +41,8 @@ class Main():
     currentTower = PistolCat
     currentWave = allWaves.pop(0)
     frameDelay = 0
+    frameCache = 0
+    lives = 100
 
     towerSpritesList = pygame.sprite.Group() # stores all towers placed, currently not used though will be used to check when enemies are in range of towers
     tileSpritesList = pygame.sprite.Group() # stores all tiles that make up the map, not currently used
@@ -51,6 +53,7 @@ class Main():
     def gameLoop(self): #The Main game loop, called when play is clicked
         self.running = True
         while self.running == True:
+
             #Checking for events each frame
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -69,6 +72,11 @@ class Main():
             button("Start!",1080, 600, 200, 120,self.lavender,self.bright_lavender, self.StartWave)
             button("Back!",1230, 0, 50, 50,self.red,self.bright_red, self.BackToMenu)
 
+            largeText = pygame.font.SysFont("comicsansms",30)
+            TextSurf, TextRect = text_objects(str(self.lives), largeText)
+            TextRect.center = ((1200),(25))
+            window.blit(TextSurf, TextRect)
+
             #all towers check and attack, currently prints when detects nearby towers
             
             for enemy in self.enemySpritesList:
@@ -78,7 +86,7 @@ class Main():
             
             #Move Wool
             for item in self.enemySpritesList:
-                item.MoveFrame()
+                self.lives += item.MoveFrame()
 
             #Spawn Wool
             if self.frameDelay == 0:
@@ -97,18 +105,32 @@ class Main():
             else:
                 self.frameDelay -= 1
 
-            #Remove Wool
-
-            '''
-            this could be done within the position update but its probably better to do separately for clarity
-            
-            this line goes at the bottom of all future code here ↓
-            if enemy spritelist and the remaining enemies are empty set playPressed to false
-            '''
+            if self.lives <= 0:
+                self.lives = 0 #stop it counting down further after loss screen
+                self.gameLose()
 
             #Final stuff
             pygame.display.update()
+            window.fill((255, 255, 255))
             self.allSpritesList.draw(window)
+            clock.tick(30)
+
+    def gameLose(self):
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+                    
+            window.fill(self.white)
+            largeText = pygame.font.SysFont("comicsansms",115)
+            TextSurf, TextRect = text_objects("You lose", largeText)
+            TextRect.center = ((resolution[0]/2),(resolution[1]/2))
+            window.blit(TextSurf, TextRect)
+
+            button("Quit",550,450,100,50,self.red,self.bright_red,quit)
+            
+            pygame.display.update()
             clock.tick(30)
 
     def gameIntro(self): #The Menu screen Loop, called on play
@@ -292,17 +314,15 @@ class Main():
         self.running = False
 
     def StartWave(self):
-        print("Starting Wave")
-        self.nextWaveList = []
-        for char in self.currentWave:
-            self.nextWaveList.append(char)
-        self.currentWave = allWaves.pop(0)
+        if pygame.time.get_ticks() >= self.frameCache: #ugly debouncer used instead of solving a bug
+            self.frameCache =  pygame.time.get_ticks() + 1000
+            print("Starting Wave")
+            self.nextWaveList = []
+            for char in self.currentWave:
+                self.nextWaveList.append(char)
+            self.currentWave = allWaves.pop(0)
+            print("popped:", self.currentWave)
 
-        self.playPressed = True
-        #get items on line wavenumber+34, store as an array. I think it needs to be global but there might be a different way to do that.
-        #alternatively use a list of classes instead of arrays, and calculate the classes from here
-
-        pass
 
     def PlaceTower(self): #Ran to spawn towers at the mouse position upon click
         """

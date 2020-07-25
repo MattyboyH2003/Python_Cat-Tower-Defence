@@ -81,13 +81,14 @@ class Enemy(pygame.sprite.Sprite):
                 self.location += Vector2(0, -self.speed)
         
         elif self.currentDirection == "END":
+            damageTemp = self.damage #allows us to store the damage to use in the return even after self is deleted
             self.kill()
             del self
 
-            print("enemy deleted as it reached the end")
-            return
+            return(damageTemp)
             
         self.rect.center = self.location
+        return(0)
 
     def TakeDamage(self, damage):
         if self.health <= damage:
@@ -105,6 +106,7 @@ class WoolLV1(Enemy):
     sprite = "Sprites\\Enemys\\Wool.png"
     health = 1
     speed = 2
+    damage = -1 #dont forget to make this a minus as its added to the lives
 
     def __init__(self, pathData, startLocation, colour):
         #could add speed later
