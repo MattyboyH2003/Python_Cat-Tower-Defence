@@ -84,7 +84,7 @@ class Enemy(pygame.sprite.Sprite):
             self.kill()
             del self
 
-            print("Pee Pee Poo Poo i am gone")
+            print("enemy deleted as it reached the end")
             return
             
         self.rect.center = self.location

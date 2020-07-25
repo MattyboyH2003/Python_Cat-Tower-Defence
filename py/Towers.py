@@ -35,10 +35,13 @@ class Towers(pygame.sprite.Sprite):
         #radius for collisions
         self.radius = self.range*10
 
+        self.timeCache = 0
+
     def CheckEnemies(self, enemy):
         if pygame.sprite.collide_circle(self, enemy):
-            self.Attack(enemy)
-            print ("bang") 
+            if pygame.time.get_ticks() >= self.timeCache: # get_ticks will give us the amount of milliseconds since program started running
+                self.Attack(enemy) 
+                self.timeCache = pygame.time.get_ticks() + 500
         
     def GetSprite(self):
         return self.sprite
@@ -62,7 +65,7 @@ class PistolCat(Towers):
         self.range = 5 # 1 range unit = 10 pixel radius
         
         Towers.__init__(self, colour, window)
-    
+
     def Attack(self, enemy):
         pygame.draw.line(self.window, (255, 255, 255), self.rect.center, enemy.rect.center, 5)
 
@@ -80,4 +83,10 @@ class AngryCat(Towers):
         self.range = 2 # 1 range unit = 10 pixel radius
 
         Towers.__init__(self, colour, window)
+
+    def Attack(self, enemy):
+        pygame.draw.line(self.window, (255, 255, 255), self.rect.center, enemy.rect.center, 5)
+
+        enemy.TakeDamage(self.damage)
+
  
