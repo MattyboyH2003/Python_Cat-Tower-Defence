@@ -48,6 +48,9 @@ class Towers(pygame.sprite.Sprite):
     def GetSprite(self):
         return self.sprite
 
+    def getPrice(self):
+        return(self.price)
+
     def RemoveExistance(self):
         self.kill()
         del self
@@ -61,6 +64,7 @@ class PistolCat(Towers): #mid range slow shooting
     sprite = "Sprites\\Towers\\PistolCatSprite.png"
     damage = 1  # Damage is equal to units unravelled per attack
     delay = 500
+    price = 200
 
     def __init__(self, startPos, colour, window):
         #Instance Variables
@@ -80,6 +84,7 @@ class AngryCat(Towers): # fast attack, very close range, needs to be directly ne
     sprite = "Sprites\\Towers\\AngryCatSprite.png"
     damage = 1 # Damage is equal to units unravelled per attack
     delay = 300
+    price = 200
 
     def __init__(self, startPos, colour, window):
         #Instance Variables

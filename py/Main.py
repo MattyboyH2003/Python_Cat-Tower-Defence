@@ -368,6 +368,7 @@ class Main():
             self.towerSpritesList.add(self.tower)
             self.collisionSpritesList.add(self.tower)
             self.allSpritesList.add(self.tower)
+            self.money -= self.tower.getPrice()
         else:
             self.tower.kill()
             del self.tower
