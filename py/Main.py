@@ -70,6 +70,7 @@ class Main():
             window.blit(SelectGUIImage, (1080,0))
             #####################
 
+            #ui goes here unless its buttons:
             largeText = pygame.font.SysFont("comicsansms",30)
             TextSurf, TextRect = text_objects(str(self.lives), largeText)
             TextRect.center = ((1200),(25))
@@ -99,7 +100,7 @@ class Main():
                     if event.key == pygame.K_RIGHT:
                         self.currentTower = AngryCat
 
-            #Ui goes here:
+            #updates buttons
             for button in self.buttonList:
                 ButtonVisuals(**button)
             
@@ -131,7 +132,7 @@ class Main():
 
             if self.lives <= 0:
                 self.lives = 0 #stop it counting down further after loss screen
-                self.gameLose()
+                self.gameEnd()
 
             #Final stuff
             pygame.display.update()
@@ -139,20 +140,28 @@ class Main():
             self.allSpritesList.draw(window)
             clock.tick(30)
 
-    def gameLose(self):
+    def gameEnd(self, state = "you lose"):
+        
+        self.buttonList = []
+        self.buttonList.append({"text" : "Quit!", "xPos" : 550, "yPos": 450, "width" : 100, "height" : 50, "colour" : self.red, "hoverColour" : self.bright_red, "func" : quit})
+
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     quit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    for button in self.buttonList:
+                        AreaClick(**button)
                     
             window.fill(self.white)
             largeText = pygame.font.SysFont("comicsansms",115)
-            TextSurf, TextRect = text_objects("You lose", largeText)
+            TextSurf, TextRect = text_objects(state, largeText)
             TextRect.center = ((resolution[0]/2),(resolution[1]/2))
             window.blit(TextSurf, TextRect)
 
-            button("Quit",550,450,100,50,self.red,self.bright_red,quit)
+            for button in self.buttonList:
+                ButtonVisuals(**button)
             
             pygame.display.update()
             clock.tick(30)
@@ -160,6 +169,7 @@ class Main():
     def gameIntro(self): #The Menu screen Loop, called on play
         intro = True
 
+        self.buttonList = []
         self.buttonList.append({"text" : "Play!", "xPos" : 150, "yPos" : 450, "width" : 100, "height" : 50, "colour" : self.green, "hoverColour" : self.bright_green, "func" : self.GenerateMap})
         self.buttonList.append({"text" : "Quit!", "xPos" : 550, "yPos": 450, "width" : 100, "height" : 50, "colour" : self.red, "hoverColour" : self.bright_red, "func" : quit})
         
@@ -347,11 +357,15 @@ class Main():
         self.running = False
 
     def StartWave(self):
-        self.nextWaveList = []
-        for char in self.currentWave:
-            self.nextWaveList.append(char)
-        ############################################if allWaves.
-        self.currentWave = allWaves.pop(0)
+        if len(self.enemySpritesList) <= 0:
+            self.nextWaveList = []
+            for char in self.currentWave:
+                self.nextWaveList.append(char)
+            if len(allWaves) <= 0:
+                self.gameEnd("you win!")
+            else:
+                self.currentWave = allWaves.pop(0)
+
 
     def PlaceTower(self): #Ran to spawn towers at the mouse position upon click
         """
@@ -364,7 +378,7 @@ class Main():
         mousePositon = pygame.mouse.get_pos()
         self.tower = self.currentTower(mousePositon, self.white, window)
 
-        if pygame.sprite.spritecollide(self.tower, self.collisionSpritesList, False) == []:
+        if pygame.sprite.spritecollide(self.tower, self.collisionSpritesList, False) == [] and self.money >= self.tower.getPrice():
             self.towerSpritesList.add(self.tower)
             self.collisionSpritesList.add(self.tower)
             self.allSpritesList.add(self.tower)
