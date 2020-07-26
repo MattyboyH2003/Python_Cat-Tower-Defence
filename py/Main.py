@@ -43,6 +43,7 @@ class Main():
     frameDelay = 0
     frameCache = 0
     lives = 100
+    money = 200
 
     buttonList = []
 
@@ -74,6 +75,11 @@ class Main():
             TextRect.center = ((1200),(25))
             window.blit(TextSurf, TextRect)
 
+            largeText = pygame.font.SysFont("comicsansms",30)
+            TextSurf, TextRect = text_objects(str(self.money), largeText)
+            TextRect.center = ((1125),(25))
+            window.blit(TextSurf, TextRect)
+
             #Checking for events each frame
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -100,7 +106,7 @@ class Main():
             #all towers check and attack, currently prints when detects nearby towers
             for enemy in self.enemySpritesList:
                 for tower in self.towerSpritesList:
-                    tower.CheckEnemies(enemy)
+                    self.money += tower.CheckEnemies(enemy)
             
             #Move Wool
             for item in self.enemySpritesList:

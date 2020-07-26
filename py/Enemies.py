@@ -107,6 +107,7 @@ class WoolLV1(Enemy):
     health = 1
     speed = 2
     damage = -1 #dont forget to make this a minus as its added to the lives
+    worth = 1
 
     def __init__(self, pathData, startLocation, colour):
         #could add speed later

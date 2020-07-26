@@ -42,6 +42,8 @@ class Towers(pygame.sprite.Sprite):
             if pygame.time.get_ticks() >= self.timeCache: # get_ticks will give us the amount of milliseconds since program started running
                 self.Attack(enemy) 
                 self.timeCache = pygame.time.get_ticks() + self.delay
+                return (self.damage)
+        return(0)
         
     def GetSprite(self):
         return self.sprite
@@ -71,6 +73,7 @@ class PistolCat(Towers): #mid range slow shooting
         pygame.draw.line(self.window, (255, 255, 255), self.rect.center, enemy.rect.center, 5)
 
         enemy.TakeDamage(self.damage)
+
 
 class AngryCat(Towers): # fast attack, very close range, needs to be directly next to a path to attack
 
