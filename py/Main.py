@@ -44,6 +44,7 @@ class Main():
     frameCache = 0
     lives = 100
     money = 200
+    waveNum = 0
 
     buttonList = []
 
@@ -73,12 +74,17 @@ class Main():
             #ui goes here unless its buttons:
             largeText = pygame.font.SysFont("comicsansms",30)
             TextSurf, TextRect = text_objects(str(self.lives), largeText)
-            TextRect.center = ((1200),(25))
+            TextRect.center = ((1195),(25))
             window.blit(TextSurf, TextRect)
 
             largeText = pygame.font.SysFont("comicsansms",30)
             TextSurf, TextRect = text_objects(str(self.money), largeText)
-            TextRect.center = ((1125),(25))
+            TextRect.center = ((1120),(25))
+            window.blit(TextSurf, TextRect)
+
+            largeText = pygame.font.SysFont("comicsansms",30)
+            TextSurf, TextRect = text_objects("Wave "+ str(self.waveNum), largeText)
+            TextRect.center = ((540),(700))
             window.blit(TextSurf, TextRect)
 
 
@@ -367,6 +373,7 @@ class Main():
                 self.gameEnd("you win!")
             else:
                 self.currentWave = allWaves.pop(0)
+            self.waveNum += 1
 
 
     def PlaceTower(self): #Ran to spawn towers at the mouse position upon click
