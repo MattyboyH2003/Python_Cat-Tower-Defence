@@ -61,6 +61,18 @@ class Main():
         self.buttonList.append({"text" : "Back!", "xPos" : 1230, "yPos" : 0, "width" : 50, "height" : 50, "colour" : self.red, "hoverColour" : self.bright_red, "func" : self.BackToMenu})
 
         while self.running == True:
+            #######################
+            #Temporary to test the GUI
+            # Load the image
+            SelectGUIImage = pygame.image.load("Sprites\\GUI\\Select UI.png")
+
+            window.blit(SelectGUIImage, (1080,0))
+            #####################
+
+            largeText = pygame.font.SysFont("comicsansms",30)
+            TextSurf, TextRect = text_objects(str(self.lives), largeText)
+            TextRect.center = ((1200),(25))
+            window.blit(TextSurf, TextRect)
 
             #Checking for events each frame
             for event in pygame.event.get():
