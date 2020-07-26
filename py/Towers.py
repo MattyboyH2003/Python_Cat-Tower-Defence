@@ -42,7 +42,7 @@ class Towers(pygame.sprite.Sprite):
             if pygame.time.get_ticks() >= self.timeCache: # get_ticks will give us the amount of milliseconds since program started running
                 self.Attack(enemy) 
                 self.timeCache = pygame.time.get_ticks() + self.delay
-                return (self.damage)
+                return (enemy.getWorth())
         return(0)
         
     def GetSprite(self):
@@ -83,7 +83,7 @@ class AngryCat(Towers): # fast attack, very close range, needs to be directly ne
 
     sprite = "Sprites\\Towers\\AngryCatSprite.png"
     damage = 1 # Damage is equal to units unravelled per attack
-    delay = 300
+    delay = 200
     price = 200
 
     def __init__(self, startPos, colour, window):

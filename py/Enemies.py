@@ -96,6 +96,9 @@ class Enemy(pygame.sprite.Sprite):
             del self
         else:
             self.health -= damage
+    
+    def getWorth(self):
+        return(self.worth)
 
 ########################################################################################################
 #                                           - Enemy Types -                                            #
@@ -107,9 +110,19 @@ class WoolLV1(Enemy):
     health = 1
     speed = 2
     damage = -1 #dont forget to make this a minus as its added to the lives
-    worth = 1
+    worth = 3
 
     def __init__(self, pathData, startLocation, colour):
-        #could add speed later
+        Enemy.__init__(self, pathData, startLocation, colour)
+
+class WoolLV2(Enemy):
+
+    sprite = "Sprites\\Enemys\\Wool2.png"
+    health = 2
+    speed = 5
+    damage = -1 #dont forget to make this a minus as its added to the lives
+    worth = 5
+
+    def __init__(self, pathData, startLocation, colour):
         Enemy.__init__(self, pathData, startLocation, colour)
  

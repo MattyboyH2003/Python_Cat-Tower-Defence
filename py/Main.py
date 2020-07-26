@@ -37,7 +37,7 @@ class Main():
     white = (255,255,255)
     black = (0,0,0)
 
-    enemyDict = {"a" : WoolLV1}
+    enemyDict = {"a" : WoolLV1, "b" : WoolLV2}
     currentTower = PistolCat
     currentWave = allWaves.pop(0)
     frameDelay = 0
@@ -80,6 +80,7 @@ class Main():
             TextSurf, TextRect = text_objects(str(self.money), largeText)
             TextRect.center = ((1125),(25))
             window.blit(TextSurf, TextRect)
+
 
             #Checking for events each frame
             for event in pygame.event.get():
@@ -125,6 +126,7 @@ class Main():
                         enemy = self.enemyDict[nextThing](self.pathList, self.startTilePos, self.white)
                         self.enemySpritesList.add(enemy)
                         self.allSpritesList.add(enemy)
+                    
 
                     self.currentWave.pop(0)
             else:
