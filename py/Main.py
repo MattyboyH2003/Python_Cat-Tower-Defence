@@ -37,7 +37,7 @@ class Main():
     white = (255,255,255)
     black = (0,0,0)
 
-    enemyDict = {"a" : WoolLV1, "b" : WoolLV2}
+    enemyDict = {"a" : WoolLV1, "b" : WoolLV2, "c" : WoolLV3}
     currentTower = PistolCat
     currentWave = allWaves.pop(0)
     frameDelay = 0
@@ -101,16 +101,18 @@ class Main():
                         pos = pygame.mouse.get_pos()
                         clicked = [s for s in self.towerSpritesList if s.rect.collidepoint(pos)]
                         if len(clicked) >= 1:
+                            self.money += clicked[0].getPrice()
                             clicked[0].kill()
                             del clicked[0]
                         self.deleting = False
                     else:
                         for button in self.buttonList:
                             AreaClick(**button)
+                        mouse = pygame.mouse.get_pos()
+                        if 1080 > mouse[0] > 0 and 600 > mouse[1] > 0:
+                            self.PlaceTower()
 
-                    mouse = pygame.mouse.get_pos()
-                    if 1080 > mouse[0] > 0 and 600 > mouse[1] > 0:
-                        self.PlaceTower()
+                    
                 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_LEFT:

@@ -125,4 +125,15 @@ class WoolLV2(Enemy):
 
     def __init__(self, pathData, startLocation, colour):
         Enemy.__init__(self, pathData, startLocation, colour)
+
+class WoolLV3(Enemy):
+
+    sprite = "Sprites\\Enemys\\Wool3.png"
+    health = 5
+    speed = 3
+    damage = -3 #dont forget to make this a minus as its added to the lives
+    worth = 3
+
+    def __init__(self, pathData, startLocation, colour):
+        Enemy.__init__(self, pathData, startLocation, colour)
  
