@@ -136,4 +136,3 @@ class WoolLV3(Enemy):
 
     def __init__(self, pathData, startLocation, colour):
         Enemy.__init__(self, pathData, startLocation, colour)
- 

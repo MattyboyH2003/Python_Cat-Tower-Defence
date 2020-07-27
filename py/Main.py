@@ -37,7 +37,7 @@ class Main():
     white = (255,255,255)
     black = (0,0,0)
 
-    enemyDict = {"a" : WoolLV1, "b" : WoolLV2, "c" : WoolLV3}
+    enemyDict = {"a" : WoolLV1, "b" : WoolLV2, "b" : WoolLV3}
     currentTower = PistolCat
     currentWave = allWaves.pop(0)
     frameDelay = 0
