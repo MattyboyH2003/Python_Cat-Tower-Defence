@@ -45,6 +45,7 @@ class Main():
     lives = 100
     money = 200
     waveNum = 0
+    deleting = False
 
     buttonList = []
 
@@ -62,6 +63,7 @@ class Main():
         #Adds button information to the list of buttons
         self.buttonList.append({"text" : "Start!", "xPos" : 1080, "yPos" : 600, "width" : 200, "height" : 120, "colour" : self.lavender, "hoverColour" : self.bright_lavender, "func" : self.StartWave})
         self.buttonList.append({"text" : "Back!", "xPos" : 1230, "yPos" : 0, "width" : 50, "height" : 50, "colour" : self.red, "hoverColour" : self.bright_red, "func" : self.BackToMenu})
+        self.buttonList.append({"text" : "Delete", "xPos" : 0, "yPos" : 600, "width" : 50, "height" : 50, "colour" : self.red, "hoverColour" : self.bright_red, "func" : self.toggleDelete})
 
         while self.running == True:
 
@@ -95,9 +97,17 @@ class Main():
                     quit()
                 
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    for button in self.buttonList:
-                        AreaClick(**button)
-                    
+                    if self.deleting == True:
+                        pos = pygame.mouse.get_pos()
+                        clicked = [s for s in self.towerSpritesList if s.rect.collidepoint(pos)]
+                        if len(clicked) >= 1:
+                            clicked[0].kill()
+                            del clicked[0]
+                        self.deleting = False
+                    else:
+                        for button in self.buttonList:
+                            AreaClick(**button)
+
                     mouse = pygame.mouse.get_pos()
                     if 1080 > mouse[0] > 0 and 600 > mouse[1] > 0:
                         self.PlaceTower()
@@ -381,6 +391,9 @@ class Main():
             self.waveReward = currentWaveData[1]
             self.waveOngoing = True
             self.waveNum += 1
+
+    def toggleDelete(self):
+        self.deleting = True
 
     def PlaceTower(self): #Ran to spawn towers at the mouse position upon click
         """
