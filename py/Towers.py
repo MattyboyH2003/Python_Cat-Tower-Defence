@@ -78,10 +78,10 @@ class PistolCat(Towers): #mid range slow shooting
 
         enemy.TakeDamage(self.damage)
 
-class AngryCat(Towers): # fast attack, very close range, needs to be directly next to a path to attack
+class AngryCat(Towers): # cheap, low damage, fast attack, very close range, needs to be directly next to a path to attack
 
     sprite = "Sprites\\Towers\\AngryCatSprite.png"
-    damage = 1 # Damage is equal to units unravelled per attack
+    damage = 0.5 # Damage is equal to units unravelled per attack
     delay = 200
     price = 200
 
@@ -96,5 +96,54 @@ class AngryCat(Towers): # fast attack, very close range, needs to be directly ne
         pygame.draw.line(self.window, (255, 255, 255), self.rect.center, enemy.rect.center, 5)
 
         enemy.TakeDamage(self.damage)
+
+class StrongCat(Towers): # very expensive, high damage, short range, average attack speed, punches wool with his fists!
+
+    sprite = "Sprites\\Towers\\StrongCatSprite.png"
+    damage = 10 # Damage is equal to units unravelled per attack
+    delay = 700
+    price = 1500
+
+    def __init__(self, startPos, colour, window):
+        #Instance Variables
+        self.location = pygame.math.Vector2(startPos)
+        self.range = 2 # 1 range unit = 10 pixel radius
+
+        Towers.__init__(self, colour, window)
+
+    def Attack(self, enemy):
+        pygame.draw.line(self.window, (255, 255, 255), self.rect.center, enemy.rect.center, 5)
+
+        enemy.TakeDamage(self.damage)
+
+class StrongCat(Towers): # very expensive, high damage, short range, average attack speed, punches wool with his fists!
+
+    sprite = "Sprites\\Towers\\StrongCatSprite.png"
+    damage = 10 # Damage is equal to units unravelled per attack
+    delay = 700
+    price = 1500
+
+    def __init__(self, startPos, colour, window):
+        #Instance Variables
+        self.location = pygame.math.Vector2(startPos)
+        self.range = 2 # 1 range unit = 10 pixel radius
+
+        Towers.__init__(self, colour, window)
+
+    def CheckEnemies(self, enemy, enemyList):
+        if pygame.sprite.collide_circle(self, enemy):
+            if pygame.time.get_ticks() >= self.timeCache: # get_ticks will give us the amount of milliseconds since program started running
+                self.Attack(enemy) 
+                self.timeCache = pygame.time.get_ticks() + self.delay
+                return (enemy.getWorth())
+        return(0)
+
+    def Attack(self, enemy):
+        pygame.draw.line(self.window, (255, 255, 255), self.rect.center, enemy.rect.center, 5)
+
+        enemy.TakeDamage(self.damage)
+
+
+
 
  

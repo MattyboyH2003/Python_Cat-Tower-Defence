@@ -38,14 +38,16 @@ class Main():
     black = (0,0,0)
 
     enemyDict = {"a" : WoolLV1, "b" : WoolLV2, "c" : WoolLV3}
+    towerDict = {0 : PistolCat, 1 : AngryCat, 2 : StrongCat}
     currentTower = PistolCat
     currentWave = allWaves.pop(0)
     frameDelay = 0
     frameCache = 0
     lives = 100
-    money = 200
+    money = 20000
     waveNum = -1
     deleting = False
+    currentTower = 0
 
     buttonList = []
 
@@ -90,6 +92,11 @@ class Main():
             TextRect.center = ((540),(700))
             window.blit(TextSurf, TextRect)
 
+            largeText = pygame.font.SysFont("comicsansms",30)
+            TextSurf, TextRect = text_objects("Cat: "+ self.towerDict[self.currentTower].__name__, largeText)
+            TextRect.center = ((540),(650))
+            window.blit(TextSurf, TextRect)
+
 
             #Checking for events each frame
             for event in pygame.event.get():
@@ -116,9 +123,13 @@ class Main():
                 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_LEFT:
-                        self.currentTower = PistolCat
+                        self.currentTower -= 1
                     if event.key == pygame.K_RIGHT:
-                        self.currentTower = AngryCat
+                        self.currentTower += 1
+                if self.currentTower <= 0:
+                    self.currentTower = 0
+                elif self.currentTower >= len(self.towerDict)-1:
+                    self.currentTower = len(self.towerDict)-1
 
             #updates buttons
             for button in self.buttonList:
@@ -143,7 +154,6 @@ class Main():
                     
                     elif type(nextThing) == type("a"):
                         enemy = self.enemyDict[nextThing](self.pathList, self.startTilePos, self.white)
-                        print("spawned ", self.enemyDict[nextThing])
                         self.enemySpritesList.add(enemy)
                         self.allSpritesList.add(enemy)
                     
@@ -407,7 +417,7 @@ class Main():
         """
 
         mousePositon = pygame.mouse.get_pos()
-        self.tower = self.currentTower(mousePositon, self.white, window)
+        self.tower = self.towerDict[self.currentTower](mousePositon, self.white, window)
 
         if pygame.sprite.spritecollide(self.tower, self.collisionSpritesList, False) == [] and self.money >= self.tower.getPrice():
             self.towerSpritesList.add(self.tower)
