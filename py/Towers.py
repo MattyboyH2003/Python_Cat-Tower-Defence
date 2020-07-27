@@ -64,7 +64,7 @@ class PistolCat(Towers): #mid range slow shooting
     sprite = "Sprites\\Towers\\PistolCatSprite.png"
     damage = 1  # Damage is equal to units unravelled per attack
     delay = 500
-    price = 200
+    price = 150
 
     def __init__(self, startPos, colour, window):
         #Instance Variables
@@ -77,7 +77,6 @@ class PistolCat(Towers): #mid range slow shooting
         pygame.draw.line(self.window, (255, 255, 255), self.rect.center, enemy.rect.center, 5)
 
         enemy.TakeDamage(self.damage)
-
 
 class AngryCat(Towers): # fast attack, very close range, needs to be directly next to a path to attack
 

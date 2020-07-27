@@ -110,7 +110,7 @@ class WoolLV1(Enemy):
     health = 1
     speed = 2
     damage = -1 #dont forget to make this a minus as its added to the lives
-    worth = 3
+    worth = 1
 
     def __init__(self, pathData, startLocation, colour):
         Enemy.__init__(self, pathData, startLocation, colour)
@@ -121,7 +121,7 @@ class WoolLV2(Enemy):
     health = 2
     speed = 5
     damage = -1 #dont forget to make this a minus as its added to the lives
-    worth = 5
+    worth = 2
 
     def __init__(self, pathData, startLocation, colour):
         Enemy.__init__(self, pathData, startLocation, colour)

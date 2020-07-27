@@ -56,6 +56,7 @@ class Main():
     
     def gameLoop(self): #The Main game loop, called when play is clicked
         self.running = True
+        self.waveOngoing = False
         self.buttonList = []
         
         #Adds button information to the list of buttons
@@ -63,18 +64,18 @@ class Main():
         self.buttonList.append({"text" : "Back!", "xPos" : 1230, "yPos" : 0, "width" : 50, "height" : 50, "colour" : self.red, "hoverColour" : self.bright_red, "func" : self.BackToMenu})
 
         while self.running == True:
-            #######################
-            #Temporary to test the GUI
-            # Load the image
-            SelectGUIImage = pygame.image.load("Sprites\\GUI\\Select UI.png")
 
+            #Image UI
+            SelectGUIImage = pygame.image.load("Sprites\\GUI\\Outline.png")
             window.blit(SelectGUIImage, (1080,0))
-            #####################
 
-            #ui goes here unless its buttons:
+            SelectGUIImage = pygame.image.load("Sprites\\GUI\\LivesHeart.png")
+            window.blit(SelectGUIImage, (1157,15))
+
+            #Text UI
             largeText = pygame.font.SysFont("comicsansms",30)
             TextSurf, TextRect = text_objects(str(self.lives), largeText)
-            TextRect.center = ((1195),(25))
+            TextRect.center = ((1204),(25))
             window.blit(TextSurf, TextRect)
 
             largeText = pygame.font.SysFont("comicsansms",30)
@@ -138,9 +139,18 @@ class Main():
             else:
                 self.frameDelay -= 1
 
+            #Check For end of game
             if self.lives <= 0:
                 self.lives = 0 #stop it counting down further after loss screen
                 self.gameEnd()
+
+            #Check for end of wave
+            if self.waveOngoing:
+                if len(self.enemySpritesList) <= 0 and len(self.currentWave) <= 0:
+                    self.money += self.waveReward
+                    self.waveOngoing = False
+                    if len(allWaves) <= 0:
+                        self.gameEnd("you win!")
 
             #Final stuff
             pygame.display.update()
@@ -365,16 +375,12 @@ class Main():
         self.running = False
 
     def StartWave(self):
-        if len(self.enemySpritesList) <= 0:
-            self.nextWaveList = []
-            for char in self.currentWave:
-                self.nextWaveList.append(char)
-            if len(allWaves) <= 0:
-                self.gameEnd("you win!")
-            else:
-                self.currentWave = allWaves.pop(0)
+        if not self.waveOngoing:
+            currentWaveData = allWaves.pop(0)
+            self.currentWave = currentWaveData[0]
+            self.waveReward = currentWaveData[1]
+            self.waveOngoing = True
             self.waveNum += 1
-
 
     def PlaceTower(self): #Ran to spawn towers at the mouse position upon click
         """
