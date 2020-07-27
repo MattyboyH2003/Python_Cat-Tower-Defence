@@ -44,7 +44,7 @@ class Main():
     frameCache = 0
     lives = 100
     money = 200
-    waveNum = 0
+    waveNum = -1
     deleting = False
 
     buttonList = []
@@ -86,7 +86,7 @@ class Main():
             window.blit(TextSurf, TextRect)
 
             largeText = pygame.font.SysFont("comicsansms",30)
-            TextSurf, TextRect = text_objects("Wave "+ str(self.waveNum), largeText)
+            TextSurf, TextRect = text_objects("Wave "+ str(self.waveNum + 1), largeText)
             TextRect.center = ((540),(700))
             window.blit(TextSurf, TextRect)
 
