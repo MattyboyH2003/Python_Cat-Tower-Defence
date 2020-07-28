@@ -1,5 +1,6 @@
 import pygame
 from pygame import *
+from Colours import colours
 
 ########################################################################################################
 #                                           - Main Class -                                             #
@@ -37,10 +38,10 @@ class Towers(pygame.sprite.Sprite):
 
         self.timeCache = 0
 
-    def CheckEnemies(self, enemy):
+    def CheckEnemies(self, enemy, enemyList):
         if pygame.sprite.collide_circle(self, enemy):
             if pygame.time.get_ticks() >= self.timeCache: # get_ticks will give us the amount of milliseconds since program started running
-                self.Attack(enemy) 
+                self.Attack(enemy, enemyList) 
                 self.timeCache = pygame.time.get_ticks() + self.delay
                 return (enemy.getWorth())
         return(0)
@@ -48,12 +49,16 @@ class Towers(pygame.sprite.Sprite):
     def GetSprite(self):
         return self.sprite
 
-    def getPrice(self):
+    def GetPrice(self):
         return(self.price)
 
+    
     def RemoveExistance(self):
         self.kill()
         del self
+    
+    def __del__(self):
+        self = None
  
 ########################################################################################################
 #                                           - Tower Types -                                            #
@@ -68,15 +73,37 @@ class PistolCat(Towers): #mid range slow shooting
 
     def __init__(self, startPos, colour, window):
         #Instance Variables
+        self.upgrades = [["Level 1", 200, self.Upgrade1], None]
         self.location = pygame.math.Vector2(startPos)
         self.range = 5 # 1 range unit = 10 pixel radius
         
         Towers.__init__(self, colour, window)
 
-    def Attack(self, enemy):
+    def Attack(self, enemy, enemyList):
         pygame.draw.line(self.window, (255, 255, 255), self.rect.center, enemy.rect.center, 5)
 
         enemy.TakeDamage(self.damage)
+    
+    def Upgrade1(self):
+        self.upgrades = [["Level 2", 200, self.Upgrade2], None]
+
+    def Upgrade2(self):
+        self.upgrades = [["Level 3", 200, self.Upgrade3], None]
+
+    def Upgrade3(self):
+        self.upgrades = [["Special 1", 200, self.Special1], ["Special 2", 200, self.Special2]]
+
+    def Special1(self):
+        self.upgrades = [["Master 1", 200, self.Master1], None]
+
+    def Special2(self):
+        self.upgrades = [None, ["Master 2", 200, self.Master2]]
+
+    def Master1(self):
+        self.upgrades = []
+
+    def Master2(self):
+        self.upgrades = []
 
 class AngryCat(Towers): # cheap, low damage, fast attack, very close range, needs to be directly next to a path to attack
 
@@ -92,7 +119,7 @@ class AngryCat(Towers): # cheap, low damage, fast attack, very close range, need
 
         Towers.__init__(self, colour, window)
 
-    def Attack(self, enemy):
+    def Attack(self, enemy, enemyList):
         pygame.draw.line(self.window, (255, 255, 255), self.rect.center, enemy.rect.center, 5)
 
         enemy.TakeDamage(self.damage)
@@ -111,7 +138,7 @@ class StrongCat(Towers): # very expensive, high damage, short range, average att
 
         Towers.__init__(self, colour, window)
 
-    def Attack(self, enemy):
+    def Attack(self, enemy, enemyList):
         pygame.draw.line(self.window, (255, 255, 255), self.rect.center, enemy.rect.center, 5)
 
         enemy.TakeDamage(self.damage)
@@ -149,9 +176,3 @@ class AOECat(Towers): # weak area of effect damage on all balloons around balloo
         enemy.TakeDamage(10)
         for item in enemiesInArea:
             item.TakeDamage(1)
-        
-
-
-
-
- 

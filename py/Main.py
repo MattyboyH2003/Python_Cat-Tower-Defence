@@ -3,6 +3,7 @@ from Towers import *
 from Tiles import *
 from Waves import allWaves
 from Enemies import *
+from Colours import colours
 
 ########################################################################################################
 #                                              - Setup -                                               #
@@ -26,17 +27,6 @@ else:
 ########################################################################################################
 
 class Main():
-
-    #Colours
-    red = (200,0,0)
-    green = (0,200,0)
-    lavender = (150, 150, 200)
-    bright_lavender = (150, 150, 255)
-    bright_red = (255,0,0)
-    bright_green = (0,255,0)
-    white = (255,255,255)
-    black = (0,0,0)
-
     enemyDict = {"a" : WoolLV1, "b" : WoolLV2, "c" : WoolLV3}
     towerDict = {0 : PistolCat, 1 : AngryCat, 2 : StrongCat, 3 : AOECat}
     currentTower = PistolCat
@@ -48,6 +38,7 @@ class Main():
     waveNum = -1
     deleting = False
     currentTower = 0
+    selectedTower = None
 
     buttonList = []
 
@@ -60,14 +51,15 @@ class Main():
     def gameLoop(self): #The Main game loop, called when play is clicked
         self.running = True
         self.waveOngoing = False
-        self.buttonList = []
         
-        #Adds button information to the list of buttons
-        self.buttonList.append({"text" : "Start!", "xPos" : 1080, "yPos" : 600, "width" : 200, "height" : 120, "colour" : self.lavender, "hoverColour" : self.bright_lavender, "func" : self.StartWave})
-        self.buttonList.append({"text" : "Back!", "xPos" : 1230, "yPos" : 0, "width" : 50, "height" : 50, "colour" : self.red, "hoverColour" : self.bright_red, "func" : self.BackToMenu})
-        self.buttonList.append({"text" : "Delete", "xPos" : 0, "yPos" : 600, "width" : 50, "height" : 50, "colour" : self.red, "hoverColour" : self.bright_red, "func" : self.toggleDelete})
-
         while self.running == True:
+
+            #print(self.selectedTower)
+
+            #Adds button information to the list of buttons
+            self.buttonList = []
+            self.buttonList.append({"text" : "Start!", "xPos" : 1080, "yPos" : 600, "width" : 200, "height" : 120, "colour" : colours["lavender"], "hoverColour" : colours["bright_lavender"], "func" : self.StartWave})
+            self.buttonList.append({"text" : "Back!", "xPos" : 1230, "yPos" : 0, "width" : 50, "height" : 50, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : self.BackToMenu})
 
             #Image UI
             SelectGUIImage = pygame.image.load("Sprites\\GUI\\Outline.png")
@@ -97,28 +89,33 @@ class Main():
             TextRect.center = ((540),(650))
             window.blit(TextSurf, TextRect)
 
+            #Upgrades UI
+            if self.selectedTower != None:
+                self.UpgradesUI(self.selectedTower)
 
             #Checking for events each frame
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     quit()
                 
+                #Upon click
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if self.deleting == True:
+
+                    for button in self.buttonList:
+                        AreaClick(**button)
+                    
+                    mouse = pygame.mouse.get_pos()
+                    if 1080 > mouse[0] > 0 and 600 > mouse[1] > 0:
                         pos = pygame.mouse.get_pos()
                         clicked = [s for s in self.towerSpritesList if s.rect.collidepoint(pos)]
                         if len(clicked) >= 1:
-                            self.money += clicked[0].getPrice()
+                            self.selectedTower = clicked[0]
+                            #self.SelectTower(clicked[0])
+                            """self.money += clicked[0].GetPrice()
                             clicked[0].kill()
-                            del clicked[0]
-                        self.deleting = False
-                    else:
-                        for button in self.buttonList:
-                            AreaClick(**button)
-                        mouse = pygame.mouse.get_pos()
-                        if 1080 > mouse[0] > 0 and 600 > mouse[1] > 0:
+                            del clicked[0]"""
+                        else:
                             self.PlaceTower()
-
                     
                 
                 if event.type == pygame.KEYDOWN:
@@ -149,11 +146,11 @@ class Main():
                 if len(self.currentWave) > 0:
                     nextThing = self.currentWave[0]
 
-                    if type(nextThing) == type(1):
+                    if type(nextThing) == int:
                         self.frameDelay = int(nextThing)
                     
-                    elif type(nextThing) == type("a"):
-                        enemy = self.enemyDict[nextThing](self.pathList, self.startTilePos, self.white)
+                    elif type(nextThing) == str:
+                        enemy = self.enemyDict[nextThing](self.pathList, self.startTilePos, colours["white"])
                         self.enemySpritesList.add(enemy)
                         self.allSpritesList.add(enemy)
                     
@@ -184,7 +181,7 @@ class Main():
     def gameEnd(self, state = "you lose"):
         
         self.buttonList = []
-        self.buttonList.append({"text" : "Quit!", "xPos" : 550, "yPos": 450, "width" : 100, "height" : 50, "colour" : self.red, "hoverColour" : self.bright_red, "func" : quit})
+        self.buttonList.append({"text" : "Quit!", "xPos" : 550, "yPos": 450, "width" : 100, "height" : 50, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : quit})
 
         while True:
             for event in pygame.event.get():
@@ -195,7 +192,7 @@ class Main():
                     for button in self.buttonList:
                         AreaClick(**button)
                     
-            window.fill(self.white)
+            window.fill(colours["white"])
             largeText = pygame.font.SysFont("comicsansms",115)
             TextSurf, TextRect = text_objects(state, largeText)
             TextRect.center = ((resolution[0]/2),(resolution[1]/2))
@@ -211,8 +208,8 @@ class Main():
         intro = True
 
         self.buttonList = []
-        self.buttonList.append({"text" : "Play!", "xPos" : 150, "yPos" : 450, "width" : 100, "height" : 50, "colour" : self.green, "hoverColour" : self.bright_green, "func" : self.GenerateMap})
-        self.buttonList.append({"text" : "Quit!", "xPos" : 550, "yPos": 450, "width" : 100, "height" : 50, "colour" : self.red, "hoverColour" : self.bright_red, "func" : quit})
+        self.buttonList.append({"text" : "Play!", "xPos" : 150, "yPos" : 450, "width" : 100, "height" : 50, "colour" : colours["green"], "hoverColour" : colours["bright_green"], "func" : self.GenerateMap})
+        self.buttonList.append({"text" : "Quit!", "xPos" : 550, "yPos": 450, "width" : 100, "height" : 50, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : quit})
         
         while intro:
             for event in pygame.event.get():
@@ -223,7 +220,7 @@ class Main():
                     for button in self.buttonList:
                         AreaClick(**button)
                     
-            window.fill(self.white)
+            window.fill(colours["white"])
             largeText = pygame.font.SysFont("comicsansms",115)
             TextSurf, TextRect = text_objects("Angry Cats", largeText)
             TextRect.center = ((resolution[0]/2),(resolution[1]/2))
@@ -269,7 +266,7 @@ class Main():
             elif char == "6":
                 nextTile = EndDown
             location = [((counter%54)*20)+10, ((counter//54)*20)+10]
-            tile = nextTile(location, self.red)
+            tile = nextTile(location, colours["red"])
 
             self.allSpritesList.add(tile)
             self.tileSpritesList.add(tile)
@@ -393,8 +390,8 @@ class Main():
 
     def BackToMenu(self):
         self.buttonList = []
-        self.buttonList.append({"text" : "Play!", "xPos" : 150, "yPos" : 450, "width" : 100, "height" : 50, "colour" : self.green, "hoverColour" : self.bright_green, "func" : self.GenerateMap})
-        self.buttonList.append({"text" : "Quit!", "xPos" : 550, "yPos": 450, "width" : 100, "height" : 50, "colour" : self.red, "hoverColour" : self.bright_red, "func" : quit})
+        self.buttonList.append({"text" : "Play!", "xPos" : 150, "yPos" : 450, "width" : 100, "height" : 50, "colour" : colours["green"], "hoverColour" : colours["bright_green"], "func" : self.GenerateMap})
+        self.buttonList.append({"text" : "Quit!", "xPos" : 550, "yPos": 450, "width" : 100, "height" : 50, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : quit})
         self.running = False
 
     def StartWave(self):
@@ -417,19 +414,39 @@ class Main():
         """
 
         mousePositon = pygame.mouse.get_pos()
-        self.tower = self.towerDict[self.currentTower](mousePositon, self.white, window)
+        self.tower = self.towerDict[self.currentTower](mousePositon, colours["white"], window)
 
-        if pygame.sprite.spritecollide(self.tower, self.collisionSpritesList, False) == [] and self.money >= self.tower.getPrice():
+        if pygame.sprite.spritecollide(self.tower, self.collisionSpritesList, False) == [] and self.money >= self.tower.GetPrice():
             self.towerSpritesList.add(self.tower)
             self.collisionSpritesList.add(self.tower)
             self.allSpritesList.add(self.tower)
-            self.money -= self.tower.getPrice()
+            self.money -= self.tower.GetPrice()
         else:
             self.tower.kill()
             del self.tower
 
         #window.blit(pygame.image.load(self.currentTower.GetSprite()), mousePositon) #Need to replace blits with sprites
 
+    def UpgradesUI(self, tower):
+        #Adds the Delete Button
+        self.buttonList.append({"text" : "Delete", "xPos" : 120, "yPos" : 650, "width" : 200, "height" : 60, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : [tower.RemoveExistance, self.DeleteTower]})
+        #Adds the Upgrade Buttons
+        if len(tower.upgrades) == 2:
+            if tower.upgrades[0] != None:
+                self.buttonList.append({"text" : tower.upgrades[0][0], "xPos" : 330, "yPos" : 610, "width" : 365, "height" : 100, "colour" : colours["brown"], "hoverColour" : colours["bright_brown"], "func" : tower.upgrades[0][2]})
+            else:
+                self.buttonList.append({"text" : "Route Not Available", "xPos" : 330, "yPos" : 610, "width" : 365, "height" : 100, "colour" : colours["bright_brown"], "hoverColour" : colours["bright_brown"], "func" : None})
+            
+            if tower.upgrades[1] != None:
+                self.buttonList.append({"text" : tower.upgrades[1][0], "xPos" : 705, "yPos" : 610, "width" : 365, "height" : 100, "colour" : colours["brown"], "hoverColour" : colours["bright_brown"], "func" : tower.upgrades[1][2]})
+            else:
+                self.buttonList.append({"text" : "Route Not Available", "xPos" : 705, "yPos" : 610, "width" : 365, "height" : 100, "colour" : colours["bright_brown"], "hoverColour" : colours["bright_brown"], "func" : None})
+        else:
+            self.buttonList.append({"text" : "Tower Maxed", "xPos" : 330, "yPos" : 610, "width" : 730, "height" : 100, "colour" : colours["bright_brown"], "hoverColour" : colours["bright_brown"], "func" : None})
+
+    def DeleteTower(self):
+        self.selectedTower = None
+    
 ########################################################################################################
 #                                            - Functions -                                             #
 ########################################################################################################
@@ -438,7 +455,12 @@ class Main():
 def AreaClick(xPos, yPos, width, height, func, **kwargs):
     mouse = pygame.mouse.get_pos()
     if xPos+width > mouse[0] > xPos and yPos+height > mouse[1] > yPos:
-        func()
+        if func:
+            if type(func) == list:
+                for item in func:
+                    item()
+            else:
+                func()
 
 def ButtonVisuals(text, xPos, yPos, width, height , colour, hoverColour, **kwargs):
     mouse = pygame.mouse.get_pos()
