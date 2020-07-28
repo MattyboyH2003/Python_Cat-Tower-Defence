@@ -49,10 +49,12 @@ class Towers(pygame.sprite.Sprite):
     def GetSprite(self):
         return self.sprite
 
+    def GetUpgrades(self):
+        return self.upgrades
+
     def GetPrice(self):
         return(self.price)
 
-    
     def RemoveExistance(self):
         self.kill()
         del self
@@ -85,7 +87,7 @@ class PistolCat(Towers): #mid range slow shooting
         enemy.TakeDamage(self.damage)
     
     def Upgrade1(self):
-        self.upgrades = [["Level 2", 200, self.Upgrade2], None]
+        self.upgrades = [["Level 2", 400, self.Upgrade2], None]
 
     def Upgrade2(self):
         self.upgrades = [["Level 3", 200, self.Upgrade3], None]
@@ -129,7 +131,7 @@ class StrongCat(Towers): # very expensive, high damage, short range, average att
     sprite = "Sprites\\Towers\\StrongCatSprite.png"
     damage = 10 # Damage is equal to units unravelled per attack
     delay = 700
-    price = 200
+    price = 1500
 
     def __init__(self, startPos, colour, window):
         #Instance Variables

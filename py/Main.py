@@ -4,6 +4,7 @@ from Tiles import *
 from Waves import allWaves
 from Enemies import *
 from Colours import colours
+import copy
 
 ########################################################################################################
 #                                              - Setup -                                               #
@@ -427,18 +428,23 @@ class Main():
 
         #window.blit(pygame.image.load(self.currentTower.GetSprite()), mousePositon) #Need to replace blits with sprites
 
+    def UpgradeTower(self, upgradeInfo):
+        if upgradeInfo[1] <= self.money:
+            self.money -= upgradeInfo[1]
+            upgradeInfo[2]()
+
     def UpgradesUI(self, tower):
         #Adds the Delete Button
         self.buttonList.append({"text" : "Delete", "xPos" : 120, "yPos" : 650, "width" : 200, "height" : 60, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : [tower.RemoveExistance, self.DeleteTower]})
         #Adds the Upgrade Buttons
-        if len(tower.upgrades) == 2:
-            if tower.upgrades[0] != None:
-                self.buttonList.append({"text" : tower.upgrades[0][0], "xPos" : 330, "yPos" : 610, "width" : 365, "height" : 100, "colour" : colours["brown"], "hoverColour" : colours["bright_brown"], "func" : tower.upgrades[0][2]})
+        if len(tower.GetUpgrades()) == 2:
+            if tower.GetUpgrades()[0] != None:
+                self.buttonList.append({"text" : tower.GetUpgrades()[0][0] + "\n" + str(tower.GetUpgrades()[0][1]), "xPos" : 330, "yPos" : 610, "width" : 365, "height" : 100, "colour" : colours["brown"], "hoverColour" : colours["bright_brown"], "perams" : {"upgradeInfo" : tower.GetUpgrades()[0]}, "func" : self.UpgradeTower})
             else:
                 self.buttonList.append({"text" : "Route Not Available", "xPos" : 330, "yPos" : 610, "width" : 365, "height" : 100, "colour" : colours["bright_brown"], "hoverColour" : colours["bright_brown"], "func" : None})
             
-            if tower.upgrades[1] != None:
-                self.buttonList.append({"text" : tower.upgrades[1][0], "xPos" : 705, "yPos" : 610, "width" : 365, "height" : 100, "colour" : colours["brown"], "hoverColour" : colours["bright_brown"], "func" : tower.upgrades[1][2]})
+            if tower.GetUpgrades()[1] != None:
+                self.buttonList.append({"text" : tower.GetUpgrades()[1][0] + "\n" + str(tower.GetUpgrades()[0][1]), "xPos" : 705, "yPos" : 610, "width" : 365, "height" : 100, "colour" : colours["brown"], "hoverColour" : colours["bright_brown"], "perams" : {"upgradeInfo" : tower.GetUpgrades()[1]}, "func" : self.UpgradeTower})
             else:
                 self.buttonList.append({"text" : "Route Not Available", "xPos" : 705, "yPos" : 610, "width" : 365, "height" : 100, "colour" : colours["bright_brown"], "hoverColour" : colours["bright_brown"], "func" : None})
         else:
@@ -452,15 +458,16 @@ class Main():
 ########################################################################################################
 
 #Used in the main menu
-def AreaClick(xPos, yPos, width, height, func, **kwargs):
+def AreaClick(xPos, yPos, width, height, func, perams = {}, **kwargs):
     mouse = pygame.mouse.get_pos()
     if xPos+width > mouse[0] > xPos and yPos+height > mouse[1] > yPos:
         if func:
             if type(func) == list:
                 for item in func:
-                    item()
+                    item(**perams)
+                    
             else:
-                func()
+                func(**perams)
 
 def ButtonVisuals(text, xPos, yPos, width, height , colour, hoverColour, **kwargs):
     mouse = pygame.mouse.get_pos()
