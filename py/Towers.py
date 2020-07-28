@@ -129,7 +129,7 @@ class StrongCat(Towers): # very expensive, high damage, short range, average att
     sprite = "Sprites\\Towers\\StrongCatSprite.png"
     damage = 10 # Damage is equal to units unravelled per attack
     delay = 700
-    price = 1500
+    price = 200
 
     def __init__(self, startPos, colour, window):
         #Instance Variables
