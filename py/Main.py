@@ -38,13 +38,13 @@ class Main():
     black = (0,0,0)
 
     enemyDict = {"a" : WoolLV1, "b" : WoolLV2, "c" : WoolLV3}
-    towerDict = {0 : PistolCat, 1 : AngryCat, 2 : StrongCat}
+    towerDict = {0 : PistolCat, 1 : AngryCat, 2 : StrongCat, 3 : AOECat}
     currentTower = PistolCat
     currentWave = allWaves.pop(0)
     frameDelay = 0
     frameCache = 0
     lives = 100
-    money = 20000
+    money = 200
     waveNum = -1
     deleting = False
     currentTower = 0
@@ -138,7 +138,7 @@ class Main():
             #all towers check and attack, currently prints when detects nearby towers
             for enemy in self.enemySpritesList:
                 for tower in self.towerSpritesList:
-                    self.money += tower.CheckEnemies(enemy)
+                    self.money += tower.CheckEnemies(enemy, self.enemySpritesList)
             
             #Move Wool
             for item in self.enemySpritesList:

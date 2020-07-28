@@ -116,12 +116,12 @@ class StrongCat(Towers): # very expensive, high damage, short range, average att
 
         enemy.TakeDamage(self.damage)
 
-class StrongCat(Towers): # very expensive, high damage, short range, average attack speed, punches wool with his fists!
+class AOECat(Towers): # weak area of effect damage on all balloons around balloon attacked, main balloon takes alot of damage, very slow attack          
 
     sprite = "Sprites\\Towers\\StrongCatSprite.png"
-    damage = 10 # Damage is equal to units unravelled per attack
+    damage = 1 # Damage is equal to units unravelled per attack
     delay = 700
-    price = 1500
+    price = 200
 
     def __init__(self, startPos, colour, window):
         #Instance Variables
@@ -133,15 +133,23 @@ class StrongCat(Towers): # very expensive, high damage, short range, average att
     def CheckEnemies(self, enemy, enemyList):
         if pygame.sprite.collide_circle(self, enemy):
             if pygame.time.get_ticks() >= self.timeCache: # get_ticks will give us the amount of milliseconds since program started running
-                self.Attack(enemy) 
-                self.timeCache = pygame.time.get_ticks() + self.delay
+                self.Attack(enemy, enemyList)
+                self.timeCache = pygame.time.get_ticks() + self.delay  
                 return (enemy.getWorth())
+
         return(0)
 
-    def Attack(self, enemy):
+    def Attack(self, enemy, enemyList):
+        enemiesInArea = []
+        for item in enemyList:
+            if pygame.sprite.collide_circle(enemy, item):
+                enemiesInArea.append(item)
+        print("damaging all items in list:", enemiesInArea)
         pygame.draw.line(self.window, (255, 255, 255), self.rect.center, enemy.rect.center, 5)
-
-        enemy.TakeDamage(self.damage)
+        enemy.TakeDamage(10)
+        for item in enemiesInArea:
+            item.TakeDamage(1)
+        
 
 
 
