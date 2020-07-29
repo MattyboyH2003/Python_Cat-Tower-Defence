@@ -77,15 +77,22 @@ class Main():
             TextRect.center = ((1120),(25))
             window.blit(TextSurf, TextRect)
 
-            largeText = pygame.font.SysFont("comicsansms",30)
-            TextSurf, TextRect = text_objects("Wave "+ str(self.waveNum + 1), largeText)
-            TextRect.center = ((540),(700))
+            pygame.draw.rect(window, colours["red"], (5, 665, 50, 50), 5)
+            if self.waveNum >= 10:
+                self.waveNumFontSize = 15
+            else:
+                self.waveNumFontSize = 20
+            largeText = pygame.font.SysFont("comicsansms", self.waveNumFontSize)
+            TextSurf, TextRect = text_objects("W:"+ str(self.waveNum + 1), largeText)
+            TextRect.center = ((29),(688))
             window.blit(TextSurf, TextRect)
 
-            largeText = pygame.font.SysFont("comicsansms",30)
-            TextSurf, TextRect = text_objects("Cat: "+ self.towerDict[self.currentTower].__name__, largeText)
-            TextRect.center = ((540),(650))
-            window.blit(TextSurf, TextRect)
+            pygame.draw.rect(window, colours["red"], (5, 605, 50, 50), 5)
+            towerExample = self.towerDict[self.currentTower](Vector2(-50, -50), colours["white"], window)
+            SelectGUIImage = pygame.image.load(towerExample.GetProfile())
+            window.blit(SelectGUIImage, (8,608))
+
+            
 
             #Upgrades UI
             if self.selectedTower != None:

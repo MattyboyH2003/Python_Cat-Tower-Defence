@@ -47,7 +47,10 @@ class Towers(pygame.sprite.Sprite):
         return(0)
         
     def GetSprite(self):
-        return self.sprite
+        return (self.sprite)
+
+    def GetProfile(self):
+        return (self.profile)
 
     def GetUpgrades(self):
         return self.upgrades
@@ -68,7 +71,8 @@ class Towers(pygame.sprite.Sprite):
 
 class PistolCat(Towers): #mid range slow shooting
 
-    sprite = "Sprites\\Towers\\PistolCatSprite.png"
+    sprite = "Sprites\\Towers\\Towers\\PistolCatSprite.png"
+    profile = "Sprites\\Towers\\Profile\\PistolCatProfile.png"
     damage = 1  # Damage is equal to units unravelled per attack
     delay = 500
     price = 150
@@ -128,9 +132,12 @@ class PistolCat(Towers): #mid range slow shooting
 
         self.upgrades = []
 
-class AngryCat(Towers): #cheap, low damage, fast attack, very close range, needs to be directly next to a path to attack
+   
 
-    sprite = "Sprites\\Towers\\AngryCatSprite.png"
+class AngryCat(Towers): # cheap, low damage, fast attack, very close range, needs to be directly next to a path to attack
+
+    sprite = "Sprites\\Towers\\Towers\\AngryCatSprite.png"
+    profile = "Sprites\\Towers\\Profile\\AngryCatProfile.png"
     damage = 0.5 # Damage is equal to units unravelled per attack
     delay = 200
     price = 200
@@ -149,7 +156,8 @@ class AngryCat(Towers): #cheap, low damage, fast attack, very close range, needs
 
 class StrongCat(Towers): #very expensive, high damage, short range, average attack speed, punches wool with his fists!
 
-    sprite = "Sprites\\Towers\\StrongCatSprite.png"
+    sprite = "Sprites\\Towers\\Towers\\StrongCatSprite.png"
+    profile = "Sprites\\Towers\\Profile\\StrongCatProfile.png"
     damage = 10 # Damage is equal to units unravelled per attack
     delay = 700
     price = 1500
@@ -168,7 +176,8 @@ class StrongCat(Towers): #very expensive, high damage, short range, average atta
 
 class AOECat(Towers): #weak area of effect damage on all balloons around balloon attacked, main balloon takes alot of damage, very slow attack          
 
-    sprite = "Sprites\\Towers\\StrongCatSprite.png"
+    sprite = "Sprites\\Towers\\Towers\\AOECatSprite.png"
+    profile = "Sprites\\Towers\\Profile\\AOECatProfile.png"
     damage = 1 # Damage is equal to units unravelled per attack
     delay = 700
     price = 200
