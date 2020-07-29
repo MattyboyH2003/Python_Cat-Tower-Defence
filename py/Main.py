@@ -36,9 +36,10 @@ class Main():
     lives = 100
     money = 200
     waveNum = -1
-    deleting = False
+    upgrading = False
     currentTower = 0
     selectedTower = None
+    
 
     buttonList = []
 
@@ -57,7 +58,7 @@ class Main():
             #Adds button information to the list of buttons
             self.buttonList = []
             self.buttonList.append({"text" : "Start!", "xPos" : 1080, "yPos" : 600, "width" : 200, "height" : 120, "colour" : colours["lavender"], "hoverColour" : colours["bright_lavender"], "func" : self.StartWave})
-            self.buttonList.append({"text" : "Back!", "xPos" : 1230, "yPos" : 0, "width" : 50, "height" : 50, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : self.BackToMenu})
+            self.buttonList.append({"text" : "Back!", "xPos" : 1230, "yPos" : 0, "width" : 50, "height" : 50, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : self.gameIntro})
 
             #Image UI
             SelectGUIImage = pygame.image.load("Sprites\\GUI\\Outline.png")
@@ -77,7 +78,7 @@ class Main():
             TextRect.center = ((1120),(25))
             window.blit(TextSurf, TextRect)
 
-            pygame.draw.rect(window, colours["red"], (5, 665, 50, 50), 5)
+            pygame.draw.rect(window, colours["bright_lavender"], (5, 665, 50, 50), 5)
             if self.waveNum >= 10:
                 self.waveNumFontSize = 15
             else:
@@ -87,20 +88,30 @@ class Main():
             TextRect.center = ((29),(688))
             window.blit(TextSurf, TextRect)
 
-            pygame.draw.rect(window, colours["red"], (5, 605, 50, 50), 5)
+            pygame.draw.rect(window, colours["bright_lavender"], (5, 605, 50, 50), 5)
             towerExample = self.towerDict[self.currentTower](Vector2(-50, -50), colours["white"], window)
             SelectGUIImage = pygame.image.load(towerExample.GetProfile())
             window.blit(SelectGUIImage, (8,608))
+
+            '''
+            dont use:
+            pygame.draw.rect(window, colours["bright_lavender"], (0, 0, 1080, 600), 5)
+            pygame.draw.rect(window, colours["bright_lavender"], (1080, 0, 200, 600), 5)
+            pygame.draw.rect(window, colours["bright_lavender"], (0, 600, 1080, 120), 5)
+            '''
 
             for tower in self.towerSpritesList:
                 tower.UpdateRange()
 
             #Upgrades UI
             if self.selectedTower != None:
+
                 self.UpgradesUI(self.selectedTower)
 
                 elipseBoundries = [self.selectedTower.GetPos()[0]-(10*self.selectedTower.GetRange()), self.selectedTower.GetPos()[1]-(10*self.selectedTower.GetRange()), self.selectedTower.GetRange()*20, self.selectedTower.GetRange()*20]
                 pygame.draw.ellipse(window, colours["black"], elipseBoundries, 1)
+
+                
 
             #Checking for events each frame
             for event in pygame.event.get():
@@ -120,7 +131,10 @@ class Main():
                         if len(clicked) >= 1:
                             self.selectedTower = clicked[0]
                         else:
+                            
                             self.PlaceTower()
+                            self.selectedTower = None
+                            
                     
                 
                 if event.type == pygame.KEYDOWN:
@@ -212,9 +226,9 @@ class Main():
         intro = True
 
         self.buttonList = []
-        self.buttonList.append({"text" : "Play!", "xPos" : 150, "yPos" : 450, "width" : 100, "height" : 50, "colour" : colours["green"], "hoverColour" : colours["bright_green"], "func" : self.GenerateMap})
-        self.buttonList.append({"text" : "Quit!", "xPos" : 550, "yPos": 450, "width" : 100, "height" : 50, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : quit})
-        
+        self.buttonList.append({"text" : "Play!", "xPos" : 470, "yPos" : 400, "width" : 300, "height" : 100, "colour" : colours["green"], "hoverColour" : colours["bright_green"], "func" : self.GenerateMap})
+        self.buttonList.append({"text" : "Quit!", "xPos" : 570, "yPos": 530, "width" : 100, "height" : 50, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : quit})
+    
         while intro:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -227,7 +241,7 @@ class Main():
             window.fill(colours["white"])
             largeText = pygame.font.SysFont("comicsansms",115)
             TextSurf, TextRect = text_objects("Angry Cats", largeText)
-            TextRect.center = ((resolution[0]/2),(resolution[1]/2))
+            TextRect.center = ((640),(300))
             window.blit(TextSurf, TextRect)
 
             for button in self.buttonList:
@@ -392,11 +406,6 @@ class Main():
                             path = False
         self.gameLoop()
 
-    def BackToMenu(self):
-        self.buttonList = []
-        self.buttonList.append({"text" : "Play!", "xPos" : 150, "yPos" : 450, "width" : 100, "height" : 50, "colour" : colours["green"], "hoverColour" : colours["bright_green"], "func" : self.GenerateMap})
-        self.buttonList.append({"text" : "Quit!", "xPos" : 550, "yPos": 450, "width" : 100, "height" : 50, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : quit})
-        self.running = False
 
     def StartWave(self):
         if not self.waveOngoing:
@@ -444,12 +453,12 @@ class Main():
             if tower.GetUpgrades()[0] != None:
                 self.buttonList.append({"text" : tower.GetUpgrades()[0][0] + "\n" + str(tower.GetUpgrades()[0][1]), "xPos" : 330, "yPos" : 610, "width" : 365, "height" : 100, "colour" : colours["brown"], "hoverColour" : colours["bright_brown"], "perams" : {"upgradeInfo" : tower.GetUpgrades()[0]}, "func" : self.UpgradeTower})
             else:
-                self.buttonList.append({"text" : "Route Not Available", "xPos" : 330, "yPos" : 610, "width" : 365, "height" : 100, "colour" : colours["bright_brown"], "hoverColour" : colours["bright_brown"], "func" : None})
+                self.buttonList.append({"text" : "Route Not Available", "xPos" : 330, "yPos" : 610, "width" : 365, "height" : 100, "colour" : colours["brown"], "hoverColour" : colours["brown"], "func" : None})
             
             if tower.GetUpgrades()[1] != None:
                 self.buttonList.append({"text" : tower.GetUpgrades()[1][0] + "\n" + str(tower.GetUpgrades()[1][1]), "xPos" : 705, "yPos" : 610, "width" : 365, "height" : 100, "colour" : colours["brown"], "hoverColour" : colours["bright_brown"], "perams" : {"upgradeInfo" : tower.GetUpgrades()[1]}, "func" : self.UpgradeTower})
             else:
-                self.buttonList.append({"text" : "Route Not Available", "xPos" : 705, "yPos" : 610, "width" : 365, "height" : 100, "colour" : colours["bright_brown"], "hoverColour" : colours["bright_brown"], "func" : None})
+                self.buttonList.append({"text" : "Route Not Available", "xPos" : 705, "yPos" : 610, "width" : 365, "height" : 100, "colour" : colours["brown"], "hoverColour" : colours["brown"], "func" : None})
         else:
             self.buttonList.append({"text" : "Tower Maxed", "xPos" : 330, "yPos" : 610, "width" : 730, "height" : 100, "colour" : colours["bright_brown"], "hoverColour" : colours["bright_brown"], "func" : None})
 
@@ -477,13 +486,28 @@ def ButtonVisuals(text, xPos, yPos, width, height , colour, hoverColour, **kwarg
     mouse = pygame.mouse.get_pos()
     if xPos+width > mouse[0] > xPos and yPos+height > mouse[1] > yPos:
         pygame.draw.rect(window, colour,(xPos,yPos,width,height))
+        pygame.draw.rect(window, Darken(colour) ,(xPos,yPos,width,height),5)
+
     else:
         pygame.draw.rect(window, hoverColour,(xPos,yPos,width,height))
+        pygame.draw.rect(window, Darken(colour),(xPos,yPos,width,height),5)
 
     smallText = pygame.font.SysFont("comicsansms",20)
     textSurf, textRect = text_objects(text, smallText)
     textRect.center = ( (xPos+(width/2)), (yPos+(height/2)) )
     window.blit(textSurf, textRect)
+
+def Darken(colour):
+    newColour = list(colour)
+    for i in range(3):
+        newColour[i] += 30
+        if newColour[i] >= 255:
+            newColour[i] = 255
+        elif newColour[i] <= 0:
+            newColour[i] = 0
+    newColour = tuple(newColour)
+    return (newColour)
+    
 
 def text_objects(text, font):
     black = (0,0,0)
