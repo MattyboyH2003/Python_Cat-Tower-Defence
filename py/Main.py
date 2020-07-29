@@ -1,10 +1,10 @@
 import pygame
+import copy
 from Towers import *
 from Tiles import *
-from Waves import allWaves
 from Enemies import *
+from Waves import allWaves
 from Colours import colours
-import copy
 
 ########################################################################################################
 #                                              - Setup -                                               #
@@ -30,7 +30,6 @@ else:
 class Main():
     enemyDict = {"a" : WoolLV1, "b" : WoolLV2, "c" : WoolLV3}
     towerDict = {0 : PistolCat, 1 : AngryCat, 2 : StrongCat, 3 : AOECat}
-    currentTower = PistolCat
     currentWave = allWaves.pop(0)
     frameDelay = 0
     frameCache = 0
@@ -54,9 +53,7 @@ class Main():
         self.waveOngoing = False
         
         while self.running == True:
-
-            #print(self.selectedTower)
-
+            
             #Adds button information to the list of buttons
             self.buttonList = []
             self.buttonList.append({"text" : "Start!", "xPos" : 1080, "yPos" : 600, "width" : 200, "height" : 120, "colour" : colours["lavender"], "hoverColour" : colours["bright_lavender"], "func" : self.StartWave})
@@ -111,10 +108,6 @@ class Main():
                         clicked = [s for s in self.towerSpritesList if s.rect.collidepoint(pos)]
                         if len(clicked) >= 1:
                             self.selectedTower = clicked[0]
-                            #self.SelectTower(clicked[0])
-                            """self.money += clicked[0].GetPrice()
-                            clicked[0].kill()
-                            del clicked[0]"""
                         else:
                             self.PlaceTower()
                     
@@ -129,7 +122,7 @@ class Main():
                 elif self.currentTower >= len(self.towerDict)-1:
                     self.currentTower = len(self.towerDict)-1
 
-            #updates buttons
+            #updates button visuals
             for button in self.buttonList:
                 ButtonVisuals(**button)
             
@@ -155,7 +148,6 @@ class Main():
                         self.enemySpritesList.add(enemy)
                         self.allSpritesList.add(enemy)
                     
-
                     self.currentWave.pop(0)
             else:
                 self.frameDelay -= 1
@@ -444,7 +436,7 @@ class Main():
                 self.buttonList.append({"text" : "Route Not Available", "xPos" : 330, "yPos" : 610, "width" : 365, "height" : 100, "colour" : colours["bright_brown"], "hoverColour" : colours["bright_brown"], "func" : None})
             
             if tower.GetUpgrades()[1] != None:
-                self.buttonList.append({"text" : tower.GetUpgrades()[1][0] + "\n" + str(tower.GetUpgrades()[0][1]), "xPos" : 705, "yPos" : 610, "width" : 365, "height" : 100, "colour" : colours["brown"], "hoverColour" : colours["bright_brown"], "perams" : {"upgradeInfo" : tower.GetUpgrades()[1]}, "func" : self.UpgradeTower})
+                self.buttonList.append({"text" : tower.GetUpgrades()[1][0] + "\n" + str(tower.GetUpgrades()[1][1]), "xPos" : 705, "yPos" : 610, "width" : 365, "height" : 100, "colour" : colours["brown"], "hoverColour" : colours["bright_brown"], "perams" : {"upgradeInfo" : tower.GetUpgrades()[1]}, "func" : self.UpgradeTower})
             else:
                 self.buttonList.append({"text" : "Route Not Available", "xPos" : 705, "yPos" : 610, "width" : 365, "height" : 100, "colour" : colours["bright_brown"], "hoverColour" : colours["bright_brown"], "func" : None})
         else:

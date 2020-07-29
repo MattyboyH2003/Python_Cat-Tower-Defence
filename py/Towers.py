@@ -87,27 +87,48 @@ class PistolCat(Towers): #mid range slow shooting
         enemy.TakeDamage(self.damage)
     
     def Upgrade1(self):
+        self.delay = 333
+        self.range += 2
+
         self.upgrades = [["Level 2", 400, self.Upgrade2], None]
 
     def Upgrade2(self):
-        self.upgrades = [["Level 3", 200, self.Upgrade3], None]
+        self.damage += 1
+
+        self.upgrades = [["Level 3", 550, self.Upgrade3], None]
 
     def Upgrade3(self):
-        self.upgrades = [["Special 1", 200, self.Special1], ["Special 2", 200, self.Special2]]
+        self.damage += 1
+        self.range += 3
 
-    def Special1(self):
-        self.upgrades = [["Master 1", 200, self.Master1], None]
+        self.upgrades = [["Minigun", 1100, self.Special1], ["Sniper", 900, self.Special2]]
 
-    def Special2(self):
-        self.upgrades = [None, ["Master 2", 200, self.Master2]]
+    def Special1(self): #Minigun
+        self.delay = 100
 
-    def Master1(self):
+        self.upgrades = [["Master Minigun", 8000, self.Master1], None]
+
+    def Special2(self): #Sniper
+        self.damage += 2
+        self.delay = 750
+        self.range = 25
+
+        self.upgrades = [None, ["Master Sniper", 7500, self.Master2]]
+
+    def Master1(self): #Master Minigun
+        self.delay = 35
+        self.range += 5
+
         self.upgrades = []
 
-    def Master2(self):
+    def Master2(self): #Master Sniper
+        self.damage += 5
+        self.delay =  500
+        self.range = 50
+
         self.upgrades = []
 
-class AngryCat(Towers): # cheap, low damage, fast attack, very close range, needs to be directly next to a path to attack
+class AngryCat(Towers): #cheap, low damage, fast attack, very close range, needs to be directly next to a path to attack
 
     sprite = "Sprites\\Towers\\AngryCatSprite.png"
     damage = 0.5 # Damage is equal to units unravelled per attack
@@ -126,7 +147,7 @@ class AngryCat(Towers): # cheap, low damage, fast attack, very close range, need
 
         enemy.TakeDamage(self.damage)
 
-class StrongCat(Towers): # very expensive, high damage, short range, average attack speed, punches wool with his fists!
+class StrongCat(Towers): #very expensive, high damage, short range, average attack speed, punches wool with his fists!
 
     sprite = "Sprites\\Towers\\StrongCatSprite.png"
     damage = 10 # Damage is equal to units unravelled per attack
@@ -145,7 +166,7 @@ class StrongCat(Towers): # very expensive, high damage, short range, average att
 
         enemy.TakeDamage(self.damage)
 
-class AOECat(Towers): # weak area of effect damage on all balloons around balloon attacked, main balloon takes alot of damage, very slow attack          
+class AOECat(Towers): #weak area of effect damage on all balloons around balloon attacked, main balloon takes alot of damage, very slow attack          
 
     sprite = "Sprites\\Towers\\StrongCatSprite.png"
     damage = 1 # Damage is equal to units unravelled per attack

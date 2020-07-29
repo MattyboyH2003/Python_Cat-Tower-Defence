@@ -15,7 +15,6 @@ class Tiles(pygame.sprite.Sprite):
 
 class Ground(Tiles):
     sprite = "Sprites\\Tiles\\Grass.png"
-        
 class Path(Tiles):
     sprite = "Sprites\\Tiles\\Path.png"
 
@@ -35,7 +34,6 @@ class End(Tiles):
     def __init__(self, startPos, colour):
 
         Tiles.__init__(self, startPos, colour)
-
 class EndUp(End):
     pass
 class EndRight(End):
