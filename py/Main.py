@@ -455,6 +455,7 @@ class Main():
 
     def DeleteTower(self):
         self.selectedTower = None
+        self.money += self.tower.GetPrice()
     
 ########################################################################################################
 #                                            - Functions -                                             #
