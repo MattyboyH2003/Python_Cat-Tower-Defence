@@ -92,11 +92,15 @@ class Main():
             SelectGUIImage = pygame.image.load(towerExample.GetProfile())
             window.blit(SelectGUIImage, (8,608))
 
-            
+            for tower in self.towerSpritesList:
+                tower.UpdateRange()
 
             #Upgrades UI
             if self.selectedTower != None:
                 self.UpgradesUI(self.selectedTower)
+
+                elipseBoundries = [self.selectedTower.GetPos()[0]-(10*self.selectedTower.GetRange()), self.selectedTower.GetPos()[1]-(10*self.selectedTower.GetRange()), self.selectedTower.GetRange()*20, self.selectedTower.GetRange()*20]
+                pygame.draw.ellipse(window, colours["black"], elipseBoundries, 1)
 
             #Checking for events each frame
             for event in pygame.event.get():

@@ -38,6 +38,9 @@ class Towers(pygame.sprite.Sprite):
 
         self.timeCache = 0
 
+    def UpdateRange(self):
+        self.radius = self.range*10
+
     def CheckEnemies(self, enemy, enemyList):
         if pygame.sprite.collide_circle(self, enemy):
             if pygame.time.get_ticks() >= self.timeCache: # get_ticks will give us the amount of milliseconds since program started running
@@ -57,6 +60,12 @@ class Towers(pygame.sprite.Sprite):
 
     def GetPrice(self):
         return(self.price)
+
+    def GetRange(self):
+        return self.range
+
+    def GetPos(self):
+        return self.location
 
     def RemoveExistance(self):
         self.kill()
@@ -132,8 +141,6 @@ class PistolCat(Towers): #mid range slow shooting
 
         self.upgrades = []
 
-   
-
 class AngryCat(Towers): # cheap, low damage, fast attack, very close range, needs to be directly next to a path to attack
 
     sprite = "Sprites\\Towers\\Towers\\AngryCatSprite.png"
@@ -145,7 +152,8 @@ class AngryCat(Towers): # cheap, low damage, fast attack, very close range, need
     def __init__(self, startPos, colour, window):
         #Instance Variables
         self.location = pygame.math.Vector2(startPos)
-        self.range = 2 # 1 range unit = 10 pixel radius
+        self.range = 3 # 1 range unit = 10 pixel radius
+        self.upgrades = [["Level 1", 200, self.Upgrade1], None]
 
         Towers.__init__(self, colour, window)
 
@@ -153,6 +161,34 @@ class AngryCat(Towers): # cheap, low damage, fast attack, very close range, need
         pygame.draw.line(self.window, (255, 255, 255), self.rect.center, enemy.rect.center, 5)
 
         enemy.TakeDamage(self.damage)
+    
+    def Upgrade1(self):
+
+        self.upgrades = [["Level 2", 400, self.Upgrade2], None]
+
+    def Upgrade2(self):
+
+        self.upgrades = [["Level 3", 550, self.Upgrade3], None]
+
+    def Upgrade3(self):
+
+        self.upgrades = [["Special 1", 1100, self.Special1], ["Special 2", 900, self.Special2]]
+
+    def Special1(self):
+
+        self.upgrades = [["Master 1", 8000, self.Master1], None]
+
+    def Special2(self):
+
+        self.upgrades = [None, ["Master 2", 7500, self.Master2]]
+
+    def Master1(self):
+
+        self.upgrades = []
+
+    def Master2(self):
+
+        self.upgrades = []
 
 class StrongCat(Towers): #very expensive, high damage, short range, average attack speed, punches wool with his fists!
 

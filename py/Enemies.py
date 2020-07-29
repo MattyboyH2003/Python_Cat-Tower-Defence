@@ -13,7 +13,7 @@ class Enemy(pygame.sprite.Sprite):
         #Path stuff
         self.pathData = copy.deepcopy(pathData)
         self.location = Vector2((startLocation[0]*20)+10, (startLocation[1]*20)+10)
-        self.radius = 10
+        self.radius = 1
         
         if self.pathData[0] == "U":
             self.nextLocation = self.location + Vector2(0, -20)
