@@ -47,6 +47,7 @@ class Main():
     tileSpritesList = pygame.sprite.Group() # stores all tiles that make up the map, not currently used
     collisionSpritesList = pygame.sprite.Group() #used in towerplacment, if anything in this list is touching a tower it will not be placed
     enemySpritesList = pygame.sprite.Group() #used in the movement system, everything in here will follow the path and should be enemy class
+    buttonSpritesList = pygame.sprite.Group()
     allSpritesList = pygame.sprite.Group() #list of things to be drawn to screen
     
     def gameLoop(self): #The Main game loop, called when play is clicked
@@ -54,6 +55,11 @@ class Main():
         self.waveOngoing = False
         
         while self.running == True:
+
+            #clears all buttons
+            for sprite in self.buttonSpritesList:
+                sprite.kill()
+                del sprite
             
             #Adds button information to the list of buttons
             self.buttonList = []
@@ -120,14 +126,18 @@ class Main():
                 
                 #Upon click
                 if event.type == pygame.MOUSEBUTTONDOWN:
-
+                    ouse = pygame.mouse.get_pos()
+                    
                     for button in self.buttonList:
                         AreaClick(**button)
-                    
-                    mouse = pygame.mouse.get_pos()
+
+                    clicked = [s for s in self.buttonSpritesList if s.rect.collidepoint(mouse)]
+
+                    if len(clicked) >= 1:
+                        clicked.OnClick()
+
                     if 1080 > mouse[0] > 0 and 600 > mouse[1] > 0:
-                        pos = pygame.mouse.get_pos()
-                        clicked = [s for s in self.towerSpritesList if s.rect.collidepoint(pos)]
+                        clicked = [s for s in self.towerSpritesList if s.rect.collidepoint(mouse)]
                         if len(clicked) >= 1:
                             self.selectedTower = clicked[0]
                         else:
@@ -406,7 +416,6 @@ class Main():
                             path = False
         self.gameLoop()
 
-
     def StartWave(self):
         if not self.waveOngoing:
             currentWaveData = allWaves.pop(0)
@@ -453,19 +462,44 @@ class Main():
             if tower.GetUpgrades()[0] != None:
                 self.buttonList.append({"text" : tower.GetUpgrades()[0][0] + "\n" + str(tower.GetUpgrades()[0][1]), "xPos" : 330, "yPos" : 610, "width" : 365, "height" : 100, "colour" : colours["brown"], "hoverColour" : colours["bright_brown"], "perams" : {"upgradeInfo" : tower.GetUpgrades()[0]}, "func" : self.UpgradeTower})
             else:
-                self.buttonList.append({"text" : "Route Not Available", "xPos" : 330, "yPos" : 610, "width" : 365, "height" : 100, "colour" : colours["brown"], "hoverColour" : colours["brown"], "func" : None})
+                button = Button("Sprites\\GUI\\NoRoute.png", Vector2(513, 660))
+                self.buttonSpritesList.add(button)
+                self.allSpritesList.add(button)
             
             if tower.GetUpgrades()[1] != None:
                 self.buttonList.append({"text" : tower.GetUpgrades()[1][0] + "\n" + str(tower.GetUpgrades()[1][1]), "xPos" : 705, "yPos" : 610, "width" : 365, "height" : 100, "colour" : colours["brown"], "hoverColour" : colours["bright_brown"], "perams" : {"upgradeInfo" : tower.GetUpgrades()[1]}, "func" : self.UpgradeTower})
             else:
-                self.buttonList.append({"text" : "Route Not Available", "xPos" : 705, "yPos" : 610, "width" : 365, "height" : 100, "colour" : colours["brown"], "hoverColour" : colours["brown"], "func" : None})
+                button = Button("Sprites\\GUI\\NoRoute.png", Vector2(888, 660))
+                self.buttonSpritesList.add(button)
+                self.allSpritesList.add(button)
         else:
             self.buttonList.append({"text" : "Tower Maxed", "xPos" : 330, "yPos" : 610, "width" : 730, "height" : 100, "colour" : colours["bright_brown"], "hoverColour" : colours["bright_brown"], "func" : None})
 
     def DeleteTower(self):
         self.selectedTower = None
         self.money += self.tower.GetPrice()
+
+class Button(pygame.sprite.Sprite):
+    def __init__(self, sprite, location, func = None):
+        
+        self.func = func
+        
+        #Sprite stuff
+        #Call the parent class (Sprite) constructor
+        pygame.sprite.Sprite.__init__(self)
     
+        #Load the image
+        self.image = pygame.image.load(sprite).convert()
+    
+        #Set our transparent color
+        self.image.set_colorkey(colours["purple"])
+        self.rect = self.image.get_rect()
+        self.rect.center = location
+
+    def OnCLick(self, params = {}):
+        self.func(**params)
+
+
 ########################################################################################################
 #                                            - Functions -                                             #
 ########################################################################################################
@@ -482,15 +516,17 @@ def AreaClick(xPos, yPos, width, height, func, perams = {}, **kwargs):
             else:
                 func(**perams)
 
-def ButtonVisuals(text, xPos, yPos, width, height , colour, hoverColour, **kwargs):
+def ButtonVisuals(text, xPos, yPos, width, height , colour, hoverColour, border = True, **kwargs):
     mouse = pygame.mouse.get_pos()
     if xPos+width > mouse[0] > xPos and yPos+height > mouse[1] > yPos:
-        pygame.draw.rect(window, colour,(xPos,yPos,width,height))
-        pygame.draw.rect(window, Darken(colour) ,(xPos,yPos,width,height),5)
+        pygame.draw.rect(window, colour, (xPos,yPos,width,height)) #Draws the fill
+        if border:
+            pygame.draw.rect(window, Darken(colour), (xPos,yPos,width,height),5) #Draws the border
 
     else:
-        pygame.draw.rect(window, hoverColour,(xPos,yPos,width,height))
-        pygame.draw.rect(window, Darken(colour),(xPos,yPos,width,height),5)
+        pygame.draw.rect(window, hoverColour,(xPos,yPos,width,height)) #Draws the fill
+        if border:
+            pygame.draw.rect(window, Darken(hoverColour),(xPos,yPos,width,height),5) #Draws the border
 
     smallText = pygame.font.SysFont("comicsansms",20)
     textSurf, textRect = text_objects(text, smallText)
@@ -507,7 +543,6 @@ def Darken(colour):
             newColour[i] = 0
     newColour = tuple(newColour)
     return (newColour)
-    
 
 def text_objects(text, font):
     black = (0,0,0)
