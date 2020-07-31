@@ -29,7 +29,7 @@ else:
 
 class Main():
     enemyDict = {"a" : WoolLV1, "b" : WoolLV2, "c" : WoolLV3}
-    towerDict = {0 : PistolCat, 1 : AngryCat, 2 : StrongCat, 3 : AOECat}
+    towerDict = {0 : PistolCat, 1 : AngryCat, 2 : StrongCat, 3 : BombCat}
     currentWave = allWaves.pop(0)
     frameDelay = 0
     frameCache = 0
@@ -39,6 +39,7 @@ class Main():
     upgrading = False
     currentTower = 0
     selectedTower = None
+    currentMap = "Data\Maps\map5.txt"
     
 
     buttonList = []
@@ -126,7 +127,7 @@ class Main():
                 
                 #Upon click
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    ouse = pygame.mouse.get_pos()
+                    mouse = pygame.mouse.get_pos()
                     
                     for button in self.buttonList:
                         AreaClick(**button)
@@ -236,7 +237,7 @@ class Main():
         intro = True
 
         self.buttonList = []
-        self.buttonList.append({"text" : "Play!", "xPos" : 470, "yPos" : 400, "width" : 300, "height" : 100, "colour" : colours["green"], "hoverColour" : colours["bright_green"], "func" : self.GenerateMap})
+        self.buttonList.append({"text" : "Play!", "xPos" : 470, "yPos" : 400, "width" : 300, "height" : 100, "colour" : colours["green"], "hoverColour" : colours["bright_green"], "func" : self.LevelSelect})
         self.buttonList.append({"text" : "Quit!", "xPos" : 570, "yPos": 530, "width" : 100, "height" : 50, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : quit})
     
         while intro:
@@ -259,6 +260,36 @@ class Main():
 
             pygame.display.update()
             clock.tick(30)
+    
+    def LevelSelect(self):
+        levelSelect = True
+        self.buttonList = []
+        self.buttonList.append({"text" : "Play!", "xPos" : 10, "yPos" : 10, "width" : 100, "height" : 40, "colour" : colours["green"], "hoverColour" : colours["bright_green"], "func" : self.GenerateMap})
+        self.buttonList.append({"text" : "Back!", "xPos" : 10, "yPos" : 60, "width" : 50, "height" : 40, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : self.gameIntro})
+
+        while levelSelect:
+            window.fill(colours["white"])
+
+            for event in pygame.event.get():
+
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    for button in self.buttonList:
+                        AreaClick(**button)
+            
+
+
+            for button in self.buttonList:
+                ButtonVisuals(**button)
+
+            pygame.display.update()
+            clock.tick(30)
+
+
+
 
     def GenerateMap(self): #Ran just before game loop to generate the map
         
@@ -276,7 +307,7 @@ class Main():
         ? - End On Top
         """
 
-        mapFile = open("Data\\Maps\\map.txt", "r")
+        mapFile = open(self.currentMap, "r")
         fileContents = mapFile.readlines()
         mapFile.close()
         mapString = ""
@@ -321,7 +352,7 @@ class Main():
         ? - End On Top
         """
 
-        mapFile = open("Data\\Maps\\map.txt", "r")
+        mapFile = open(self.currentMap, "r")
         fileContents = mapFile.readlines()
         mapFile.close()
 
@@ -556,3 +587,12 @@ main = Main()
 main.gameIntro()
 pygame.quit()
 quit()
+
+'''
+THINGS TO DO
+
+make more maps
+made level select
+make sprites for tiles
+
+'''

@@ -202,6 +202,7 @@ class StrongCat(Towers): #very expensive, high damage, short range, average atta
         #Instance Variables
         self.location = pygame.math.Vector2(startPos)
         self.range = 2 # 1 range unit = 10 pixel radius
+        self.upgrades = []
 
         Towers.__init__(self, colour, window)
 
@@ -210,37 +211,92 @@ class StrongCat(Towers): #very expensive, high damage, short range, average atta
 
         enemy.TakeDamage(self.damage)
 
-class AOECat(Towers): #weak area of effect damage on all balloons around balloon attacked, main balloon takes alot of damage, very slow attack          
+    def Attack(self, enemy, enemyList):
+        pygame.draw.line(self.window, (255, 255, 255), self.rect.center, enemy.rect.center, 5)
 
-    sprite = "Sprites\\Towers\\Towers\\AOECatSprite.png"
-    profile = "Sprites\\Towers\\Profile\\AOECatProfile.png"
+        enemy.TakeDamage(self.damage)
+    
+    def Upgrade1(self):
+
+        self.upgrades = []
+
+    def Upgrade2(self):
+
+        self.upgrades = []
+
+    def Upgrade3(self):
+
+        self.upgrades = []
+
+    def Special1(self):
+
+        self.upgrades = []
+
+    def Special2(self):
+
+        self.upgrades = []
+
+    def Master1(self):
+
+        self.upgrades = []
+
+    def Master2(self):
+
+        self.upgrades = []
+
+class BombCat(Towers): # equivalent to single use spikes in bloons, returns no reward to player for pops       
+
+    sprite = "Sprites\\Towers\\Towers\\BombCatSprite.png"
+    profile = "Sprites\\Towers\\Profile\\BombCatProfile.png"
     damage = 1 # Damage is equal to units unravelled per attack
-    delay = 700
-    price = 200
+    price = 20
 
     def __init__(self, startPos, colour, window):
         #Instance Variables
         self.location = pygame.math.Vector2(startPos)
         self.range = 2 # 1 range unit = 10 pixel radius
+        self.upgrades = []
 
         Towers.__init__(self, colour, window)
 
     def CheckEnemies(self, enemy, enemyList):
         if pygame.sprite.collide_circle(self, enemy):
-            if pygame.time.get_ticks() >= self.timeCache: # get_ticks will give us the amount of milliseconds since program started running
-                self.Attack(enemy, enemyList)
-                self.timeCache = pygame.time.get_ticks() + self.delay  
-                return (enemy.getWorth())
-
+            self.Attack(enemy)
         return(0)
 
-    def Attack(self, enemy, enemyList):
-        enemiesInArea = []
-        for item in enemyList:
-            if pygame.sprite.collide_circle(enemy, item):
-                enemiesInArea.append(item)
-        print("damaging all items in list:", enemiesInArea)
-        pygame.draw.line(self.window, (255, 255, 255), self.rect.center, enemy.rect.center, 5)
-        enemy.TakeDamage(10)
-        for item in enemiesInArea:
-            item.TakeDamage(1)
+
+    def Attack(self, enemy):
+        enemy.kill()
+        del(enemy)
+        self.kill()
+        del(self)
+    
+    def Upgrade1(self):
+
+        self.upgrades = []
+
+    def Upgrade2(self):
+
+        self.upgrades = []
+
+    def Upgrade3(self):
+
+        self.upgrades = []
+
+    def Special1(self):
+
+        self.upgrades = []
+
+    def Special2(self):
+
+        self.upgrades = []
+
+    def Master1(self):
+
+        self.upgrades = []
+
+    def Master2(self):
+
+        self.upgrades = []
+
+        
