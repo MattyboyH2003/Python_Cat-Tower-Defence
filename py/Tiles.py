@@ -19,15 +19,17 @@ class Path(Tiles):
     sprite = "Sprites\\Tiles\\Path.png"
 
 class Start(Tiles):
-    pass
+    def __init__(self, startPos, colour):
+
+        Tiles.__init__(self, startPos, colour)
 class StartUp(Start):
-    pass
+    sprite = "Sprites\\Tiles\\StartUp.png"
 class StartRight(Start):
-    pass
+    sprite = "Sprites\\Tiles\\StartRight.png"
 class StartDown(Start):
     sprite = "Sprites\\Tiles\\StartDown.png"
 class StartLeft(Start):
-    pass
+    sprite = "Sprites\\Tiles\\StartLeft.png"
 
 class End(Tiles):
 
@@ -35,10 +37,10 @@ class End(Tiles):
 
         Tiles.__init__(self, startPos, colour)
 class EndUp(End):
-    pass
+    sprite = "Sprites\\Tiles\\EndUp.png"
 class EndRight(End):
-    pass
+    sprite = "Sprites\\Tiles\\EndRight.png"
 class EndDown(End):
     sprite = "Sprites\\Tiles\\EndDown.png"
 class EndLeft(End):
-    pass
+    sprite = "Sprites\\Tiles\\EndLeft.png"
