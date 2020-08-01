@@ -39,7 +39,7 @@ class Main():
     upgrading = False
     currentTower = 0
     selectedTower = None
-    currentMap = "Data\Maps\map5.txt"
+    currentMap = "Data\\Maps\\map7.txt"
     
 
     buttonList = []
