@@ -279,6 +279,8 @@ class Main():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     for button in self.buttonList:
                         AreaClick(**button)
+
+                for i
             
 
 
