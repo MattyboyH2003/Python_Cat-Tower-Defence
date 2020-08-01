@@ -5,6 +5,7 @@ from Tiles import *
 from Enemies import *
 from Waves import allWaves
 from Colours import colours
+from MapList import AllMaps
 
 ########################################################################################################
 #                                              - Setup -                                               #
@@ -280,7 +281,12 @@ class Main():
                     for button in self.buttonList:
                         AreaClick(**button)
 
-                for i
+                currentPos = 0
+
+                for i in AllMaps:
+                    pygame.draw.rect(window, colours["brown"], (400, 200, 480, 264))
+
+
             
 
 
