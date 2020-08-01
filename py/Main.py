@@ -5,7 +5,7 @@ from Tiles import *
 from Enemies import *
 from Waves import allWaves
 from Colours import colours
-from MapList import AllMaps
+from MapList import MapList, AllMaps, AllMapProfiles
 
 ########################################################################################################
 #                                              - Setup -                                               #
@@ -268,8 +268,24 @@ class Main():
         self.buttonList.append({"text" : "Play!", "xPos" : 10, "yPos" : 10, "width" : 100, "height" : 40, "colour" : colours["green"], "hoverColour" : colours["bright_green"], "func" : self.GenerateMap})
         self.buttonList.append({"text" : "Back!", "xPos" : 10, "yPos" : 60, "width" : 50, "height" : 40, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : self.gameIntro})
 
+        self.pos = 0
+
         while levelSelect:
-            window.fill(colours["white"])
+            
+            i=0 #i would equal the selected maps index
+            if i+2 > len(MapList)-1:
+                mapDifference = (i+2)-(len(MapList)-1)
+            
+                currentMaps = MapList[i-2:i+(mapDifference)+1] + MapList[:mapDifference]
+
+            elif i-2 < 0:
+                mapDifference = -(i-2)
+
+                currentMaps = MapList[-mapDifference:] + MapList[i-(2-mapDifference):i+3]
+            else:
+                currentMaps = MapList[i-2:i+3]
+        
+            #currentMaps is the list of the central maps and the 2 maps to either side
 
             for event in pygame.event.get():
 
@@ -280,24 +296,29 @@ class Main():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     for button in self.buttonList:
                         AreaClick(**button)
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_LEFT:
+                        self.pos -= 20
+                    if event.key == pygame.K_RIGHT:
+                        self.pos += 20
 
-                currentPos = 0
-
-                for i in AllMaps:
-                    pygame.draw.rect(window, colours["brown"], (400, 200, 480, 264))
-
-
+            if self.pos >= 400:
+                i -= 1
+                self.pos = 0
+ 
+            elif self.pos <= -400:
+                i += 1
+                self.pos = 0
             
-
+            for i in range(5):
+                pygame.draw.rect(window, colours["brown"], (-400 + (420*i) + self.pos, 250, 400, 220))
 
             for button in self.buttonList:
                 ButtonVisuals(**button)
 
             pygame.display.update()
+            window.fill(colours["white"])
             clock.tick(30)
-
-
-
 
     def GenerateMap(self): #Ran just before game loop to generate the map
         
@@ -537,7 +558,6 @@ class Button(pygame.sprite.Sprite):
 
     def OnCLick(self, params = {}):
         self.func(**params)
-
 
 ########################################################################################################
 #                                            - Functions -                                             #
