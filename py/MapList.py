@@ -12,11 +12,11 @@ AllMaps = {
 
 AllMapProfiles = {
 
-"Map1Profile" : "Data\\Maps\\Map1Profile.png",
-"Map2Profile" : "Data\\Maps\\Map2Profile.png",
-"Map3Profile" : "Data\\Maps\\Map3Profile.png",
-"Map4Profile" : "Data\\Maps\\Map4Profile.png",
-"Map5Profile" : "Data\\Maps\\Map5Profile.png",
-"Map6Profile" : "Data\\Maps\\Map6Profile.png",
-"Map7Profile" : "Data\\Maps\\Map7Profile.png",
-"Map8Profile" : "Data\\Maps\\Map8Profile.png"}
+"Map1" : "Data\\Maps\\Map1Profile.png",
+"Map2" : "Data\\Maps\\Map2Profile.png",
+"Map3" : "Data\\Maps\\Map3Profile.png",
+"Map4" : "Data\\Maps\\Map4Profile.png",
+"Map5" : "Data\\Maps\\Map5Profile.png",
+"Map6" : "Data\\Maps\\Map6Profile.png",
+"Map7" : "Data\\Maps\\Map7Profile.png",
+"Map8" : "Data\\Maps\\Map8Profile.png"}
