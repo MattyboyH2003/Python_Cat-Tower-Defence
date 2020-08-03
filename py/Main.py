@@ -271,9 +271,11 @@ class Main():
         self.pos = 0
         self.mapIndex=0 #i would equal the selected maps index
 
+        self.previousMousePos = pygame.mouse.get_pos()
+
         while levelSelect:
-            
-            
+            self.currentMousePos = pygame.mouse.get_pos()
+
             if self.mapIndex+2 > len(MapList)-1:
                 mapDifference = (self.mapIndex+2)-(len(MapList)-1)
             
@@ -306,7 +308,6 @@ class Main():
             if self.pos >= 400:
                 self.mapIndex -= 1
                 self.pos = 0
- 
             elif self.pos <= -400:
                 self.mapIndex += 1
                 self.pos = 0
@@ -319,10 +320,15 @@ class Main():
                 TextRect.center = ((-200 + (420*i) + self.pos, 500))
                 window.blit(TextSurf, TextRect)
 
-
             for button in self.buttonList:
                 ButtonVisuals(**button)
 
+            mouseDifference = self.previousMousePos[0] - self.currentMousePos[0]
+            
+            if pygame.mouse.get_pressed()[0] == 1:
+                self.pos -= mouseDifference
+
+            self.previousMousePos = self.currentMousePos
             pygame.display.update()
             window.fill(colours["white"])
             clock.tick(30)
