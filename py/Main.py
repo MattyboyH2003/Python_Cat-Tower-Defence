@@ -307,10 +307,10 @@ class Main():
 
             if self.pos >= 400:
                 self.mapIndex -= 1
-                self.pos = 0
+                self.pos -= 400
             elif self.pos <= -400:
                 self.mapIndex += 1
-                self.pos = 0
+                self.pos += 400
             
             for i in range(5):
                 pygame.draw.rect(window, colours["brown"], (-400 + (420*i) + self.pos, 250, 400, 220))
