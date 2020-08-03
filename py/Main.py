@@ -269,21 +269,22 @@ class Main():
         self.buttonList.append({"text" : "Back!", "xPos" : 10, "yPos" : 60, "width" : 50, "height" : 40, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : self.gameIntro})
 
         self.pos = 0
+        self.mapIndex=0 #i would equal the selected maps index
 
         while levelSelect:
             
-            i=0 #i would equal the selected maps index
-            if i+2 > len(MapList)-1:
-                mapDifference = (i+2)-(len(MapList)-1)
             
-                currentMaps = MapList[i-2:i+(mapDifference)+1] + MapList[:mapDifference]
+            if self.mapIndex+2 > len(MapList)-1:
+                mapDifference = (self.mapIndex+2)-(len(MapList)-1)
+            
+                currentMaps = MapList[self.mapIndex-2:self.mapIndex+(mapDifference)+1] + MapList[:mapDifference]
 
-            elif i-2 < 0:
-                mapDifference = -(i-2)
+            elif self.mapIndex-2 < 0:
+                mapDifference = -(self.mapIndex-2)
 
-                currentMaps = MapList[-mapDifference:] + MapList[i-(2-mapDifference):i+3]
+                currentMaps = MapList[-mapDifference:] + MapList[self.mapIndex-(2-mapDifference):self.mapIndex+3]
             else:
-                currentMaps = MapList[i-2:i+3]
+                currentMaps = MapList[self.mapIndex-2:self.mapIndex+3]
         
             #currentMaps is the list of the central maps and the 2 maps to either side
 
@@ -303,15 +304,21 @@ class Main():
                         self.pos += 20
 
             if self.pos >= 400:
-                i -= 1
+                self.mapIndex -= 1
                 self.pos = 0
  
             elif self.pos <= -400:
-                i += 1
+                self.mapIndex += 1
                 self.pos = 0
             
             for i in range(5):
                 pygame.draw.rect(window, colours["brown"], (-400 + (420*i) + self.pos, 250, 400, 220))
+
+                largeText = pygame.font.SysFont("comicsansms",20)
+                TextSurf, TextRect = text_objects(currentMaps[i], largeText)
+                TextRect.center = ((-200 + (420*i) + self.pos, 500))
+                window.blit(TextSurf, TextRect)
+
 
             for button in self.buttonList:
                 ButtonVisuals(**button)
@@ -622,5 +629,4 @@ THINGS TO DO
 make more maps
 made level select
 make sprites for tiles
-
 '''
