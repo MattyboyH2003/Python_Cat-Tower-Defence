@@ -322,7 +322,7 @@ class Main():
                 self.pos += 400
             
             for i in range(5):
-                button = Button(AllMapProfiles[MapList[self.mapIndex]], Vector2(-200 + (420*i) + self.pos, 360), self.SelectMap)
+                button = Button(AllMapProfiles[currentMaps[i]], Vector2(-200 + (420*i) + self.pos, 360), self.SelectMap)
                 self.buttonSpritesList.add(button)
                 self.allSpritesList.add(button)
 
