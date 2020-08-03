@@ -274,13 +274,19 @@ class Main():
         self.previousMousePos = pygame.mouse.get_pos()
 
         while levelSelect:
+            print(self.mapIndex)
+
             self.currentMousePos = pygame.mouse.get_pos()
+
+            if self.mapIndex >= len(MapList)-1:
+                self.mapIndex = 0
+            elif self.mapIndex < 0:
+                self.mapIndex = len(MapList)-1
 
             if self.mapIndex+2 > len(MapList)-1:
                 mapDifference = (self.mapIndex+2)-(len(MapList)-1)
             
                 currentMaps = MapList[self.mapIndex-2:self.mapIndex+(mapDifference)+1] + MapList[:mapDifference]
-
             elif self.mapIndex-2 < 0:
                 mapDifference = -(self.mapIndex-2)
 
@@ -290,6 +296,9 @@ class Main():
         
             #currentMaps is the list of the central maps and the 2 maps to either side
 
+            for sprite in self.buttonSpritesList:
+                sprite.kill()
+                del sprite
             for event in pygame.event.get():
 
                 if event.type == pygame.QUIT:
@@ -307,14 +316,17 @@ class Main():
 
             if self.pos >= 400:
                 self.mapIndex -= 1
-                self.pos = 0
+                self.pos -= 400
             elif self.pos <= -400:
                 self.mapIndex += 1
-                self.pos = 0
+                self.pos += 400
             
             for i in range(5):
-                pygame.draw.rect(window, colours["brown"], (-400 + (420*i) + self.pos, 250, 400, 220))
+                button = Button(AllMapProfiles[MapList[self.mapIndex]], Vector2(-200 + (420*i) + self.pos, 360), self.SelectMap)
+                self.buttonSpritesList.add(button)
+                self.allSpritesList.add(button)
 
+                #Adds the text below the image
                 largeText = pygame.font.SysFont("comicsansms",20)
                 TextSurf, TextRect = text_objects(currentMaps[i], largeText)
                 TextRect.center = ((-200 + (420*i) + self.pos, 500))
@@ -329,6 +341,7 @@ class Main():
                 self.pos -= mouseDifference
 
             self.previousMousePos = self.currentMousePos
+            self.allSpritesList.draw(window)
             pygame.display.update()
             window.fill(colours["white"])
             clock.tick(30)
@@ -551,6 +564,9 @@ class Main():
     def DeleteTower(self):
         self.selectedTower = None
         self.money += self.tower.GetPrice()
+
+    def SelectMap(self, map):
+        pass
 
 class Button(pygame.sprite.Sprite):
     def __init__(self, sprite, location, func = None):
