@@ -274,53 +274,65 @@ class Main():
         self.previousMousePos = pygame.mouse.get_pos()
 
         while levelSelect:
-            print(self.mapIndex)
-
-            self.currentMousePos = pygame.mouse.get_pos()
-
-            if self.mapIndex >= len(MapList)-1:
-                self.mapIndex = 0
-            elif self.mapIndex < 0:
-                self.mapIndex = len(MapList)-1
-
-            if self.mapIndex+2 > len(MapList)-1:
-                mapDifference = (self.mapIndex+2)-(len(MapList)-1)
             
-                currentMaps = MapList[self.mapIndex-2:self.mapIndex+(mapDifference)+1] + MapList[:mapDifference]
-            elif self.mapIndex-2 < 0:
-                mapDifference = -(self.mapIndex-2)
-
-                currentMaps = MapList[-mapDifference:] + MapList[self.mapIndex-(2-mapDifference):self.mapIndex+3]
-            else:
-                currentMaps = MapList[self.mapIndex-2:self.mapIndex+3]
-        
-            #currentMaps is the list of the central maps and the 2 maps to either side
-
-            for sprite in self.buttonSpritesList:
-                sprite.kill()
-                del sprite
-            for event in pygame.event.get():
-
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    quit()
-
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    for button in self.buttonList:
-                        AreaClick(**button)
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_LEFT:
-                        self.pos -= 20
-                    if event.key == pygame.K_RIGHT:
-                        self.pos += 20
-
+            #Checks if it needs to shift the buttons
             if self.pos >= 400:
                 self.mapIndex -= 1
                 self.pos -= 400
             elif self.pos <= -400:
                 self.mapIndex += 1
                 self.pos += 400
+
+            #Collects current mouse position
+            self.currentMousePos = pygame.mouse.get_pos()
+
+            #Checks mapIndex to see if its out of bounds
+            if self.mapIndex >= len(MapList)-1:
+                self.mapIndex = 0
+            elif self.mapIndex < 0:
+                self.mapIndex = len(MapList)-1
+
+            #Creates the currentMaps list
+            #currentMaps is the list of the central maps and the 2 maps to either side
+            if self.mapIndex+2 > len(MapList)-1:
+                mapDifference = (self.mapIndex+2)-(len(MapList)-1)
+                currentMaps = MapList[self.mapIndex-2:self.mapIndex+(mapDifference)+1] + MapList[:mapDifference]
+            elif self.mapIndex-2 < 0:
+                mapDifference = -(self.mapIndex-2)
+                currentMaps = MapList[-mapDifference:] + MapList[self.mapIndex-(2-mapDifference):self.mapIndex+3]
+            else:
+                currentMaps = MapList[self.mapIndex-2:self.mapIndex+3]
+        
+            #Clears button list
+            for sprite in self.buttonSpritesList:
+                sprite.kill()
+                del sprite
+
+            #Checks current events
+            for event in pygame.event.get():
+
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+
+                #Upon Click
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    for button in self.buttonList:
+                        AreaClick(**button)
+
+                #Checking for keypresses
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_LEFT: #Shift left
+                        self.pos -= 20
+                    if event.key == pygame.K_RIGHT: #Shift right
+                        self.pos += 20
             
+            #Check of and which buttons are pressed
+            clicked = [s for s in self.buttonSpritesList if s.rect.collidepoint(mouse)]
+            if len(clicked) >= 1:
+                clicked.OnClick()
+
+            #Generates the map images and names
             for i in range(5):
                 button = Button(AllMapProfiles[currentMaps[i]], Vector2(-200 + (420*i) + self.pos, 360), self.SelectMap)
                 self.buttonSpritesList.add(button)
@@ -332,9 +344,11 @@ class Main():
                 TextRect.center = ((-200 + (420*i) + self.pos, 500))
                 window.blit(TextSurf, TextRect)
 
+            #Generates non-sprite buttons
             for button in self.buttonList:
                 ButtonVisuals(**button)
 
+            
             mouseDifference = self.previousMousePos[0] - self.currentMousePos[0]
             
             if pygame.mouse.get_pressed()[0] == 1:
@@ -565,8 +579,8 @@ class Main():
         self.selectedTower = None
         self.money += self.tower.GetPrice()
 
-    def SelectMap(self, map):
-        pass
+    def SelectMap(self):
+        self.currentMap = self.mapIndex
 
 class Button(pygame.sprite.Sprite):
     def __init__(self, sprite, location, func = None):
