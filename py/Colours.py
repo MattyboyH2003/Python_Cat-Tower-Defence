@@ -14,7 +14,7 @@ colours = {
 "bright_green" : (0,255,0),
 "bright_brown" : (210,105,30),
 "bright_blue" : (0, 0, 255),
-"light_sky_blue" : (117, 237, 255),
+"bright_sky_blue" : (117, 237, 255),
 
 
 "white" : (255,255,255),

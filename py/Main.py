@@ -40,7 +40,7 @@ class Main():
     upgrading = False
     currentTower = 0
     selectedTower = None
-    currentMap = "Data\\Maps\\map8.txt"
+    currentMap = ""
     
 
     buttonList = []
@@ -327,8 +327,15 @@ class Main():
 
             #Generates the map images and names
             for i in range(5):
-                button = Button(AllMapProfiles[currentMaps[i]], Vector2(-200 + (420*i) + self.pos, 360), self.SelectMap)
-                pygame.draw.rect(window, colours["sky_blue"], (-400 + (420*i) + self.pos, 250, 400, 220))
+                if AllMaps[currentMaps[i]] == self.currentMap:
+                    tempColour = "sky_blue"
+                else:
+                    tempColour = "bright_sky_blue"
+
+                button = Button(AllMapProfiles[currentMaps[i]], Vector2(-200 + (420*i) + self.pos, 360), self.SelectMap) #add a kwarg here of AllMaps[currentMaps[i]]
+                pygame.draw.rect(window, colours[tempColour], (-400 + (420*i) + self.pos, 250, 400, 220))
+                print(tempColour)
+                print(currentMaps[i])
                 self.buttonSpritesList.add(button)
                 self.allSpritesList.add(button)
 
@@ -585,8 +592,8 @@ class Main():
         self.selectedTower = None
         self.money += self.tower.GetPrice()
 
-    def SelectMap(self):
-        self.currentMap = self.mapIndex
+    def SelectMap(self): #make this take an parameter of the maps location
+        self.currentMap = #new parameter
 
 class Button(pygame.sprite.Sprite):
     def __init__(self, sprite, location, func = None):
