@@ -40,7 +40,7 @@ class Main():
     upgrading = False
     currentTower = 0
     selectedTower = None
-    currentMap = "Data\\Maps\\map7.txt"
+    currentMap = "Data\\Maps\\map8.txt"
     
 
     buttonList = []
@@ -319,13 +319,6 @@ class Main():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     for button in self.buttonList:
                         AreaClick(**button)
-
-                #Checking for keypresses
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_LEFT: #Shift left
-                        self.pos -= 20
-                    if event.key == pygame.K_RIGHT: #Shift right
-                        self.pos += 20
             
             #Check of and which buttons are pressed
             clicked = [s for s in self.buttonSpritesList if s.rect.collidepoint(mouse)]
@@ -335,6 +328,7 @@ class Main():
             #Generates the map images and names
             for i in range(5):
                 button = Button(AllMapProfiles[currentMaps[i]], Vector2(-200 + (420*i) + self.pos, 360), self.SelectMap)
+                pygame.draw.rect(window, colours["sky_blue"], (-400 + (420*i) + self.pos, 250, 400, 220))
                 self.buttonSpritesList.add(button)
                 self.allSpritesList.add(button)
 
@@ -364,7 +358,7 @@ class Main():
         
         """
         Tile Key:
-        # - Grass
+        # - Ground
         P - Path
         < - Start From Left
         > - Start From Right
@@ -389,10 +383,22 @@ class Main():
                 nextTile = Ground
             elif char == "P":
                 nextTile = Path
+            elif char == ">":
+                nextTile = StartRight
+            elif char == "<":
+                nextTile = StartLeft
             elif char == "/":
                 nextTile = StartDown
+            elif char == "^":
+                nextTile = StartUp
+            elif char == ",":
+                nextTile = EndLeft
             elif char == "6":
                 nextTile = EndDown
+            elif char == ".":
+                nextTile = EndRight
+            elif char == "?":
+                nextTile = EndUp
             location = [((counter%54)*20)+10, ((counter//54)*20)+10]
             tile = nextTile(location, colours["red"])
 
