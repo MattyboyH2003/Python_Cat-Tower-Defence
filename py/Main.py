@@ -263,6 +263,9 @@ class Main():
             clock.tick(30)
     
     def LevelSelect(self):
+
+        self.currentMap = AllMaps["Map1"]
+
         levelSelect = True
         self.buttonList = []
         self.buttonList.append({"text" : "Play!", "xPos" : 10, "yPos" : 10, "width" : 100, "height" : 40, "colour" : colours["green"], "hoverColour" : colours["bright_green"], "func" : self.GenerateMap})
@@ -323,6 +326,7 @@ class Main():
             #Check of and which buttons are pressed
             clicked = [s for s in self.buttonSpritesList if s.rect.collidepoint(mouse)]
             if len(clicked) >= 1:
+                print("Click")
                 clicked.OnClick()
 
             #Generates the map images and names
@@ -334,8 +338,8 @@ class Main():
 
                 button = Button(AllMapProfiles[currentMaps[i]], Vector2(-200 + (420*i) + self.pos, 360), self.SelectMap) #add a kwarg here of AllMaps[currentMaps[i]]
                 pygame.draw.rect(window, colours[tempColour], (-400 + (420*i) + self.pos, 250, 400, 220))
-                print(tempColour)
-                print(currentMaps[i])
+
+                button.setParams({"map": AllMaps[currentMaps[i]]})
                 self.buttonSpritesList.add(button)
                 self.allSpritesList.add(button)
 
@@ -354,6 +358,8 @@ class Main():
             
             if pygame.mouse.get_pressed()[0] == 1:
                 self.pos -= mouseDifference
+
+            print(self.currentMap)
 
             self.previousMousePos = self.currentMousePos
             self.allSpritesList.draw(window)
@@ -592,12 +598,12 @@ class Main():
         self.selectedTower = None
         self.money += self.tower.GetPrice()
 
-    def SelectMap(self): #make this take an parameter of the maps location
-        self.currentMap = #new parameter
+    def SelectMap(self, map): #make this take an parameter of the maps location
+        self.currentMap = map
 
 class Button(pygame.sprite.Sprite):
+    params = {}
     def __init__(self, sprite, location, func = None):
-        
         self.func = func
         
         #Sprite stuff
@@ -612,8 +618,11 @@ class Button(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = location
 
-    def OnCLick(self, params = {}):
-        self.func(**params)
+    def setParams(self, params):
+        self.params = params
+
+    def OnCLick(self):
+        self.func(**self.params)
 
 ########################################################################################################
 #                                            - Functions -                                             #
