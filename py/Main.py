@@ -311,10 +311,13 @@ class Main():
             else:
                 currentMaps = MapList[self.mapIndex-2:self.mapIndex+3]
         
+            '''
             #Clears button list
             for sprite in self.buttonSpritesList:
                 sprite.kill()
                 del sprite
+            '''
+        
 
             #Checks current events
             for event in pygame.event.get():
@@ -330,12 +333,18 @@ class Main():
                     devPrint("current map is", self.currentMap)
             
                     #Check of and which buttons are pressed
+                    devPrint("aaa")
                     clicked = [s for s in self.buttonSpritesList if s.rect.collidepoint(mouse)]
                     if len(clicked) >= 1:
                         devPrint("Click")
                         clicked.OnClick()
                     else:
                         devPrint("user didnt click on anything, here is list:", clicked)
+
+            #Clears button list
+            for sprite in self.buttonSpritesList:
+                sprite.kill()
+                del sprite
 
             #Generates the map images and names
             for i in range(5):
@@ -373,6 +382,7 @@ class Main():
             pygame.display.update()
             window.fill(colours["white"])
             clock.tick(30)
+
 
     def GenerateMap(self): #Ran just before game loop to generate the map
         
@@ -684,8 +694,10 @@ def text_objects(text, font):
 def devPrint(*text):
     global todevprint
     if todevprint == True:
+        print("\u0332".join("DEVPRINT "), end = "")
         for i in text:
-            print(i)
+            print(i, end = "")
+        print("")
 
 ########################################################################################################
 #                                          - Call Functions -                                           #
