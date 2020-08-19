@@ -328,16 +328,15 @@ class Main():
 
                 #Upon Click
                 if event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse = pygame.mouse.get_pos()
                     for button in self.buttonList:
                         AreaClick(**button)
                     devPrint("current map is", self.currentMap)
             
                     #Check of and which buttons are pressed
-                    devPrint("aaa")
-                    clicked = [s for s in self.buttonSpritesList if s.rect.collidepoint(mouse)]
-                    if len(clicked) >= 1:
-                        devPrint("Click")
-                        clicked.OnClick()
+                    clicked = [s for s in self.buttonSpritesList if s.rect.collidepoint(mouse)] 
+                    if len(clicked) == 1:
+                        clicked[0].OnClick()
                     else:
                         devPrint("user didnt click on anything, here is list:", clicked)
 
