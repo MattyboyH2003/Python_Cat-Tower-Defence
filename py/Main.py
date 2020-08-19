@@ -7,6 +7,11 @@ from Waves import allWaves
 from Colours import colours
 from MapList import MapList, AllMaps, AllMapProfiles
 
+#when enabled print statements for testing purposes will show
+global todevprint
+todevprint = True
+
+
 ########################################################################################################
 #                                              - Setup -                                               #
 ########################################################################################################
@@ -322,12 +327,15 @@ class Main():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     for button in self.buttonList:
                         AreaClick(**button)
+                    devPrint("current map is", self.currentMap)
             
-            #Check of and which buttons are pressed
-            clicked = [s for s in self.buttonSpritesList if s.rect.collidepoint(mouse)]
-            if len(clicked) >= 1:
-                print("Click")
-                clicked.OnClick()
+                    #Check of and which buttons are pressed
+                    clicked = [s for s in self.buttonSpritesList if s.rect.collidepoint(mouse)]
+                    if len(clicked) >= 1:
+                        devPrint("Click")
+                        clicked.OnClick()
+                    else:
+                        devPrint("user didnt click on anything, here is list:", clicked)
 
             #Generates the map images and names
             for i in range(5):
@@ -336,7 +344,7 @@ class Main():
                 else:
                     tempColour = "bright_sky_blue"
 
-                button = Button(AllMapProfiles[currentMaps[i]], Vector2(-200 + (420*i) + self.pos, 360), self.SelectMap) #add a kwarg here of AllMaps[currentMaps[i]]
+                button = Button(AllMapProfiles[currentMaps[i]], Vector2(-200 + (420*i) + self.pos, 360), self.SelectMap)
                 pygame.draw.rect(window, colours[tempColour], (-400 + (420*i) + self.pos, 250, 400, 220))
 
                 button.setParams({"map": AllMaps[currentMaps[i]]})
@@ -359,7 +367,6 @@ class Main():
             if pygame.mouse.get_pressed()[0] == 1:
                 self.pos -= mouseDifference
 
-            print(self.currentMap)
 
             self.previousMousePos = self.currentMousePos
             self.allSpritesList.draw(window)
@@ -477,7 +484,7 @@ class Main():
             column = 0
             row += 1
 
-        print("Located start tile position, it is: {}".format(str(checkPos)))
+        devPrint("Located start tile position, it is: {}".format(str(checkPos)))
 
         endList = [",", ".", "6", "?"]
         path = True
@@ -598,8 +605,9 @@ class Main():
         self.selectedTower = None
         self.money += self.tower.GetPrice()
 
-    def SelectMap(self, map): #make this take an parameter of the maps location
+    def SelectMap(self, map): #make this take a parameter of the maps location
         self.currentMap = map
+        devPrint("set current map to", map)
 
 class Button(pygame.sprite.Sprite):
     params = {}
@@ -672,6 +680,12 @@ def text_objects(text, font):
     black = (0,0,0)
     textSurface = font.render(text, True, black)
     return textSurface, textSurface.get_rect()
+
+def devPrint(*text):
+    global todevprint
+    if todevprint == True:
+        for i in text:
+            print(i)
 
 ########################################################################################################
 #                                          - Call Functions -                                           #
