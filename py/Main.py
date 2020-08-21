@@ -73,22 +73,21 @@ class Main():
             self.buttonList.append({"text" : "Start!", "xPos" : 1080, "yPos" : 600, "width" : 200, "height" : 120, "colour" : colours["lavender"], "hoverColour" : colours["bright_lavender"], "func" : self.StartWave})
             self.buttonList.append({"text" : "Back!", "xPos" : 1230, "yPos" : 0, "width" : 50, "height" : 50, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : self.backWarn})
 
-            #Image UI
-            SelectGUIImage = pygame.image.load("Sprites\\GUI\\Outline.png")
-            window.blit(SelectGUIImage, (1080,0))
-
             SelectGUIImage = pygame.image.load("Sprites\\GUI\\LivesHeart.png")
-            window.blit(SelectGUIImage, (1157,15))
+            window.blit(SelectGUIImage, (1100,10))
+
+            SelectGUIImage = pygame.image.load("Sprites\\GUI\\MoneyCoin.png")
+            window.blit(SelectGUIImage, (1100,40))
 
             #Text UI
             largeText = pygame.font.SysFont("comicsansms",30)
             TextSurf, TextRect = text_objects(str(self.lives), largeText)
-            TextRect.center = ((1204),(25))
+            TextRect.center = ((1150),(20))
             window.blit(TextSurf, TextRect)
 
             largeText = pygame.font.SysFont("comicsansms",30)
             TextSurf, TextRect = text_objects(str(self.money), largeText)
-            TextRect.center = ((1120),(25))
+            TextRect.center = ((1150),(50))
             window.blit(TextSurf, TextRect)
 
             pygame.draw.rect(window, colours["bright_lavender"], (5, 665, 50, 50), 5)
@@ -245,6 +244,7 @@ class Main():
                 clock.tick(30)
         except:
             return
+            print("WARNING, THERE MAY HAVE BEEN AN ERROR HERE")
 
     def gameEnd(self, state = "you lose"):
         
