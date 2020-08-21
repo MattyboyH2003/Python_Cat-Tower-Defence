@@ -38,7 +38,7 @@ class Towers(pygame.sprite.Sprite):
 
         self.timeCache = 0
 
-    def UpdateRange(self):
+    def UpdateRadius(self):
         self.radius = self.range*10
 
     def CheckEnemies(self, enemy, enemyList):

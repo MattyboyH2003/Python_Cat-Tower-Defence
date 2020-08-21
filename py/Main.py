@@ -71,7 +71,7 @@ class Main():
             #Adds button information to the list of buttons
             self.buttonList = []
             self.buttonList.append({"text" : "Start!", "xPos" : 1080, "yPos" : 600, "width" : 200, "height" : 120, "colour" : colours["lavender"], "hoverColour" : colours["bright_lavender"], "func" : self.StartWave})
-            self.buttonList.append({"text" : "Back!", "xPos" : 1230, "yPos" : 0, "width" : 50, "height" : 50, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : self.gameIntro})
+            self.buttonList.append({"text" : "Back!", "xPos" : 1230, "yPos" : 0, "width" : 50, "height" : 50, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : self.backWarn})
 
             #Image UI
             SelectGUIImage = pygame.image.load("Sprites\\GUI\\Outline.png")
@@ -106,23 +106,11 @@ class Main():
             SelectGUIImage = pygame.image.load(towerExample.GetProfile())
             window.blit(SelectGUIImage, (8,608))
 
-            '''
-            dont use:
-            pygame.draw.rect(window, colours["bright_lavender"], (0, 0, 1080, 600), 5)
-            pygame.draw.rect(window, colours["bright_lavender"], (1080, 0, 200, 600), 5)
-            pygame.draw.rect(window, colours["bright_lavender"], (0, 600, 1080, 120), 5)
-            '''
 
-            for tower in self.towerSpritesList:
-                tower.UpdateRange()
-
-            #Upgrades UI
+            #calls upgrades UI
             if self.selectedTower != None:
-
+                self.selectedTower.UpdateRadius() # updates drawn radius
                 self.UpgradesUI(self.selectedTower)
-
-                elipseBoundries = [self.selectedTower.GetPos()[0]-(10*self.selectedTower.GetRange()), self.selectedTower.GetPos()[1]-(10*self.selectedTower.GetRange()), self.selectedTower.GetRange()*20, self.selectedTower.GetRange()*20]
-                pygame.draw.ellipse(window, colours["black"], elipseBoundries, 1)
 
                 
 
@@ -168,7 +156,7 @@ class Main():
             for button in self.buttonList:
                 ButtonVisuals(**button)
             
-            #all towers check and attack, currently prints when detects nearby towers
+            #all towers check and attack,
             for enemy in self.enemySpritesList:
                 for tower in self.towerSpritesList:
                     self.money += tower.CheckEnemies(enemy, self.enemySpritesList)
@@ -177,7 +165,7 @@ class Main():
             for item in self.enemySpritesList:
                 self.lives += item.MoveFrame()
 
-            #Spawn Wool
+            #Spawn new Wool
             if self.frameDelay == 0:
                 if len(self.currentWave) > 0:
                     nextThing = self.currentWave[0]
@@ -212,6 +200,51 @@ class Main():
             window.fill((255, 255, 255))
             self.allSpritesList.draw(window)
             clock.tick(30)
+    
+    def backWarn(self): #HOLY SHIT THIS IS THE WORST THING IVE EVER WRITTEN
+        warning = True
+        self.popupButtonList = []
+
+        def stopWarning():
+            raise Error()
+
+        def acceptWarning():
+            self.resetGame()
+
+        try:
+            while warning == True:
+
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        quit()
+                    elif event.type == pygame.MOUSEBUTTONDOWN:
+                        for button in self.popupButtonList:
+                            AreaClick(**button)
+
+                pygame.draw.rect(window, colours["white"], (400, 200, 500, 300))
+                pygame.draw.rect(window, colours["grey"], (400, 200, 500, 300), 5)
+
+                largeText = pygame.font.SysFont("comicsansms",25)
+                TextSurf, TextRect = text_objects("are you sure you want to quit?", largeText)
+                TextRect.center = (650,250)
+                window.blit(TextSurf, TextRect)
+
+                TextSurf, TextRect = text_objects("you will lose all progress!", largeText)
+                TextRect.center = (650,275)
+                window.blit(TextSurf, TextRect)
+
+
+                self.popupButtonList.append({"text" : "Yes!", "xPos" : 450, "yPos": 400, "width" : 100, "height" : 50, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : acceptWarning})
+                self.popupButtonList.append({"text" : "No!", "xPos" : 740, "yPos": 400, "width" : 100, "height" : 50, "colour" : colours["green"], "hoverColour" : colours["bright_green"], "func" : stopWarning})
+
+                for button in self.popupButtonList:
+                    ButtonVisuals(**button)
+
+                pygame.display.update()
+                self.allSpritesList.draw(window)
+                clock.tick(30)
+        except:
+            return
 
     def gameEnd(self, state = "you lose"):
         
@@ -269,6 +302,8 @@ class Main():
     
     def LevelSelect(self):
 
+        window.fill(colours["white"])
+
         self.currentMap = AllMaps["Map1"]
 
         levelSelect = True
@@ -311,12 +346,6 @@ class Main():
             else:
                 currentMaps = MapList[self.mapIndex-2:self.mapIndex+3]
         
-            '''
-            #Clears button list
-            for sprite in self.buttonSpritesList:
-                sprite.kill()
-                del sprite
-            '''
         
 
             #Checks current events
@@ -591,6 +620,8 @@ class Main():
 
     def UpgradesUI(self, tower):
         #Adds the Delete Button
+        elipseBoundries = [self.selectedTower.GetPos()[0]-(10*self.selectedTower.GetRange()), self.selectedTower.GetPos()[1]-(10*self.selectedTower.GetRange()), self.selectedTower.GetRange()*20, self.selectedTower.GetRange()*20]
+        pygame.draw.ellipse(window, colours["black"], elipseBoundries, 1)
         self.buttonList.append({"text" : "Delete", "xPos" : 120, "yPos" : 650, "width" : 200, "height" : 60, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : [tower.RemoveExistance, self.DeleteTower]})
         #Adds the Upgrade Buttons
         if len(tower.GetUpgrades()) == 2:
@@ -611,12 +642,33 @@ class Main():
             self.buttonList.append({"text" : "Tower Maxed", "xPos" : 330, "yPos" : 610, "width" : 730, "height" : 100, "colour" : colours["bright_brown"], "hoverColour" : colours["bright_brown"], "func" : None})
 
     def DeleteTower(self):
+        self.money += self.selectedTower.GetPrice()
         self.selectedTower = None
-        self.money += self.tower.GetPrice()
 
     def SelectMap(self, map): #make this take a parameter of the maps location
         self.currentMap = map
         devPrint("set current map to", map)
+
+    def resetGame(self):
+        self.currentWave = allWaves.pop(0)
+        self.lives = 100
+        self.money = 200
+        self.waveNum = -1
+        self.upgrading = False
+        self.currentTower = 0
+        self.selectedTower = None
+        self.currentMap = ""
+        
+
+        self.buttonList = []
+
+        self.towerSpritesList.empty()
+        self.tileSpritesList.empty()
+        self.collisionSpritesList.empty()
+        self.enemySpritesList.empty() 
+        self.buttonSpritesList.empty()
+        self.allSpritesList.empty()
+        self.gameIntro()
 
 class Button(pygame.sprite.Sprite):
     params = {}
@@ -697,6 +749,7 @@ def devPrint(*text):
         for i in text:
             print(i, end = "")
         print("")
+
 
 ########################################################################################################
 #                                          - Call Functions -                                           #
