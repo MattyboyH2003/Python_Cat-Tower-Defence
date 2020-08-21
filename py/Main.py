@@ -638,7 +638,7 @@ class Button(pygame.sprite.Sprite):
     def setParams(self, params):
         self.params = params
 
-    def OnCLick(self):
+    def OnClick(self):
         self.func(**self.params)
 
 ########################################################################################################
