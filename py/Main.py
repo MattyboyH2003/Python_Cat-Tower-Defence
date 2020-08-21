@@ -71,7 +71,7 @@ class Main():
             #Adds button information to the list of buttons
             self.buttonList = []
             self.buttonList.append({"text" : "Start!", "xPos" : 1080, "yPos" : 600, "width" : 200, "height" : 120, "colour" : colours["lavender"], "hoverColour" : colours["bright_lavender"], "func" : self.StartWave})
-            self.buttonList.append({"text" : "Back!", "xPos" : 1230, "yPos" : 0, "width" : 50, "height" : 50, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : self.backWarn})
+            self.buttonList.append({"text" : "Back!", "xPos" : 1190, "yPos" : 0, "width" : 90, "height" : 70, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : self.backWarn})
 
             SelectGUIImage = pygame.image.load("Sprites\\GUI\\LivesHeart.png")
             window.blit(SelectGUIImage, (1100,10))
@@ -90,20 +90,23 @@ class Main():
             TextRect.center = ((1150),(50))
             window.blit(TextSurf, TextRect)
 
-            pygame.draw.rect(window, colours["bright_lavender"], (5, 665, 50, 50), 5)
-            if self.waveNum >= 10:
-                self.waveNumFontSize = 15
-            else:
-                self.waveNumFontSize = 20
-            largeText = pygame.font.SysFont("comicsansms", self.waveNumFontSize)
-            TextSurf, TextRect = text_objects("W:"+ str(self.waveNum + 1), largeText)
-            TextRect.center = ((29),(688))
+            largeText = pygame.font.SysFont("comicsansms", 30)
+            TextSurf, TextRect = text_objects("Wave:"+ str(self.waveNum + 1), largeText)
+            TextRect.center = ((1150),(100))
             window.blit(TextSurf, TextRect)
 
             pygame.draw.rect(window, colours["bright_lavender"], (5, 605, 50, 50), 5)
             towerExample = self.towerDict[self.currentTower](Vector2(-50, -50), colours["white"], window)
             SelectGUIImage = pygame.image.load(towerExample.GetProfile())
             window.blit(SelectGUIImage, (8,608))
+
+            pygame.draw.rect(window, colours["bright_lavender"], (5, 665, 50, 50,), 5)
+            largeText = pygame.font.SysFont("comicsansms", 15)
+            TextSurf, TextRect = text_objects(str(towerExample.GetPrice()), largeText)
+            TextRect.center = ((29),(688))
+            window.blit(TextSurf, TextRect)
+
+
 
 
             #calls upgrades UI
@@ -224,7 +227,7 @@ class Main():
                 pygame.draw.rect(window, colours["grey"], (400, 200, 500, 300), 5)
 
                 largeText = pygame.font.SysFont("comicsansms",25)
-                TextSurf, TextRect = text_objects("are you sure you want to quit?", largeText)
+                TextSurf, TextRect = text_objects("Are you sure you want to quit?", largeText)
                 TextRect.center = (650,250)
                 window.blit(TextSurf, TextRect)
 
