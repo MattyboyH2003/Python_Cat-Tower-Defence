@@ -330,7 +330,7 @@ class Main():
             self.currentMousePos = pygame.mouse.get_pos()
 
             #Checks mapIndex to see if its out of bounds
-            if self.mapIndex >= len(MapList)-1:
+            if self.mapIndex >= len(MapList):
                 self.mapIndex = 0
             elif self.mapIndex < 0:
                 self.mapIndex = len(MapList)-1
@@ -366,8 +366,6 @@ class Main():
                     clicked = [s for s in self.buttonSpritesList if s.rect.collidepoint(mouse)] 
                     if len(clicked) == 1:
                         clicked[0].OnClick()
-                    else:
-                        devPrint("user didnt click on anything, here is list:", clicked)
 
             #Clears button list
             for sprite in self.buttonSpritesList:
