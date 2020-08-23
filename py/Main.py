@@ -1,4 +1,3 @@
-#Tsetiintns
 import pygame
 import copy
 from Towers import *
@@ -9,9 +8,8 @@ from Colours import colours
 from MapList import MapList, AllMaps, AllMapProfiles
 
 #when enabled print statements for testing purposes will show
-global todevprint
-todevprint = True
-
+global toDevPrint #Global *angry face*
+toDevPrint = True
 
 ########################################################################################################
 #                                              - Setup -                                               #
@@ -58,7 +56,7 @@ class Main():
     buttonSpritesList = pygame.sprite.Group()
     allSpritesList = pygame.sprite.Group() #list of things to be drawn to screen
     
-    def gameLoop(self): #The Main game loop, called when play is clicked
+    def GameLoop(self): #The Main game loop, called when play is clicked
         self.running = True
         self.waveOngoing = False
         
@@ -72,8 +70,9 @@ class Main():
             #Adds button information to the list of buttons
             self.buttonList = []
             self.buttonList.append({"text" : "Start!", "xPos" : 1080, "yPos" : 600, "width" : 200, "height" : 120, "colour" : colours["lavender"], "hoverColour" : colours["bright_lavender"], "func" : self.StartWave})
-            self.buttonList.append({"text" : "Back!", "xPos" : 1190, "yPos" : 0, "width" : 90, "height" : 70, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : self.backWarn})
-
+            self.buttonList.append({"text" : "Back!", "xPos" : 1190, "yPos" : 0, "width" : 90, "height" : 70, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : self.BackWarn})
+            
+            #Loads Image UI
             SelectGUIImage = pygame.image.load("Sprites\\GUI\\LivesHeart.png")
             window.blit(SelectGUIImage, (1100,10))
 
@@ -82,20 +81,21 @@ class Main():
 
             #Text UI
             largeText = pygame.font.SysFont("comicsansms",30)
-            TextSurf, TextRect = text_objects(str(self.lives), largeText)
-            TextRect.center = ((1150),(20))
-            window.blit(TextSurf, TextRect)
+            textSurf, textRect = TextObjects(str(self.lives), largeText)
+            textRect.center = ((1150),(20))
+            window.blit(textSurf, textRect)
 
             largeText = pygame.font.SysFont("comicsansms",30)
-            TextSurf, TextRect = text_objects(str(self.money), largeText)
-            TextRect.center = ((1150),(50))
-            window.blit(TextSurf, TextRect)
+            textSurf, textRect = TextObjects(str(self.money), largeText)
+            textRect.center = ((1150),(50))
+            window.blit(textSurf, textRect)
 
             largeText = pygame.font.SysFont("comicsansms", 30)
-            TextSurf, TextRect = text_objects("Wave:"+ str(self.waveNum + 1), largeText)
-            TextRect.center = ((1150),(100))
-            window.blit(TextSurf, TextRect)
+            textSurf, textRect = TextObjects("Wave:"+ str(self.waveNum + 1), largeText)
+            textRect.center = ((1150),(100))
+            window.blit(textSurf, textRect)
 
+            #Draws Rectangles
             pygame.draw.rect(window, colours["bright_lavender"], (5, 605, 50, 50), 5)
             towerExample = self.towerDict[self.currentTower](Vector2(-50, -50), colours["white"], window)
             SelectGUIImage = pygame.image.load(towerExample.GetProfile())
@@ -103,26 +103,21 @@ class Main():
 
             pygame.draw.rect(window, colours["bright_lavender"], (5, 665, 50, 50,), 5)
             largeText = pygame.font.SysFont("comicsansms", 15)
-            TextSurf, TextRect = text_objects(str(towerExample.GetPrice()), largeText)
-            TextRect.center = ((29),(688))
-            window.blit(TextSurf, TextRect)
-
-
-
+            textSurf, textRect = TextObjects(str(towerExample.GetPrice()), largeText)
+            textRect.center = ((29),(688))
+            window.blit(textSurf, textRect)
 
             #calls upgrades UI
             if self.selectedTower != None:
                 self.selectedTower.UpdateRadius() # updates drawn radius
                 self.UpgradesUI(self.selectedTower)
 
-                
-
             #Checking for events each frame
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     quit()
                 
-                #Upon click
+                #Upon Click
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mouse = pygame.mouse.get_pos()
                     
@@ -143,13 +138,14 @@ class Main():
                             self.PlaceTower()
                             self.selectedTower = None
                             
-                    
-                
+                #Upon Keypress
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_LEFT:
                         self.currentTower -= 1
                     if event.key == pygame.K_RIGHT:
                         self.currentTower += 1
+                
+                #Checks the current selected tower is valid
                 if self.currentTower <= 0:
                     self.currentTower = 0
                 elif self.currentTower >= len(self.towerDict)-1:
@@ -188,7 +184,7 @@ class Main():
             #Check For end of game
             if self.lives <= 0:
                 self.lives = 0 #stop it counting down further after loss screen
-                self.gameEnd()
+                self.GameEnd()
 
             #Check for end of wave
             if self.waveOngoing:
@@ -196,7 +192,7 @@ class Main():
                     self.money += self.waveReward
                     self.waveOngoing = False
                     if len(allWaves) <= 0:
-                        self.gameEnd("you win!")
+                        self.GameEnd("you win!")
 
             #Final stuff
             pygame.display.update()
@@ -204,7 +200,7 @@ class Main():
             self.allSpritesList.draw(window)
             clock.tick(30)
     
-    def backWarn(self): #HOLY SHIT THIS IS THE WORST THING IVE EVER WRITTEN
+    def BackWarn(self): #HOLY SHIT THIS IS THE WORST THING IVE EVER WRITTEN
         warning = True
         self.popupButtonList = []
 
@@ -212,7 +208,7 @@ class Main():
             raise Error()
 
         def acceptWarning():
-            self.resetGame()
+            self.ResetGame()
 
         try:
             while warning == True:
@@ -228,13 +224,13 @@ class Main():
                 pygame.draw.rect(window, colours["grey"], (400, 200, 500, 300), 5)
 
                 largeText = pygame.font.SysFont("comicsansms",25)
-                TextSurf, TextRect = text_objects("Are you sure you want to quit?", largeText)
-                TextRect.center = (650,250)
-                window.blit(TextSurf, TextRect)
+                textSurf, textRect = TextObjects("Are you sure you want to quit?", largeText)
+                textRect.center = (650,250)
+                window.blit(textSurf, textRect)
 
-                TextSurf, TextRect = text_objects("you will lose all progress!", largeText)
-                TextRect.center = (650,275)
-                window.blit(TextSurf, TextRect)
+                textSurf, textRect = TextObjects("you will lose all progress!", largeText)
+                textRect.center = (650,275)
+                window.blit(textSurf, textRect)
 
 
                 self.popupButtonList.append({"text" : "Yes!", "xPos" : 450, "yPos": 400, "width" : 100, "height" : 50, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : acceptWarning})
@@ -250,7 +246,7 @@ class Main():
             return
             print("WARNING, THERE MAY HAVE BEEN AN ERROR HERE")
 
-    def gameEnd(self, state = "you lose"):
+    def GameEnd(self, state = "you lose"):
         
         self.buttonList = []
         self.buttonList.append({"text" : "Quit!", "xPos" : 550, "yPos": 450, "width" : 100, "height" : 50, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : quit})
@@ -266,9 +262,9 @@ class Main():
                     
             window.fill(colours["white"])
             largeText = pygame.font.SysFont("comicsansms",115)
-            TextSurf, TextRect = text_objects(state, largeText)
-            TextRect.center = ((resolution[0]/2),(resolution[1]/2))
-            window.blit(TextSurf, TextRect)
+            textSurf, textRect = TextObjects(state, largeText)
+            textRect.center = ((resolution[0]/2),(resolution[1]/2))
+            window.blit(textSurf, textRect)
 
             for button in self.buttonList:
                 ButtonVisuals(**button)
@@ -276,7 +272,7 @@ class Main():
             pygame.display.update()
             clock.tick(30)
 
-    def gameIntro(self): #The Menu screen Loop, called on play
+    def GameIntro(self): #The Menu screen Loop, called on play
         intro = True
 
         self.buttonList = []
@@ -294,9 +290,9 @@ class Main():
                     
             window.fill(colours["white"])
             largeText = pygame.font.SysFont("comicsansms",115)
-            TextSurf, TextRect = text_objects("Angry Cats", largeText)
-            TextRect.center = ((640),(300))
-            window.blit(TextSurf, TextRect)
+            textSurf, textRect = TextObjects("Angry Cats", largeText)
+            textRect.center = ((640),(300))
+            window.blit(textSurf, textRect)
 
             for button in self.buttonList:
                 ButtonVisuals(**button)
@@ -313,7 +309,7 @@ class Main():
         levelSelect = True
         self.buttonList = []
         self.buttonList.append({"text" : "Play!", "xPos" : 10, "yPos" : 10, "width" : 100, "height" : 40, "colour" : colours["green"], "hoverColour" : colours["bright_green"], "func" : self.GenerateMap})
-        self.buttonList.append({"text" : "Back!", "xPos" : 10, "yPos" : 60, "width" : 50, "height" : 40, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : self.gameIntro})
+        self.buttonList.append({"text" : "Back!", "xPos" : 10, "yPos" : 60, "width" : 50, "height" : 40, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : self.GameIntro})
 
         self.pos = 0
         self.mapIndex=0 #i would equal the selected maps index
@@ -364,7 +360,7 @@ class Main():
                     mouse = pygame.mouse.get_pos()
                     for button in self.buttonList:
                         AreaClick(**button)
-                    devPrint("current map is", self.currentMap)
+                    DevPrint("current map is", self.currentMap)
             
                     #Check of and which buttons are pressed
                     clicked = [s for s in self.buttonSpritesList if s.rect.collidepoint(mouse)] 
@@ -386,15 +382,15 @@ class Main():
                 button = Button(AllMapProfiles[currentMaps[i]], Vector2(-200 + (420*i) + self.pos, 360), self.SelectMap)
                 pygame.draw.rect(window, colours[tempColour], (-400 + (420*i) + self.pos, 250, 400, 220))
 
-                button.setParams({"map": AllMaps[currentMaps[i]]})
+                button.SetParams({"map": AllMaps[currentMaps[i]]})
                 self.buttonSpritesList.add(button)
                 self.allSpritesList.add(button)
 
                 #Adds the text below the image
                 largeText = pygame.font.SysFont("comicsansms",20)
-                TextSurf, TextRect = text_objects(currentMaps[i], largeText)
-                TextRect.center = ((-200 + (420*i) + self.pos, 500))
-                window.blit(TextSurf, TextRect)
+                textSurf, textRect = TextObjects(currentMaps[i], largeText)
+                textRect.center = ((-200 + (420*i) + self.pos, 500))
+                window.blit(textSurf, textRect)
 
             #Generates non-sprite buttons
             for button in self.buttonList:
@@ -412,7 +408,6 @@ class Main():
             pygame.display.update()
             window.fill(colours["white"])
             clock.tick(30)
-
 
     def GenerateMap(self): #Ran just before game loop to generate the map
         
@@ -524,7 +519,7 @@ class Main():
             column = 0
             row += 1
 
-        devPrint("Located start tile position, it is: {}".format(str(checkPos)))
+        DevPrint("Located start tile position, it is: {}".format(str(checkPos)))
 
         endList = [",", ".", "6", "?"]
         path = True
@@ -580,7 +575,7 @@ class Main():
                             self.pathList.append("R")
                             self.pathList.append("END")
                             path = False
-        self.gameLoop()
+        self.GameLoop()
 
     def StartWave(self):
         if not self.waveOngoing:
@@ -589,9 +584,6 @@ class Main():
             self.waveReward = currentWaveData[1]
             self.waveOngoing = True
             self.waveNum += 1
-
-    def toggleDelete(self):
-        self.deleting = True
 
     def PlaceTower(self): #Ran to spawn towers at the mouse position upon click
         """
@@ -649,9 +641,9 @@ class Main():
 
     def SelectMap(self, map): #make this take a parameter of the maps location
         self.currentMap = map
-        devPrint("set current map to", map)
+        DevPrint("set current map to", map)
 
-    def resetGame(self):
+    def ResetGame(self):
         self.currentWave = allWaves.pop(0)
         self.lives = 100
         self.money = 200
@@ -670,7 +662,7 @@ class Main():
         self.enemySpritesList.empty() 
         self.buttonSpritesList.empty()
         self.allSpritesList.empty()
-        self.gameIntro()
+        self.GameIntro()
 
 class Button(pygame.sprite.Sprite):
     params = {}
@@ -689,7 +681,7 @@ class Button(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = location
 
-    def setParams(self, params):
+    def SetParams(self, params):
         self.params = params
 
     def OnClick(self):
@@ -724,7 +716,7 @@ def ButtonVisuals(text, xPos, yPos, width, height , colour, hoverColour, border 
             pygame.draw.rect(window, Darken(hoverColour),(xPos,yPos,width,height),5) #Draws the border
 
     smallText = pygame.font.SysFont("comicsansms",20)
-    textSurf, textRect = text_objects(text, smallText)
+    textSurf, textRect = TextObjects(text, smallText)
     textRect.center = ( (xPos+(width/2)), (yPos+(height/2)) )
     window.blit(textSurf, textRect)
 
@@ -739,32 +731,28 @@ def Darken(colour):
     newColour = tuple(newColour)
     return (newColour)
 
-def text_objects(text, font):
-    black = (0,0,0)
-    textSurface = font.render(text, True, black)
+def TextObjects(text, font):
+    textSurface = font.render(text, True, colours["black"])
     return textSurface, textSurface.get_rect()
 
-def devPrint(*text):
-    global todevprint
-    if todevprint == True:
-        print("\u0332".join("DEVPRINT "), end = "")
+def DevPrint(*text):
+    global toDevPrint
+    if toDevPrint == True:
+        print("\u0332".join("DevPrint "), end = "")
         for i in text:
             print(i, end = "")
         print("")
 
-
 ########################################################################################################
-#                                          - Call Functions -                                           #
+#                                          - Call Functions -                                          #
 ########################################################################################################
 main = Main()
-main.gameIntro()
+main.GameIntro()
 pygame.quit()
 quit()
 
 '''
 THINGS TO DO
 
-make more maps
-made level select
 make sprites for tiles
 '''
