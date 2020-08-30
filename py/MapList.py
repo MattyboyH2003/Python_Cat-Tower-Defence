@@ -20,3 +20,17 @@ AllMapProfiles = {
 "Map6" : "Data\\Maps\\Map6Profile.png",
 "Map7" : "Data\\Maps\\Map7Profile.png",
 "Map8" : "Data\\Maps\\Map8Profile.png"}
+
+"""
+        Tile Key:
+        # - Ground
+        P - Path
+        < - Start From Left
+        > - Start From Right
+        ^ - Start From Bottom
+        / - Start From Top
+        , - End On Left
+        . - End On Right
+        6 - End On Bottom
+        ? - End On Top
+        """

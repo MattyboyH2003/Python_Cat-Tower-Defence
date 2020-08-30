@@ -411,19 +411,7 @@ class Main():
 
     def GenerateMap(self): #Ran just before game loop to generate the map
         
-        """
-        Tile Key:
-        # - Ground
-        P - Path
-        < - Start From Left
-        > - Start From Right
-        ^ - Start From Bottom
-        / - Start From Top
-        , - End On Left
-        . - End On Right
-        6 - End On Bottom
-        ? - End On Top
-        """
+        #for a tile key, check MapList.py
 
         mapFile = open(self.currentMap, "r")
         fileContents = mapFile.readlines()
@@ -432,28 +420,26 @@ class Main():
         for item in fileContents:
             mapString += item.replace("\n", "")
 
+        typeList = {
+            "#" : Ground,
+            "P" : Path,
+            ">" : StartRight,
+            "<" : StartLeft,
+            "/" : StartDown,
+            "^" : StartUp,
+            "," : EndLeft,
+            "6" : EndDown,
+            "." : EndRight,
+            "?" : EndUp
+        }
+
         counter = 0
         for char in mapString:
-            if char == "#":
-                nextTile = Ground
-            elif char == "P":
-                nextTile = Path
-            elif char == ">":
-                nextTile = StartRight
-            elif char == "<":
-                nextTile = StartLeft
-            elif char == "/":
-                nextTile = StartDown
-            elif char == "^":
-                nextTile = StartUp
-            elif char == ",":
-                nextTile = EndLeft
-            elif char == "6":
-                nextTile = EndDown
-            elif char == ".":
-                nextTile = EndRight
-            elif char == "?":
-                nextTile = EndUp
+            for type in typeList:
+                try:
+                    nextTile = typeList[char]
+                except:
+                    print("Error! Map tile not in typelist")
             location = [((counter%54)*20)+10, ((counter//54)*20)+10]
             tile = nextTile(location, colours["red"])
 
@@ -468,19 +454,7 @@ class Main():
         self.GeneratePath()
 
     def GeneratePath(self): #Ran after generating the map
-        """
-        Tile Key:
-        # - Grass
-        P - Path
-        < - Start From Left
-        > - Start From Right
-        ^ - Start From Bottom
-        / - Start From Top
-        , - End On Left
-        . - End On Right
-        6 - End On Bottom
-        ? - End On Top
-        """
+        #for a tile key, check MapList.py
 
         mapFile = open(self.currentMap, "r")
         fileContents = mapFile.readlines()
