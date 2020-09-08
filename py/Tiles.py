@@ -13,15 +13,21 @@ class Tiles(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = startPos
 
-class Ground(Tiles):
-    sprite = "Sprites\\Tiles\\Grass.png"
-class Path(Tiles):
-    sprite = "Sprites\\Tiles\\Path.png"
-
 class Start(Tiles):
     def __init__(self, startPos, colour):
 
         Tiles.__init__(self, startPos, colour)
+
+class End(Tiles):
+
+    def __init__(self, startPos, colour):
+
+        Tiles.__init__(self, startPos, colour)
+
+class Ground(Tiles):
+    sprite = "Sprites\\Tiles\\Grass.png"
+class Path(Tiles):
+    sprite = "Sprites\\Tiles\\Path.png"
 class StartUp(Start):
     sprite = "Sprites\\Tiles\\StartUp.png"
 class StartRight(Start):
@@ -30,12 +36,6 @@ class StartDown(Start):
     sprite = "Sprites\\Tiles\\StartDown.png"
 class StartLeft(Start):
     sprite = "Sprites\\Tiles\\StartLeft.png"
-
-class End(Tiles):
-
-    def __init__(self, startPos, colour):
-
-        Tiles.__init__(self, startPos, colour)
 class EndUp(End):
     sprite = "Sprites\\Tiles\\EndUp.png"
 class EndRight(End):
@@ -44,3 +44,4 @@ class EndDown(End):
     sprite = "Sprites\\Tiles\\EndDown.png"
 class EndLeft(End):
     sprite = "Sprites\\Tiles\\EndLeft.png"
+

@@ -1,5 +1,6 @@
 #Colours
 colours = {
+#colours
 "red" : (200,0,0),
 "green" : (0,200,0),
 "purple" : (255, 0 ,255),
@@ -8,7 +9,7 @@ colours = {
 "blue" : (0, 0, 200),
 "sky_blue" : (59, 196, 217),
 
-
+#alternative colours
 "bright_lavender" : (150, 150, 255),
 "bright_red" : (255,0,0),
 "bright_green" : (0,255,0),
@@ -16,7 +17,7 @@ colours = {
 "bright_blue" : (0, 0, 255),
 "bright_sky_blue" : (117, 237, 255),
 
-
+#shades
 "white" : (255,255,255),
 "grey"  : (125, 125, 125),
 "black" : (0,0,0)}

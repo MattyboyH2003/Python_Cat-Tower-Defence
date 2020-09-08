@@ -200,7 +200,7 @@ class Main():
             self.allSpritesList.draw(window)
             clock.tick(30)
     
-    def BackWarn(self): #HOLY SHIT THIS IS THE WORST THING IVE EVER WRITTEN
+    def BackWarn(self): #THIS IS THE WORST THING IVE EVER WRITTEN IM SO SORRY
         warning = True
         self.popupButtonList = []
 
@@ -243,8 +243,8 @@ class Main():
                 self.allSpritesList.draw(window)
                 clock.tick(30)
         except:
+            DevPrint("WARNING, IF YOU DIDNT CLICK BACK IN GAME AND YOU CAN READ THIS TEXT, THERE IS AN ERROR IN BackWarn()")
             return
-            print("WARNING, THERE MAY HAVE BEEN AN ERROR HERE")
 
     def GameEnd(self, state = "you lose"):
         
@@ -290,7 +290,7 @@ class Main():
                     
             window.fill(colours["white"])
             largeText = pygame.font.SysFont("comicsansms",115)
-            textSurf, textRect = TextObjects("Angry Cats", largeText)
+            textSurf, textRect = TextObjects("Name here", largeText)
             textRect.center = ((640),(300))
             window.blit(textSurf, textRect)
 
@@ -494,62 +494,90 @@ class Main():
             row += 1
 
         DevPrint("Located start tile position, it is: {}".format(str(checkPos)))
+        
+        '''
+        endList = [",", ".", "6", "?"]
+        listItems = [["U", -1, 0],["D", 1, 29],["L", -1, 0],["R", 1, 53]]
+        path = True
+
+        while path == True: #Starts going until the path is complete
+            for i in range(4):
+                if checkPos[0] != listItems[i][2]:
+                    if mapArray[checkPos[0] + listItems[i][1]][checkPos[1]] == "P": #Checks for path
+                        self.pathList.append(listItems[i][0])
+                        mapArray[checkPos[0]][checkPos[1]] = "#"
+                        checkPos[0] = checkPos[0] + listItems[i][1]
+                        continue
+                    else:
+                        for item in endList: #Checks for end
+                            if mapArray[checkPos[0] + listItems[i][1]][checkPos[1]] == item:
+                                self.pathList.append(listItems[i][0])                                      
+                                self.pathList.append("END")
+                                path = False
+                                DevPrint("path should be false now")
+                            else:
+                                DevPrint(mapArray[checkPos[0] + listItems[i][1]][checkPos[1]])
+        self.GameLoop()
+        '''
 
         endList = [",", ".", "6", "?"]
         path = True
+
         while path == True: #Starts going until the path is complete
-            if checkPos[0] != 0: #Checks the tile above
-                if mapArray[checkPos[0]-1][checkPos[1]] == "P": #Checks for path
-                    self.pathList.append("U")
-                    mapArray[checkPos[0]][checkPos[1]] = "#"
-                    checkPos[0] = checkPos[0]-1
-                    continue
-                else:
-                    for item in endList: #Checks for end
-                        if mapArray[checkPos[0]-1][checkPos[1]] == item:
-                            self.pathList.append("U")
-                            self.pathList.append("END")
-                            path = False
-            
-            if checkPos[0] != 29: #Checks the tile below
-                if mapArray[checkPos[0]+1][checkPos[1]] == "P": #Checks for path
-                    self.pathList.append("D")
-                    mapArray[checkPos[0]][checkPos[1]] = "#"
-                    checkPos[0] = checkPos[0]+1
-                    continue
-                else:
-                    for item in endList: #Checks for end
-                        if mapArray[checkPos[0]+1][checkPos[1]] == item:
-                            self.pathList.append("D")
-                            self.pathList.append("END")
-                            path = False
-            
-            if checkPos[1] != 0: #Checks the tile to the left
-                if mapArray[checkPos[0]][checkPos[1]-1] == "P": #Checks for path
-                    self.pathList.append("L")
-                    mapArray[checkPos[0]][checkPos[1]] = "#"
-                    checkPos[1] = checkPos[1]-1
-                    continue
-                else:
-                    for item in endList: #Checks for end
-                        if mapArray[checkPos[0]][checkPos[1]-1] == item:
-                            self.pathList.append("L")
-                            self.pathList.append("END")
-                            path = False
-            
-            if checkPos[1] != 53: #Checks the tile to the right
-                if mapArray[checkPos[0]][checkPos[1]+1] == "P": #Checks for path
-                    self.pathList.append("R")
-                    mapArray[checkPos[0]][checkPos[1]] = "#"
-                    checkPos[1] = checkPos[1]+1
-                    continue
-                else:
-                    for item in endList: #Checks for end
-                        if mapArray[checkPos[0]][checkPos[1]+1] == item:
-                            self.pathList.append("R")
-                            self.pathList.append("END")
-                            path = False
+                if checkPos[0] != 0: #Checks the tile above
+                    if mapArray[checkPos[0]-1][checkPos[1]] == "P": #Checks for path
+                        self.pathList.append("U")
+                        mapArray[checkPos[0]][checkPos[1]] = "#"
+                        checkPos[0] = checkPos[0]-1
+                        continue
+                    else:
+                        for item in endList: #Checks for end
+                            if mapArray[checkPos[0]-1][checkPos[1]] == item:
+                                self.pathList.append("U")                                      #
+                                self.pathList.append("END")
+                                path = False
+                
+                if checkPos[0] != 29: #Checks the tile below
+                    if mapArray[checkPos[0]+1][checkPos[1]] == "P": #Checks for path
+                        self.pathList.append("D")
+                        mapArray[checkPos[0]][checkPos[1]] = "#"
+                        checkPos[0] = checkPos[0]+1
+                        continue
+                    else:
+                        for item in endList: #Checks for end
+                            if mapArray[checkPos[0]+1][checkPos[1]] == item:
+                                self.pathList.append("D")                                      #
+                                self.pathList.append("END")
+                                path = False
+                
+                if checkPos[1] != 0: #Checks the tile to the left
+                    if mapArray[checkPos[0]][checkPos[1]-1] == "P": #Checks for path
+                        self.pathList.append("L")
+                        mapArray[checkPos[0]][checkPos[1]] = "#"
+                        checkPos[1] = checkPos[1]-1
+                        continue
+                    else:
+                        for item in endList: #Checks for end
+                            if mapArray[checkPos[0]][checkPos[1]-1] == item:
+                                self.pathList.append("L")                                      #
+                                self.pathList.append("END")
+                                path = False
+                
+                if checkPos[1] != 53: #Checks the tile to the right
+                    if mapArray[checkPos[0]][checkPos[1]+1] == "P": #Checks for path
+                        self.pathList.append("R")
+                        mapArray[checkPos[0]][checkPos[1]] = "#"
+                        checkPos[1] = checkPos[1]+1
+                        continue
+                    else:
+                        for item in endList: #Checks for end
+                            if mapArray[checkPos[0]][checkPos[1]+1] == item:
+                                self.pathList.append("R")                                      #
+                                self.pathList.append("END")
+                                path = False
         self.GameLoop()
+            
+        
 
     def StartWave(self):
         if not self.waveOngoing:
