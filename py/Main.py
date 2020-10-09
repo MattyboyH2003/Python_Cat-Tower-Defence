@@ -435,11 +435,10 @@ class Main():
 
         counter = 0
         for char in mapString:
-            for type in typeList:
-                try:
-                    nextTile = typeList[char]
-                except:
-                    print("Error! Map tile not in typelist")
+            try:
+                nextTile = typeList[char]
+            except:
+                print("Error! Map tile not in typelist")
             location = [((counter%54)*20)+10, ((counter//54)*20)+10]
             tile = nextTile(location, colours["red"])
 
@@ -577,8 +576,6 @@ class Main():
                                 path = False
         self.GameLoop()
             
-        
-
     def StartWave(self):
         if not self.waveOngoing:
             currentWaveData = allWaves.pop(0)
@@ -756,5 +753,5 @@ quit()
 '''
 THINGS TO DO
 
-make sprites for tiles
+Better tiles system
 '''
