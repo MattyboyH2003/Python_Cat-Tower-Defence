@@ -59,140 +59,226 @@ class Main():
     def GameLoop(self): #The Main game loop, called when play is clicked
         self.running = True
         self.waveOngoing = False
-        
+        self.paused = False
+
         while self.running == True:
-
-            #clears all buttons
-            for sprite in self.buttonSpritesList:
-                sprite.kill()
-                del sprite
             
-            #Adds button information to the list of buttons
-            self.buttonList = []
-            self.buttonList.append({"text" : "Start!", "xPos" : 1080, "yPos" : 600, "width" : 200, "height" : 120, "colour" : colours["lavender"], "hoverColour" : colours["bright_lavender"], "func" : self.StartWave})
-            self.buttonList.append({"text" : "Back!", "xPos" : 1190, "yPos" : 0, "width" : 90, "height" : 70, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : self.BackWarn})
-            
-            #Loads Image UI
-            SelectGUIImage = pygame.image.load("Sprites\\GUI\\LivesHeart.png")
-            window.blit(SelectGUIImage, (1100,10))
+            if self.paused == False:
+                #clears all buttons
+                for sprite in self.buttonSpritesList:
+                    sprite.kill()
+                    del sprite
 
-            SelectGUIImage = pygame.image.load("Sprites\\GUI\\MoneyCoin.png")
-            window.blit(SelectGUIImage, (1100,40))
-
-            #Text UI
-            largeText = pygame.font.SysFont("comicsansms",30)
-            textSurf, textRect = TextObjects(str(self.lives), largeText)
-            textRect.center = ((1150),(20))
-            window.blit(textSurf, textRect)
-
-            largeText = pygame.font.SysFont("comicsansms",30)
-            textSurf, textRect = TextObjects(str(self.money), largeText)
-            textRect.center = ((1150),(50))
-            window.blit(textSurf, textRect)
-
-            largeText = pygame.font.SysFont("comicsansms", 30)
-            textSurf, textRect = TextObjects("Wave:"+ str(self.waveNum + 1), largeText)
-            textRect.center = ((1150),(100))
-            window.blit(textSurf, textRect)
-
-            #Draws Rectangles
-            pygame.draw.rect(window, colours["bright_lavender"], (5, 605, 50, 50), 5)
-            towerExample = self.towerDict[self.currentTower](Vector2(-50, -50), colours["white"], window)
-            SelectGUIImage = pygame.image.load(towerExample.GetProfile())
-            window.blit(SelectGUIImage, (8,608))
-
-            pygame.draw.rect(window, colours["bright_lavender"], (5, 665, 50, 50,), 5)
-            largeText = pygame.font.SysFont("comicsansms", 15)
-            textSurf, textRect = TextObjects(str(towerExample.GetPrice()), largeText)
-            textRect.center = ((29),(688))
-            window.blit(textSurf, textRect)
-
-            #calls upgrades UI
-            if self.selectedTower != None:
-                self.selectedTower.UpdateRadius() # updates drawn radius
-                self.UpgradesUI(self.selectedTower)
-
-            #Checking for events each frame
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    quit()
+                #Adds button information to the list of buttons
+                self.buttonList = []
+                self.buttonList.append({"text" : "Start!", "xPos" : 1080, "yPos" : 600, "width" : 200, "height" : 120, "colour" : colours["lavender"], "hoverColour" : colours["bright_lavender"], "func" : self.StartWave})
+                self.buttonList.append({"text" : "Back!", "xPos" : 1190, "yPos" : 0, "width" : 90, "height" : 70, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : self.PauseGame})
                 
-                #Upon Click
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    mouse = pygame.mouse.get_pos()
+                #Yes
+                #Loads Image UI
+                SelectGUIImage = pygame.image.load("Sprites\\GUI\\LivesHeart.png")
+                window.blit(SelectGUIImage, (1100,10))
+
+                SelectGUIImage = pygame.image.load("Sprites\\GUI\\MoneyCoin.png")
+                window.blit(SelectGUIImage, (1100,40))
+
+                #Yes
+                #Text UI
+                largeText = pygame.font.SysFont("comicsansms",30)
+                textSurf, textRect = TextObjects(str(self.lives), largeText)
+                textRect.center = ((1150),(20))
+                window.blit(textSurf, textRect)
+
+                largeText = pygame.font.SysFont("comicsansms",30)
+                textSurf, textRect = TextObjects(str(self.money), largeText)
+                textRect.center = ((1150),(50))
+                window.blit(textSurf, textRect)
+
+                largeText = pygame.font.SysFont("comicsansms", 30)
+                textSurf, textRect = TextObjects("Wave:"+ str(self.waveNum + 1), largeText)
+                textRect.center = ((1150),(100))
+                window.blit(textSurf, textRect)
+
+                #Yes
+                #Draws Rectangles
+                pygame.draw.rect(window, colours["bright_lavender"], (5, 605, 50, 50), 5)
+                towerExample = self.towerDict[self.currentTower](Vector2(-50, -50), colours["white"], window)
+                SelectGUIImage = pygame.image.load(towerExample.GetProfile())
+                window.blit(SelectGUIImage, (8,608))
+
+                pygame.draw.rect(window, colours["bright_lavender"], (5, 665, 50, 50,), 5)
+                largeText = pygame.font.SysFont("comicsansms", 15)
+                textSurf, textRect = TextObjects(str(towerExample.GetPrice()), largeText)
+                textRect.center = ((29),(688))
+                window.blit(textSurf, textRect)
+
+                #Yes
+                #calls upgrades UI
+                if self.selectedTower != None:
+                    self.selectedTower.UpdateRadius() # updates drawn radius
+                    self.UpgradesUI(self.selectedTower)
+
+                #No
+                #Checking for events each frame while game is running
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        quit()
                     
-                    for button in self.buttonList:
-                        AreaClick(**button)
+                    #Upon Click
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        mouse = pygame.mouse.get_pos()
+                        
+                        for button in self.buttonList:
+                            AreaClick(**button)
 
-                    clicked = [s for s in self.buttonSpritesList if s.rect.collidepoint(mouse)]
+                        clicked = [s for s in self.buttonSpritesList if s.rect.collidepoint(mouse)]
 
-                    if len(clicked) >= 1:
-                        clicked.OnClick()
-
-                    if 1080 > mouse[0] > 0 and 600 > mouse[1] > 0:
-                        clicked = [s for s in self.towerSpritesList if s.rect.collidepoint(mouse)]
                         if len(clicked) >= 1:
-                            self.selectedTower = clicked[0]
-                        else:
-                            
-                            self.PlaceTower()
-                            self.selectedTower = None
-                            
-                #Upon Keypress
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_LEFT:
-                        self.currentTower -= 1
-                    if event.key == pygame.K_RIGHT:
-                        self.currentTower += 1
+                            clicked.OnClick()
+
+                        if 1080 > mouse[0] > 0 and 600 > mouse[1] > 0:
+                            clicked = [s for s in self.towerSpritesList if s.rect.collidepoint(mouse)]
+                            if len(clicked) >= 1:
+                                self.selectedTower = clicked[0]
+                            else:
+                                
+                                self.PlaceTower()
+                                self.selectedTower = None
+                                
+                    #Upon Keypress
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_LEFT:
+                            self.currentTower -= 1
+                        if event.key == pygame.K_RIGHT:
+                            self.currentTower += 1
+                    
+                    #Checks the current selected tower is valid
+                    if self.currentTower <= 0:
+                        self.currentTower = 0
+                    elif self.currentTower >= len(self.towerDict)-1:
+                        self.currentTower = len(self.towerDict)-1
+
+                #Yes
+                #updates button visuals
+                for button in self.buttonList:
+                    ButtonVisuals(**button)
                 
-                #Checks the current selected tower is valid
-                if self.currentTower <= 0:
-                    self.currentTower = 0
-                elif self.currentTower >= len(self.towerDict)-1:
-                    self.currentTower = len(self.towerDict)-1
+                #No
+                #all towers check and attack,
+                for enemy in self.enemySpritesList:
+                    for tower in self.towerSpritesList:
+                        self.money += tower.CheckEnemies(enemy, self.enemySpritesList)
+                
+                #No
+                #Move Wool
+                for item in self.enemySpritesList:
+                    self.lives += item.MoveFrame()
 
-            #updates button visuals
-            for button in self.buttonList:
-                ButtonVisuals(**button)
-            
-            #all towers check and attack,
-            for enemy in self.enemySpritesList:
-                for tower in self.towerSpritesList:
-                    self.money += tower.CheckEnemies(enemy, self.enemySpritesList)
-            
-            #Move Wool
-            for item in self.enemySpritesList:
-                self.lives += item.MoveFrame()
+                #No
+                #Spawn new Wool
+                if self.frameDelay == 0:
+                    if len(self.currentWave) > 0:
+                        nextThing = self.currentWave[0]
 
-            #Spawn new Wool
-            if self.frameDelay == 0:
-                if len(self.currentWave) > 0:
-                    nextThing = self.currentWave[0]
+                        if type(nextThing) == int:
+                            self.frameDelay = int(nextThing)
+                        
+                        elif type(nextThing) == str:
+                            enemy = self.enemyDict[nextThing](self.pathList, self.startTilePos, colours["white"])
+                            self.enemySpritesList.add(enemy)
+                            self.allSpritesList.add(enemy)
+                        
+                        self.currentWave.pop(0)
+                else:
+                    self.frameDelay -= 1
 
-                    if type(nextThing) == int:
-                        self.frameDelay = int(nextThing)
+                #No
+                #Check For end of game
+                if self.lives <= 0:
+                    self.lives = 0 #stop it counting down further after loss screen
+                    self.GameEnd()
+
+                #No
+                #Check for end of wave
+                if self.waveOngoing:
+                    if len(self.enemySpritesList) <= 0 and len(self.currentWave) <= 0:
+                        self.money += self.waveReward
+                        self.waveOngoing = False
+                        if len(allWaves) <= 0:
+                            self.GameEnd("you win!")
+
+            elif self.paused == True:
+                
+                self.pauseButtonList = []
+                self.pauseButtonList.append({"text" : "Resume!", "xPos" : 1190, "yPos" : 0, "width" : 90, "height" : 70, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : self.ResumeGame})
+                
+                #####################################################################################
+                #                                      - Background UI -                            #
+                #####################################################################################
+                #Loads Image UI
+                SelectGUIImage = pygame.image.load("Sprites\\GUI\\LivesHeart.png")
+                window.blit(SelectGUIImage, (1100,10))
+
+                SelectGUIImage = pygame.image.load("Sprites\\GUI\\MoneyCoin.png")
+                window.blit(SelectGUIImage, (1100,40))
+
+                #Loads Text UI
+                largeText = pygame.font.SysFont("comicsansms",30)
+                textSurf, textRect = TextObjects(str(self.lives), largeText)
+                textRect.center = ((1150),(20))
+                window.blit(textSurf, textRect)
+
+                largeText = pygame.font.SysFont("comicsansms",30)
+                textSurf, textRect = TextObjects(str(self.money), largeText)
+                textRect.center = ((1150),(50))
+                window.blit(textSurf, textRect)
+
+                largeText = pygame.font.SysFont("comicsansms", 30)
+                textSurf, textRect = TextObjects("Wave:"+ str(self.waveNum + 1), largeText)
+                textRect.center = ((1150),(100))
+                window.blit(textSurf, textRect)
+
+                #Draws Rectangles
+                pygame.draw.rect(window, colours["bright_lavender"], (5, 605, 50, 50), 5)
+                pygame.draw.rect(window, colours["grey"], (400, 200, 500, 300), 5)
+                towerExample = self.towerDict[self.currentTower](Vector2(-50, -50), colours["white"], window)
+                SelectGUIImage = pygame.image.load(towerExample.GetProfile())
+                window.blit(SelectGUIImage, (8,608))
+
+                pygame.draw.rect(window, colours["bright_lavender"], (5, 665, 50, 50,), 5)
+                largeText = pygame.font.SysFont("comicsansms", 15)
+                textSurf, textRect = TextObjects(str(towerExample.GetPrice()), largeText)
+                textRect.center = ((29),(688))
+                window.blit(textSurf, textRect)
+
+                #Calls upgrades UI
+                if self.selectedTower != None:
+                    self.selectedTower.UpdateRadius() # updates drawn radius
+                    self.UpgradesUI(self.selectedTower)
+
+                #####################################################################################
+                #                                      - Foreground UI -                            #
+                #####################################################################################
+
+                #Draws Rectangles
+                pygame.draw.rect(window, colours["white"], (400, 200, 500, 300))
+                pygame.draw.rect(window, colours["grey"], (400, 200, 500, 300), 5)
+
+                #Checking for events each frame while game is paused
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        quit()
                     
-                    elif type(nextThing) == str:
-                        enemy = self.enemyDict[nextThing](self.pathList, self.startTilePos, colours["white"])
-                        self.enemySpritesList.add(enemy)
-                        self.allSpritesList.add(enemy)
-                    
-                    self.currentWave.pop(0)
-            else:
-                self.frameDelay -= 1
+                    #Upon Click
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        mouse = pygame.mouse.get_pos()
+                        
+                        for button in self.pauseButtonList:
+                            AreaClick(**button)
 
-            #Check For end of game
-            if self.lives <= 0:
-                self.lives = 0 #stop it counting down further after loss screen
-                self.GameEnd()
-
-            #Check for end of wave
-            if self.waveOngoing:
-                if len(self.enemySpritesList) <= 0 and len(self.currentWave) <= 0:
-                    self.money += self.waveReward
-                    self.waveOngoing = False
-                    if len(allWaves) <= 0:
-                        self.GameEnd("you win!")
+                #updates button visuals
+                for button in self.pauseButtonList:
+                    ButtonVisuals(**button)
 
             #Final stuff
             pygame.display.update()
@@ -200,6 +286,12 @@ class Main():
             self.allSpritesList.draw(window)
             clock.tick(30)
     
+    def PauseGame(self):
+        self.paused = True
+    
+    def ResumeGame(self):
+        self.paused = False
+
     def BackWarn(self): #THIS IS THE WORST THING IVE EVER WRITTEN IM SO SORRY
         warning = True
         self.popupButtonList = []
