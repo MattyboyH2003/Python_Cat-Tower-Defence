@@ -48,7 +48,15 @@ class Towers(pygame.sprite.Sprite):
                 self.timeCache = pygame.time.get_ticks() + self.delay
                 return (enemy.getWorth())
         return(0)
-        
+    
+    def CalculateValueIncrease(self, price):
+        price = price/5
+
+        price = str(price).split(".")[0]
+
+        print(price)
+        return int(price)
+
     def GetSprite(self):
         return (self.sprite)
 
@@ -106,26 +114,26 @@ class PistolCat(Towers): #mid range slow shooting
     def Upgrade1(self):
         self.delay = 333
         self.range += 2
-        self.value += 40
+        self.value += self.CalculateValueIncrease(self.upgrades[0][1])
 
         self.upgrades = [["Level 2", 400, self.Upgrade2], None]
 
     def Upgrade2(self):
         self.damage += 1
-        self.value += 80
+        self.value += self.CalculateValueIncrease(self.upgrades[0][1])
 
         self.upgrades = [["Level 3", 550, self.Upgrade3], None]
 
     def Upgrade3(self):
         self.damage += 1
         self.range += 3
-        self.value += 110
+        self.value += self.CalculateValueIncrease(self.upgrades[0][1])
 
         self.upgrades = [["Minigun", 1100, self.Special1], ["Sniper", 900, self.Special2]]
 
     def Special1(self): #Minigun
         self.delay = 100
-        self.value += 220
+        self.value += self.CalculateValueIncrease(self.upgrades[0][1])
 
         self.upgrades = [["Master Minigun", 8000, self.Master1], None]
 
@@ -133,14 +141,14 @@ class PistolCat(Towers): #mid range slow shooting
         self.damage += 2
         self.delay = 750
         self.range = 25
-        self.value += 180
+        self.value += self.CalculateValueIncrease(self.upgrades[1][1])
 
         self.upgrades = [None, ["Master Sniper", 7500, self.Master2]]
 
     def Master1(self): #Master Minigun
         self.delay = 35
         self.range += 5
-        self.value += 1600
+        self.value += self.CalculateValueIncrease(self.upgrades[0][1])
 
         self.upgrades = []
 
@@ -148,7 +156,7 @@ class PistolCat(Towers): #mid range slow shooting
         self.damage += 5
         self.delay =  500
         self.range = 50
-        self.value += 1500
+        self.value += self.CalculateValueIncrease(self.upgrades[0][1])
 
         self.upgrades = []
 
