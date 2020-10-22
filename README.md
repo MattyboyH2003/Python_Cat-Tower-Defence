@@ -1,4 +1,5 @@
 # Python_Cat-Tower-Defence
+A game made for fun as a way of me and some friends being able to improve at python and pygame
 
 # How To Use
 To use it you need an IDE that can work in workspaces. I would recomend using Visual Studio Code as this is what we all used while developing the game.
