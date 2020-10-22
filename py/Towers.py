@@ -67,6 +67,9 @@ class Towers(pygame.sprite.Sprite):
     def GetPos(self):
         return self.location
 
+    def GetValue(self):
+        return self.value
+
     def RemoveExistance(self):
         self.kill()
         del self
@@ -91,6 +94,7 @@ class PistolCat(Towers): #mid range slow shooting
         self.upgrades = [["Level 1", 200, self.Upgrade1], None]
         self.location = pygame.math.Vector2(startPos)
         self.range = 5 # 1 range unit = 10 pixel radius
+        self.value = 75
         
         Towers.__init__(self, colour, window)
 
@@ -102,22 +106,26 @@ class PistolCat(Towers): #mid range slow shooting
     def Upgrade1(self):
         self.delay = 333
         self.range += 2
+        self.value += 40
 
         self.upgrades = [["Level 2", 400, self.Upgrade2], None]
 
     def Upgrade2(self):
         self.damage += 1
+        self.value += 80
 
         self.upgrades = [["Level 3", 550, self.Upgrade3], None]
 
     def Upgrade3(self):
         self.damage += 1
         self.range += 3
+        self.value += 110
 
         self.upgrades = [["Minigun", 1100, self.Special1], ["Sniper", 900, self.Special2]]
 
     def Special1(self): #Minigun
         self.delay = 100
+        self.value += 220
 
         self.upgrades = [["Master Minigun", 8000, self.Master1], None]
 
@@ -125,12 +133,14 @@ class PistolCat(Towers): #mid range slow shooting
         self.damage += 2
         self.delay = 750
         self.range = 25
+        self.value += 180
 
         self.upgrades = [None, ["Master Sniper", 7500, self.Master2]]
 
     def Master1(self): #Master Minigun
         self.delay = 35
         self.range += 5
+        self.value += 1600
 
         self.upgrades = []
 
@@ -138,6 +148,7 @@ class PistolCat(Towers): #mid range slow shooting
         self.damage += 5
         self.delay =  500
         self.range = 50
+        self.value += 1500
 
         self.upgrades = []
 
@@ -154,6 +165,7 @@ class AngryCat(Towers): # cheap, low damage, fast attack, very close range, need
         self.location = pygame.math.Vector2(startPos)
         self.range = 3 # 1 range unit = 10 pixel radius
         self.upgrades = [["Level 1", 200, self.Upgrade1], None]
+        self.value = 40
 
         Towers.__init__(self, colour, window)
 
@@ -163,7 +175,7 @@ class AngryCat(Towers): # cheap, low damage, fast attack, very close range, need
         enemy.TakeDamage(self.damage)
     
     def Upgrade1(self):
-
+        
         self.upgrades = [["Level 2", 400, self.Upgrade2], None]
 
     def Upgrade2(self):
@@ -203,6 +215,7 @@ class StrongCat(Towers): #very expensive, high damage, short range, average atta
         self.location = pygame.math.Vector2(startPos)
         self.range = 2 # 1 range unit = 10 pixel radius
         self.upgrades = []
+        self.value = 300
 
         Towers.__init__(self, colour, window)
 
@@ -256,6 +269,7 @@ class BombCat(Towers): # equivalent to single use spikes in bloons, returns no r
         self.location = pygame.math.Vector2(startPos)
         self.range = 2 # 1 range unit = 10 pixel radius
         self.upgrades = []
+        self.value = 4
 
         Towers.__init__(self, colour, window)
 

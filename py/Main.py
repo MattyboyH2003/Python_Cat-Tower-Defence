@@ -153,10 +153,10 @@ class Main():
                             self.currentTower += 1
                     
                     #Checks the current selected tower is valid
-                    if self.currentTower <= 0:
-                        self.currentTower = 0
-                    elif self.currentTower >= len(self.towerDict)-1:
+                    if self.currentTower < 0:
                         self.currentTower = len(self.towerDict)-1
+                    elif self.currentTower > len(self.towerDict)-1:
+                        self.currentTower = 0
 
                 #Yes
                 #updates button visuals
@@ -692,7 +692,7 @@ class Main():
             self.buttonList.append({"text" : "Tower Maxed", "xPos" : 330, "yPos" : 610, "width" : 730, "height" : 100, "colour" : colours["bright_brown"], "hoverColour" : colours["bright_brown"], "func" : None})
 
     def DeleteTower(self):
-        self.money += self.selectedTower.GetPrice()
+        self.money += self.selectedTower.GetValue()
         self.selectedTower = None
 
     def SelectMap(self, map): #make this take a parameter of the maps location
