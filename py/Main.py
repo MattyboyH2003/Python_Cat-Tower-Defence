@@ -210,8 +210,9 @@ class Main():
             elif self.paused == True:
                 
                 self.pauseButtonList = []
-                self.pauseButtonList.append({"text" : "Resume!", "xPos" : 1190, "yPos" : 0, "width" : 90, "height" : 70, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : self.ResumeGame})
-                
+                self.pauseButtonList.append({"text" : "Yes!", "xPos" : 450, "yPos": 400, "width" : 100, "height" : 50, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : self.ResetGame})
+                self.pauseButtonList.append({"text" : "No!", "xPos" : 740, "yPos": 400, "width" : 100, "height" : 50, "colour" : colours["green"], "hoverColour" : colours["bright_green"], "func" : self.ResumeGame})
+
                 #####################################################################################
                 #                                      - Background UI -                            #
                 #####################################################################################
@@ -263,6 +264,16 @@ class Main():
                 #Draws Rectangles
                 pygame.draw.rect(window, colours["white"], (400, 200, 500, 300))
                 pygame.draw.rect(window, colours["grey"], (400, 200, 500, 300), 5)
+                
+                #Draws Text
+                largeText = pygame.font.SysFont("comicsansms",25)
+                textSurf, textRect = TextObjects("Are you sure you want to quit?", largeText)
+                textRect.center = (650,250)
+                window.blit(textSurf, textRect)
+
+                textSurf, textRect = TextObjects("you will lose all progress!", largeText)
+                textRect.center = (650,275)
+                window.blit(textSurf, textRect)
 
                 #Checking for events each frame while game is paused
                 for event in pygame.event.get():
