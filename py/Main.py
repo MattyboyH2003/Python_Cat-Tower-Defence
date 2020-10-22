@@ -303,52 +303,6 @@ class Main():
     def ResumeGame(self):
         self.paused = False
 
-    def BackWarn(self): #THIS IS THE WORST THING IVE EVER WRITTEN IM SO SORRY
-        warning = True
-        self.popupButtonList = []
-
-        def stopWarning():
-            raise Error()
-
-        def acceptWarning():
-            self.ResetGame()
-
-        try:
-            while warning == True:
-
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        quit()
-                    elif event.type == pygame.MOUSEBUTTONDOWN:
-                        for button in self.popupButtonList:
-                            AreaClick(**button)
-
-                pygame.draw.rect(window, colours["white"], (400, 200, 500, 300))
-                pygame.draw.rect(window, colours["grey"], (400, 200, 500, 300), 5)
-
-                largeText = pygame.font.SysFont("comicsansms",25)
-                textSurf, textRect = TextObjects("Are you sure you want to quit?", largeText)
-                textRect.center = (650,250)
-                window.blit(textSurf, textRect)
-
-                textSurf, textRect = TextObjects("you will lose all progress!", largeText)
-                textRect.center = (650,275)
-                window.blit(textSurf, textRect)
-
-
-                self.popupButtonList.append({"text" : "Yes!", "xPos" : 450, "yPos": 400, "width" : 100, "height" : 50, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : acceptWarning})
-                self.popupButtonList.append({"text" : "No!", "xPos" : 740, "yPos": 400, "width" : 100, "height" : 50, "colour" : colours["green"], "hoverColour" : colours["bright_green"], "func" : stopWarning})
-
-                for button in self.popupButtonList:
-                    ButtonVisuals(**button)
-
-                pygame.display.update()
-                self.allSpritesList.draw(window)
-                clock.tick(30)
-        except:
-            DevPrint("WARNING, IF YOU DIDNT CLICK BACK IN GAME AND YOU CAN READ THIS TEXT, THERE IS AN ERROR IN BackWarn()")
-            return
-
     def GameEnd(self, state = "you lose"):
         
         self.buttonList = []
@@ -393,7 +347,7 @@ class Main():
                     
             window.fill(colours["white"])
             largeText = pygame.font.SysFont("comicsansms",115)
-            textSurf, textRect = TextObjects("Name here", largeText)
+            textSurf, textRect = TextObjects("Angry Cats!", largeText)
             textRect.center = ((640),(300))
             window.blit(textSurf, textRect)
 
