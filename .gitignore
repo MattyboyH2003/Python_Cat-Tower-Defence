@@ -139,4 +139,4 @@ cython_debug/
 
 #Things i added
 .vscode/
-.gitattributes
+notes
