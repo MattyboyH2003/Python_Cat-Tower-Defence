@@ -8,7 +8,9 @@ AllMaps = {
 "Map5" : "Data\\Maps\\map5.txt",
 "Map6" : "Data\\Maps\\map6.txt",
 "Map7" : "Data\\Maps\\map7.txt",
-"Map8" : "Data\\Maps\\map8.txt"}
+"Map8" : "Data\\Maps\\map8.txt"
+
+}
 
 AllMapProfiles = {
 
@@ -19,7 +21,9 @@ AllMapProfiles = {
 "Map5" : "Data\\Maps\\Map5Profile.png",
 "Map6" : "Data\\Maps\\Map6Profile.png",
 "Map7" : "Data\\Maps\\Map7Profile.png",
-"Map8" : "Data\\Maps\\Map8Profile.png"}
+"Map8" : "Data\\Maps\\Map8Profile.png"
+
+}
 
 """
 Tile Key:

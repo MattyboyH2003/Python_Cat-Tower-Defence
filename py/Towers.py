@@ -1,5 +1,4 @@
 import pygame
-from pygame import *
 from Colours import colours
 
 ########################################################################################################
@@ -54,7 +53,6 @@ class Towers(pygame.sprite.Sprite):
 
         price = str(price).split(".")[0]
 
-        print(price)
         return int(price)
 
     def GetSprite(self):
@@ -84,7 +82,7 @@ class Towers(pygame.sprite.Sprite):
     
     def __del__(self):
         self = None
- 
+
 ########################################################################################################
 #                                           - Tower Types -                                            #
 ########################################################################################################

@@ -1,5 +1,6 @@
-#Colours
+#Colours Dictionary
 colours = {
+
 #colours
 "red" : (200,0,0),
 "green" : (0,200,0),
@@ -20,4 +21,6 @@ colours = {
 #shades
 "white" : (255,255,255),
 "grey"  : (125, 125, 125),
-"black" : (0,0,0)}
+"black" : (0,0,0)
+
+}

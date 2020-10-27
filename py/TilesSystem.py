@@ -8,6 +8,7 @@ def GenerateMap(self): #Ran just before game loop to generate the map
         mapString = ""
         for item in fileContents:
             #mapString += item.replace("\n", "")
+            pass
 
         typeList = {
             "#" : Ground,
