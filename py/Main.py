@@ -796,7 +796,7 @@ def TextObjects(text, font):
     return textSurface, textSurface.get_rect()
 
 def DevPrint(*text):
-    global toDevPrint
+    toDevPrint
     if toDevPrint:
         print("\u0332".join("DevPrint "), end="")
         for i in text:
