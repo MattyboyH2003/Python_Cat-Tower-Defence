@@ -7,8 +7,7 @@ from Colours import *
 from MapList import MapList, AllMaps, AllMapProfiles
 
 #when enabled print statements for testing purposes will show
-global toDevPrint
-toDevPrint = False
+
 ########################################################################################################
 #                                              - Setup -                                               #
 ########################################################################################################
@@ -40,7 +39,9 @@ class Main:
     upgrading = False
     currentTower = 0
     selectedTower = None
+    previousSelectedTower = None
     currentMap = ""
+    updateUpgrades = False
 
     buttonList = []
 
@@ -59,10 +60,10 @@ class Main:
         self.startTilePos = None
         self.waveReward = 0
         
-        self.liveText = TextBox(str(self.lives), ((1150), (20)), size=30)
-        self.moneyText = TextBox(str(self.money), ((1150), (50)), size=30)
-        self.waveText = TextBox("Wave: " + str(self.waveNum + 1), ((1150), (100)), size=30)
-        self.towerCostText = TextBox(str(self.towerDict[self.currentTower](pygame.Vector2(-50, -50), colours["white"], window).GetPrice()), ((29), (688)), size=15) #We ignore this lines existance as it's horrible
+        self.liveText = TextBox(str(self.lives), ((1150), (20)), size=30, tags=["Permanent"])
+        self.moneyText = TextBox(str(self.money), ((1150), (50)), size=30, tags=["Permanent"])
+        self.waveText = TextBox("Wave: " + str(self.waveNum + 1), ((1150), (100)), size=30, tags=["Permanent"])
+        self.towerCostText = TextBox(str(self.towerDict[self.currentTower](pygame.Vector2(-50, -50), colours["white"], window).GetPrice()), ((29), (688)), size=15, tags=["Permanent"]) #We ignore this lines existance as it's horrible
         self.textBoxList = [self.liveText, self.moneyText, self.waveText, self.towerCostText]
 
         #Buttons needed in the pause menu
@@ -79,9 +80,30 @@ class Main:
             if not self.paused:
                 #clears all buttons from both button type lists
                 self.buttonList = []
+                #Removes unneeded sprites
                 for sprite in self.buttonSpritesList:
-                    sprite.kill()
-                    del sprite
+                    tags = sprite.GetTags()
+                    remove = True
+                    for tag in tags:
+                        if tag == "UpgradesMenu":
+                            remove = False
+                    if remove:
+                        sprite.kill()
+                        del sprite
+                
+                #Removes unneeded textBoxes
+                removeList = []
+                for textBox in self.textBoxList:
+                    tags = textBox.GetTags()
+                    remove = True
+                    for tag in tags:
+                        if tag == "UpgradesMenu" or tag == "Permanent":
+                            remove = False
+                    if remove:
+                        removeList.append(textBox)
+                
+                for item in removeList:
+                    self.textBoxList.remove(item)
             
             #Things which need to be done all the time and aren't dependent on that frames actions
             #Loads Image UI
@@ -100,7 +122,39 @@ class Main:
             #Calls upgrades UI
             if self.selectedTower:
                 self.selectedTower.UpdateRadius() #updates drawn radius
-                self.UpgradesUI(self.selectedTower)
+                self.DrawRadius()
+            if self.previousSelectedTower != self.selectedTower or self.updateUpgrades: #Checks if the tower selected
+                #Clearing lists of now unneeded things
+                #Unneeded Buttons
+                for sprite in self.buttonSpritesList:
+                    tags = sprite.GetTags()
+                    remove = False
+                    for tag in tags:
+                        if tag == "UpgradesMenu":
+                            remove = True
+                    if remove:
+                        sprite.kill()
+                        del sprite
+                #Unneeded Sprites
+                removeList = []
+                for textBox in self.textBoxList:
+                    tags = textBox.GetTags()
+                    remove = False
+                    for tag in tags:
+                        if tag == "UpgradesMenu":
+                            remove = True
+                    if remove:
+                        removeList.append(textBox)
+                
+                for item in removeList:
+                    self.textBoxList.remove(item)
+                
+                #If there is a new towers upgrade UI to make, make it
+                if self.selectedTower:
+                    self.UpgradesUI(self.selectedTower)
+
+                self.updateUpgrades = False #Make it so you no longer need to update the upgrades menu
+                self.previousSelectedTower = self.selectedTower #Update currently selected tower
             
             #Things which need to be run differently based on whether it is paused or not
             if not self.paused:
@@ -155,7 +209,6 @@ class Main:
                 hoverList = [s for s in self.buttonSpritesList if s.rect.collidepoint(mouse)]
                 for button in hoverList:
                     button.OnHover()
-                
             elif self.paused:
                 #Resets the button to not having the hover sprite
                 for item in self.pausedButtonSpritesList:
@@ -226,6 +279,10 @@ class Main:
     def ResumeGame(self):
         self.paused = False
     
+    def DrawRadius(self):
+        elipseBoundries = [self.selectedTower.GetPos()[0]-(10*self.selectedTower.GetRange()), self.selectedTower.GetPos()[1]-(10*self.selectedTower.GetRange()), self.selectedTower.GetRange()*20, self.selectedTower.GetRange()*20]
+        pygame.draw.ellipse(window, colours["black"], elipseBoundries, 1)
+
     def eventCheck(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -249,13 +306,14 @@ class Main:
                     if len(clicked) >= 1:
                         self.selectedTower = clicked[0]
                     else:
-                        self.PlaceTower()
-                        self.selectedTower = None
+                        if self.selectedTower:
+                            self.selectedTower = None
+                        else:
+                            self.PlaceTower()
+                        
                                 
             #Upon Keypress
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_w:
-                    self.money += 10000
                 if event.key == pygame.K_LEFT:
                     self.currentTower -= 1
                 if event.key == pygame.K_RIGHT:
@@ -284,9 +342,10 @@ class Main:
             self.frameDelay -= 1
 
     def GameEnd(self, state="you lose"):
-        
+        window.fill((255, 255, 255))
         self.buttonList = []
         self.buttonList.append({"text" : "Quit!", "xPos" : 550, "yPos": 450, "width" : 100, "height" : 50, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : quit})
+        EndText = TextBox(state, ((resolution[0]/2), (resolution[1]/2)), 115)
 
         while True:
             for event in pygame.event.get():
@@ -297,11 +356,7 @@ class Main:
                     for button in self.buttonList:
                         AreaClick(**button)
                     
-            window.fill(colours["white"])
-            largeText = pygame.font.SysFont("comicsansms", 115)
-            textSurf, textRect = TextObjects(state, largeText)
-            textRect.center = ((resolution[0]/2), (resolution[1]/2))
-            window.blit(textSurf, textRect)
+            EndText.drawCall()
 
             for button in self.buttonList:
                 ButtonVisuals(**button)
@@ -315,7 +370,7 @@ class Main:
         self.buttonList = []
         self.buttonList.append({"text" : "Play!", "xPos" : 470, "yPos" : 400, "width" : 300, "height" : 100, "colour" : colours["green"], "hoverColour" : colours["bright_green"], "func" : self.LevelSelect})
         self.buttonList.append({"text" : "Quit!", "xPos" : 570, "yPos": 530, "width" : 100, "height" : 50, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : quit})
-        self.MenuText = TextBox("Angry Cats!", (resolution[0]/2, 300), 115)
+        MenuText = TextBox("Angry Cats!", (resolution[0]/2, 300), 115)
     
         while intro:
             for event in pygame.event.get():
@@ -327,7 +382,7 @@ class Main:
                         AreaClick(**button)
                     
             window.fill(colours["white"])
-            self.MenuText.drawCall()
+            MenuText.drawCall()
 
             for button in self.buttonList:
                 ButtonVisuals(**button)
@@ -336,23 +391,32 @@ class Main:
             clock.tick(30)
     
     def LevelSelect(self):
+        largeText = pygame.font.SysFont("comicsansms", 20)
 
-        window.fill(colours["white"])
+        #Local sprites lists for this section of the code
+        buttonSpritesList = pygame.sprite.Group()
+        allSpritesList = pygame.sprite.Group()
 
-        self.currentMap = AllMaps["Map1"]
+        window.fill(colours["white"]) #Clears window
+        self.currentMap = AllMaps["Map1"] #Sets the default selected map
 
-        levelSelect = True
-        self.buttonList = []
-        self.buttonList.append({"text" : "Play!", "xPos" : 10, "yPos" : 10, "width" : 100, "height" : 40, "colour" : colours["green"], "hoverColour" : colours["bright_green"], "func" : self.GenerateMap})
-        self.buttonList.append({"text" : "Back!", "xPos" : 10, "yPos" : 60, "width" : 50, "height" : 40, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : self.GameIntro})
-
+        #Permanent buttons
+        #Play button
+        button = Button("Sprites\\GUI\\Buttons\\PlayHighlighted.png", "Sprites\\GUI\\Buttons\\PlayUnhighlighted.png", pygame.math.Vector2(60, 30), self.GenerateMap, tags=["Permanent"])
+        buttonSpritesList.add(button)
+        allSpritesList.add(button)
+        #Back button
+        button = Button("Sprites\\GUI\\Buttons\\BackSmallHighlighted.png", "Sprites\\GUI\\Buttons\\BackSmallUnhighlighted.png", pygame.math.Vector2(35, 80), self.GameIntro, tags=["Permanent"])
+        buttonSpritesList.add(button)
+        allSpritesList.add(button)
+        
+        #Sets default values
         pos = 0
-        mapIndex = 0 #i would equal the selected maps index
+        mapIndex = 0
+        previousMousePos = pygame.mouse.get_pos() #Needs an original value so we set random one here
 
-        previousMousePos = pygame.mouse.get_pos()
-
+        levelSelect = True #Allows while loop to start
         while levelSelect:
-            
             #Checks if it needs to shift the buttons
             if pos >= 400:
                 mapIndex -= 1
@@ -360,9 +424,6 @@ class Main:
             elif pos <= -400:
                 mapIndex += 1
                 pos += 400
-
-            #Collects current mouse position
-            currentMousePos = pygame.mouse.get_pos()
 
             #Checks mapIndex to see if its out of bounds
             if mapIndex >= len(MapList):
@@ -380,32 +441,43 @@ class Main:
                 currentMaps = MapList[-mapDifference:] + MapList[mapIndex-(2-mapDifference):mapIndex+3]
             else:
                 currentMaps = MapList[mapIndex-2:mapIndex+3]
-        
-        
+
+            #Collects current mouse position
+            
+            #Check which buttons the mouse are over
+            currentMousePos = pygame.mouse.get_pos()
+            hoveredButtons = [s for s in buttonSpritesList if s.rect.collidepoint(currentMousePos)]
+            
+            #Resets button sprite
+            for button in buttonSpritesList:
+                button.FrameReset()
+            #Updates button sprite if neccessary
+            for button in hoveredButtons:
+                button.OnHover()
 
             #Checks current events
             for event in pygame.event.get():
-
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     quit()
 
                 #Upon Click
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    mouse = pygame.mouse.get_pos()
-                    for button in self.buttonList:
-                        AreaClick(**button)
-                    DevPrint("current map is", self.currentMap)
-            
-                    #Check of and which buttons are pressed
-                    clicked = [s for s in self.buttonSpritesList if s.rect.collidepoint(mouse)] 
-                    if len(clicked) == 1:
-                        clicked[0].OnClick()
 
-            #Clears button list
-            for sprite in self.buttonSpritesList:
-                sprite.kill()
-                del sprite
+                    if len(hoveredButtons) == 1:
+                        hoveredButtons[0].OnClick()
+
+            #Clears non-permanent buttons from the button list
+            for sprite in buttonSpritesList:
+                tags = sprite.GetTags()
+                keep = False
+                for tag in tags:
+                    if tag == "Permanent":
+                        keep = True
+                
+                if not keep:
+                    sprite.kill()
+                    del sprite
 
             #Generates the map images and names
             for i in range(5):
@@ -418,28 +490,21 @@ class Main:
                 pygame.draw.rect(window, colours[tempColour], (-400 + (420*i) + pos, 250, 400, 220))
 
                 button.SetParams({"gameMap": AllMaps[currentMaps[i]]})
-                self.buttonSpritesList.add(button)
-                self.allSpritesList.add(button)
+                buttonSpritesList.add(button)
+                allSpritesList.add(button)
 
                 #Adds the text below the image
-                largeText = pygame.font.SysFont("comicsansms", 20)
                 textSurf, textRect = TextObjects(currentMaps[i], largeText)
                 textRect.center = ((-200 + (420*i) + pos, 500))
                 window.blit(textSurf, textRect)
 
-            #Generates non-sprite buttons
-            for button in self.buttonList:
-                ButtonVisuals(**button)
-
-            
             mouseDifference = previousMousePos[0] - currentMousePos[0]
             
             if pygame.mouse.get_pressed()[0] == 1:
                 pos -= mouseDifference
 
-
             previousMousePos = currentMousePos
-            self.allSpritesList.draw(window)
+            allSpritesList.draw(window)
             pygame.display.update()
             window.fill(colours["white"])
             clock.tick(30)
@@ -527,7 +592,6 @@ class Main:
             column = 0
             row += 1
 
-        DevPrint("Located start tile position, it is: {}".format(str(checkPos)))
         
         '''
         endList = [",", ".", "6", "?"]
@@ -548,9 +612,7 @@ class Main:
                                 self.pathList.append(listItems[i][0])                                      
                                 self.pathList.append("END")
                                 path = False
-                                DevPrint("path should be false now")
-                            else:
-                                DevPrint(mapArray[checkPos[0] + listItems[i][1]][checkPos[1]])
+
         self.GameLoop()
         '''
 
@@ -642,32 +704,64 @@ class Main:
         #window.blit(pygame.image.load(self.currentTower.GetSprite()), mousePositon) #Need to replace blits with sprites
 
     def UpgradeTower(self, upgradeInfo):
+        self.updateUpgrades = True
         if upgradeInfo[1] <= self.money:
             self.money -= upgradeInfo[1]
             upgradeInfo[2]()
 
     def UpgradesUI(self, tower):
         #Adds the Delete Button
-        elipseBoundries = [self.selectedTower.GetPos()[0]-(10*self.selectedTower.GetRange()), self.selectedTower.GetPos()[1]-(10*self.selectedTower.GetRange()), self.selectedTower.GetRange()*20, self.selectedTower.GetRange()*20]
-        pygame.draw.ellipse(window, colours["black"], elipseBoundries, 1)
-        self.buttonList.append({"text" : "Delete", "xPos" : 120, "yPos" : 650, "width" : 200, "height" : 60, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : [tower.RemoveExistance, self.DeleteTower]})
+        button = Button("Sprites\\GUI\\Buttons\\DeleteHighlighted.png", "Sprites\\GUI\\Buttons\\DeleteUnhighlighted.png", pygame.math.Vector2(220, 680), func=[tower.RemoveExistance, self.DeleteTower], tags=["UpgradesMenu"])
+        self.buttonSpritesList.add(button)
+        self.allSpritesList.add(button)
+        
         #Adds the Upgrade Buttons
         if len(tower.GetUpgrades()) == 2:
+            #Left Hand Button
             if tower.GetUpgrades()[0]:
-                self.buttonList.append({"text" : tower.GetUpgrades()[0][0] + "\n" + str(tower.GetUpgrades()[0][1]), "xPos" : 330, "yPos" : 610, "width" : 365, "height" : 100, "colour" : colours["brown"], "hoverColour" : colours["bright_brown"], "perams" : {"upgradeInfo" : tower.GetUpgrades()[0]}, "func" : self.UpgradeTower})
+                #Upgrade Background
+                button = Button("Sprites\\GUI\\Buttons\\UpgradeHighlighted.png", "Sprites\\GUI\\Buttons\\UpgradeUnhighlighted.png", pygame.math.Vector2(521, 660), func=self.UpgradeTower, tags=["UpgradesMenu"])
+                button.SetParams({"upgradeInfo" : tower.GetUpgrades()[0]})
+                self.buttonSpritesList.add(button)
+                self.allSpritesList.add(button)
+
+                #Upgrade Text
+                text = TextBox(tower.GetUpgrades()[0][0], [513, 630], tags=["UpgradesMenu"]) 
+                self.textBoxList.append(text)
+                text = TextBox(str(tower.GetUpgrades()[0][1]), [513, 650], tags=["UpgradesMenu"])
+                self.textBoxList.append(text)
+
+            #No Upgrade Available
             else:
-                button = Button("Sprites\\GUI\\NoRoute.png", None, pygame.math.Vector2(513, 660))
+                button = Button("Sprites\\GUI\\Buttons\\NoRoute.png", None, pygame.math.Vector2(513, 660), tags=["UpgradesMenu"])
                 self.buttonSpritesList.add(button)
                 self.allSpritesList.add(button)
             
+            #Right Hand Button
             if tower.GetUpgrades()[1]:
-                self.buttonList.append({"text" : tower.GetUpgrades()[1][0] + "\n" + str(tower.GetUpgrades()[1][1]), "xPos" : 705, "yPos" : 610, "width" : 365, "height" : 100, "colour" : colours["brown"], "hoverColour" : colours["bright_brown"], "perams" : {"upgradeInfo" : tower.GetUpgrades()[1]}, "func" : self.UpgradeTower})
-            else:
-                button = Button("Sprites\\GUI\\NoRoute.png", None, pygame.math.Vector2(888, 660))
+                #Upgrade Background
+                button = Button("Sprites\\GUI\\Buttons\\UpgradeHighlighted.png", "Sprites\\GUI\\Buttons\\UpgradeUnhighlighted.png", pygame.math.Vector2(888, 660), func=self.UpgradeTower, tags=["UpgradesMenu"])
+                button.SetParams({"upgradeInfo" : tower.GetUpgrades()[1]})
                 self.buttonSpritesList.add(button)
                 self.allSpritesList.add(button)
+
+                #Upgrade Text
+                text = TextBox(tower.GetUpgrades()[1][0], [888, 630], tags=["UpgradesMenu"]) 
+                self.textBoxList.append(text)
+                text = TextBox(str(tower.GetUpgrades()[1][1]), [888, 650], tags=["UpgradesMenu"])
+                self.textBoxList.append(text)
+
+            #No Upgrade Avaliable
+            else:
+                button = Button("Sprites\\GUI\\Buttons\\NoRoute.png", None, pygame.math.Vector2(888, 660), tags=["UpgradesMenu"])
+                self.buttonSpritesList.add(button)
+                self.allSpritesList.add(button)
+        
+        #upgrades maxed
         else:
-            self.buttonList.append({"text" : "Tower Maxed", "xPos" : 330, "yPos" : 610, "width" : 730, "height" : 100, "colour" : colours["bright_brown"], "hoverColour" : colours["bright_brown"], "func" : None})
+            button = Button("Sprites\\GUI\\Buttons\\UpgradeMaxed.png", None, pygame.math.Vector2(695, 660), tags=["UpgradesMenu"])
+            self.buttonSpritesList.add(button)
+            self.allSpritesList.add(button)
 
     def DeleteTower(self):
         self.money += self.selectedTower.GetValue()
@@ -675,7 +769,6 @@ class Main:
 
     def SelectMap(self, gameMap): #make this take a parameter of the maps location
         self.currentMap = gameMap
-        DevPrint("set current map to", gameMap)
 
     def ResetGame(self):
         self.currentWave = allWaves.pop(0)
@@ -699,10 +792,11 @@ class Main:
         self.GameIntro()
 
 class Button(pygame.sprite.Sprite):
-    def __init__(self, sprite, hoverSprite, location, func=None, params={}):
+    def __init__(self, sprite, hoverSprite, location, func=None, params={}, tags=[]):
         self.func = func
         self.sprite = sprite
         self.params = params
+        self.tags = tags
 
         #Cheking wether it needs to have a different sprite while being hovered over
         if not hoverSprite:
@@ -726,6 +820,9 @@ class Button(pygame.sprite.Sprite):
     def SetParams(self, params):
         self.params = params
 
+    def GetTags(self):
+        return self.tags
+
     def OnHover(self):
         if self.hoverEnabled:
             self.image = pygame.image.load(self.hoverSprite).convert()
@@ -734,21 +831,31 @@ class Button(pygame.sprite.Sprite):
         self.image = pygame.image.load(self.sprite).convert()
 
     def OnClick(self):
-        self.func(**self.params)
+        if self.func:
+            if isinstance(self.func, list):
+                for item in self.func:
+                    item(**self.params)
+                    
+            else:
+                self.func(**self.params)
 
 class TextBox:
-    def __init__(self, text, pos, size=20, textColour=colours["black"]):
+    def __init__(self, text, pos, size=20, textColour=colours["black"], tags=[]):
         self.text = text
         self.pos = pos
         self.size = size 
         self.colour = textColour
+        self.tags = tags
         
     def drawCall(self): #called during main loop, draws the object to the screen
         textSurf = pygame.font.SysFont("comicsansms", self.size).render(self.text, True, self.colour)
         textRect = textSurf.get_rect()
         textRect.center = (self.pos) 
         window.blit(textSurf, textRect) 
-    
+
+    def GetTags(self):
+        return self.tags
+
     def setText(self, toChange):
         self.text = toChange
 
@@ -797,13 +904,6 @@ def TextObjects(text, font):
     textSurface = font.render(text, True, colours["black"])
     return textSurface, textSurface.get_rect()
 
-def DevPrint(*text):
-    global toDevPrint
-    if toDevPrint:
-        print("\u0332".join("DevPrint "), end="")
-        for i in text:
-            print(i, end="")
-        print("")
 
 ########################################################################################################
 #                                          - Call Functions -                                          #
