@@ -1,5 +1,5 @@
-import pygame
 import copy
+import pygame
 
 ########################################################################################################
 #                                           - Main Class -                                             #
@@ -11,17 +11,17 @@ class Enemy(pygame.sprite.Sprite):
 
         #Path stuff
         self.pathData = copy.deepcopy(pathData)
-        self.location = Vector2((startLocation[0]*20)+10, (startLocation[1]*20)+10)
+        self.location = pygame.math.Vector2((startLocation[0]*20)+10, (startLocation[1]*20)+10)
         self.radius = 1
         
         if self.pathData[0] == "U":
-            self.nextLocation = self.location + Vector2(0, -20)
+            self.nextLocation = self.location + pygame.math.Vector2(0, -20)
         elif self.pathData[0] == "L":
-            self.nextLocation = self.location + Vector2(-20, 0)
+            self.nextLocation = self.location + pygame.math.Vector2(-20, 0)
         elif self.pathData[0] == "R":
-            self.nextLocation = self.location + Vector2(20, 0)
+            self.nextLocation = self.location + pygame.math.Vector2(20, 0)
         elif self.pathData[0] == "D":
-            self.nextLocation = self.location + Vector2(0, 20)
+            self.nextLocation = self.location + pygame.math.Vector2(0, 20)
         else:
             print(self.pathData[0])
 
@@ -45,50 +45,50 @@ class Enemy(pygame.sprite.Sprite):
 
     def MoveFrame(self):
 
-        nextDict = { "D" : Vector2(0, 20), "U" : Vector2(0, -20), "L" : Vector2(-20, 0), "R" : Vector2(20, 0) , "END" : Vector2 (0, 0)}
-        self.currentDirection = self.pathData[0]
+        nextDict = {"D" : pygame.math.Vector2(0, 20), "U" : pygame.math.Vector2(0, -20), "L" : pygame.math.Vector2(-20, 0), "R" : pygame.math.Vector2(20, 0), "END" : pygame.math.Vector2(0, 0)}
+        currentDirection = self.pathData[0]
 
-        if self.currentDirection == "D":
+        if currentDirection == "D":
             if self.location[1] + self.speed >= self.nextLocation[1]:
                 self.location = copy.deepcopy(self.nextLocation)
                 self.pathData.pop(0)
                 self.nextLocation += nextDict[self.pathData[0]]
             else:
-                self.location += Vector2(0, self.speed)
+                self.location += pygame.math.Vector2(0, self.speed)
         
-        elif self.currentDirection == "R":
+        elif currentDirection == "R":
             if self.location[0] + self.speed >= self.nextLocation[0]:
                 self.location = copy.deepcopy(self.nextLocation)
                 self.pathData.pop(0)
                 self.nextLocation += nextDict[self.pathData[0]]
             else:
-                self.location += Vector2(self.speed, 0)
+                self.location += pygame.math.Vector2(self.speed, 0)
         
-        elif self.currentDirection == "L":
+        elif currentDirection == "L":
             if self.location[0] - self.speed <= self.nextLocation[0]:
                 self.location = copy.deepcopy(self.nextLocation)
                 self.pathData.pop(0)
                 self.nextLocation += nextDict[self.pathData[0]]
             else:
-                self.location += Vector2(-self.speed, 0)
+                self.location += pygame.math.Vector2(-self.speed, 0)
         
-        elif self.currentDirection == "U":
+        elif currentDirection == "U":
             if self.location[1] - self.speed <= self.nextLocation[1]:
                 self.location = copy.deepcopy(self.nextLocation)
                 self.pathData.pop(0)
                 self.nextLocation += nextDict[self.pathData[0]]
             else:
-                self.location += Vector2(0, -self.speed)
+                self.location += pygame.math.Vector2(0, -self.speed)
         
-        elif self.currentDirection == "END":
+        elif currentDirection == "END":
             damageTemp = self.damage #allows us to store the damage to use in the return even after self is deleted
             self.kill()
             del self
 
-            return(damageTemp)
+            return damageTemp
             
         self.rect.center = self.location
-        return(0)
+        return 0
 
     def TakeDamage(self, damage):
         if self.health <= damage:
@@ -98,7 +98,7 @@ class Enemy(pygame.sprite.Sprite):
             self.health -= damage
     
     def getWorth(self):
-        return(self.worth)
+        return self.worth
 
 ########################################################################################################
 #                                           - Enemy Types -                                            #

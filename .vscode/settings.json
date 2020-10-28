@@ -1,0 +1,8 @@
+{
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true,
+    "python.linting.maxNumberOfProblems": 1000,
+
+    "python.linting.pylintArgs": ["--extension-pkg-whitelist=pygame", "--disable=C0301,C0303,C0103,C0111,R0912,W0105,R0914,R0915,R0902,W0401"],
+    "python.linting.pylintCategorySeverity.convention": "Information"
+}

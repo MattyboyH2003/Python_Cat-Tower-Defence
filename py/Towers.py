@@ -45,8 +45,8 @@ class Towers(pygame.sprite.Sprite):
             if pygame.time.get_ticks() >= self.timeCache: # get_ticks will give us the amount of milliseconds since program started running
                 self.Attack(enemy, enemyList) 
                 self.timeCache = pygame.time.get_ticks() + self.delay
-                return (enemy.getWorth())
-        return(0)
+                return enemy.getWorth()
+        return 0
     
     def CalculateValueIncrease(self, price):
         price = price/5
@@ -56,16 +56,16 @@ class Towers(pygame.sprite.Sprite):
         return int(price)
 
     def GetSprite(self):
-        return (self.sprite)
+        return self.sprite
 
     def GetProfile(self):
-        return (self.profile)
+        return self.profile
 
     def GetUpgrades(self):
         return self.upgrades
 
     def GetPrice(self):
-        return(self.price)
+        return self.price
 
     def GetRange(self):
         return self.range
@@ -152,9 +152,9 @@ class PistolCat(Towers): #mid range slow shooting
 
     def Master2(self): #Master Sniper
         self.damage += 5
-        self.delay =  500
+        self.delay = 500
         self.range = 50
-        self.value += self.CalculateValueIncrease(self.upgrades[0][1])
+        self.value += self.CalculateValueIncrease(self.upgrades[1][1])
 
         self.upgrades = []
 
@@ -229,11 +229,6 @@ class StrongCat(Towers): #very expensive, high damage, short range, average atta
         pygame.draw.line(self.window, (255, 255, 255), self.rect.center, enemy.rect.center, 5)
 
         enemy.TakeDamage(self.damage)
-
-    def Attack(self, enemy, enemyList):
-        pygame.draw.line(self.window, (255, 255, 255), self.rect.center, enemy.rect.center, 5)
-
-        enemy.TakeDamage(self.damage)
     
     def Upgrade1(self):
 
@@ -282,14 +277,13 @@ class BombCat(Towers): # equivalent to single use spikes in bloons, returns no r
     def CheckEnemies(self, enemy, enemyList):
         if pygame.sprite.collide_circle(self, enemy):
             self.Attack(enemy)
-        return(0)
-
+        return 0
 
     def Attack(self, enemy):
         enemy.kill()
-        del(enemy)
+        del enemy
         self.kill()
-        del(self)
+        del self
     
     def Upgrade1(self):
 
