@@ -23,3 +23,25 @@ colours = {
     "grey"  : (125, 125, 125),
     "black" : (0, 0, 0)
 }
+
+def Darken(colour):
+    newColour = list(colour)
+    for i in range(3):
+        newColour[i] += 30
+        if newColour[i] >= 255:
+            newColour[i] = 255
+        elif newColour[i] <= 0:
+            newColour[i] = 0
+    newColour = tuple(newColour)
+    return (newColour)  
+
+def Lighten(colour):
+    newColour = list(colour)
+    for i in range(3):
+        newColour[i] -= 30
+        if newColour[i] >= 255:
+            newColour[i] = 255
+        elif newColour[i] <= 0:
+            newColour[i] = 0
+    newColour = tuple(newColour)
+    return (newColour)  

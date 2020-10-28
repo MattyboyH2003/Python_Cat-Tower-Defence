@@ -3,7 +3,7 @@ from Towers import *
 from Tiles import *
 from Enemies import *
 from Waves import allWaves
-from Colours import colours
+from Colours import *
 from MapList import MapList, AllMaps, AllMapProfiles
 
 #when enabled print statements for testing purposes will show
@@ -49,6 +49,7 @@ class Main:
     collisionSpritesList = pygame.sprite.Group() #used in towerplacment, if anything in this list is touching a tower it will not be placed
     enemySpritesList = pygame.sprite.Group() #used in the movement system, everything in here will follow the path and should be enemy class
     buttonSpritesList = pygame.sprite.Group() #stores all sprite based buttons
+    pausedButtonSpritesList = pygame.sprite.Group() #Stores all sprit based buttons that are needed in the pause menu
     allSpritesList = pygame.sprite.Group() #list of things to be drawn to screen
 
     def __init__(self):
@@ -64,12 +65,16 @@ class Main:
         self.towerCostText = TextBox(str(self.towerDict[self.currentTower](pygame.Vector2(-50, -50), colours["white"], window).GetPrice()), ((29), (688)), size=15) #We ignore this lines existance as it's horrible
         self.textBoxList = [self.liveText, self.moneyText, self.waveText, self.towerCostText]
 
+        #Buttons needed in the pause menu
+        #Yes button
+        self.pausedButtonSpritesList.add(Button("Sprites\\GUI\\Buttons\\YesHighlighted.png", "Sprites\\GUI\\Buttons\\YesUnhighlighted.png", pygame.math.Vector2(500, 425), self.ResetGame))
+        #No button
+        self.pausedButtonSpritesList.add(Button("Sprites\\GUI\\Buttons\\NoHighlighted.png", "Sprites\\GUI\\Buttons\\NoUnhighlighted.png", pygame.math.Vector2(790, 425), self.ResumeGame))
+
     def GameLoop(self): #The Main game loop, called when play is clicked
         running = True
         self.paused = False
-
         while running:
-            
             #Things which have to be done at the start but only when not paused
             if not self.paused:
                 #clears all buttons from both button type lists
@@ -80,9 +85,10 @@ class Main:
             
             #Things which need to be done all the time and aren't dependent on that frames actions
             #Loads Image UI
+            #Lives logo
             SelectGUIImage = pygame.image.load("Sprites\\GUI\\LivesHeart.png")
             window.blit(SelectGUIImage, (1100, 10))
-
+            #Money logo
             SelectGUIImage = pygame.image.load("Sprites\\GUI\\MoneyCoin.png")
             window.blit(SelectGUIImage, (1100, 40))
 
@@ -99,14 +105,20 @@ class Main:
             #Things which need to be run differently based on whether it is paused or not
             if not self.paused:
                 #Adds button information to the list of buttons that dont use sprites
-                self.buttonList.append({"text" : "Start!", "xPos" : 1080, "yPos" : 600, "width" : 200, "height" : 120, "colour" : colours["lavender"], "hoverColour" : colours["bright_lavender"], "func" : self.StartWave})
-                self.buttonList.append({"text" : "Back!", "xPos" : 1190, "yPos" : 0, "width" : 90, "height" : 70, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : self.PauseGame})
+                #Start Button
+                button = Button("Sprites\\GUI\\Buttons\\StartHighlighted.png", "Sprites\\GUI\\Buttons\\StartUnhighlighted.png", pygame.math.Vector2(1180, 660), self.StartWave)
+                self.buttonSpritesList.add(button)
+                self.allSpritesList.add(button)
+                #Back Button
+                button = Button("Sprites\\GUI\\Buttons\\BackHighlighted.png", "Sprites\\GUI\\Buttons\\BackUnhighlighted.png", pygame.math.Vector2(1235, 35), self.PauseGame)
+                self.buttonSpritesList.add(button)
+                self.allSpritesList.add(button)
 
                 #Text UI
-                self.liveText.setText(str(self.lives))
-                self.moneyText.setText(str(self.money))
-                self.waveText.setText("Wave: " + str(self.waveNum + 1))
-                self.towerCostText.setText(str(towerExample.GetPrice()))
+                self.liveText.setText(str(self.lives)) #Number of lives
+                self.moneyText.setText(str(self.money)) #Ammount of money
+                self.waveText.setText("Wave: " + str(self.waveNum + 1)) #Wave Number
+                self.towerCostText.setText(str(towerExample.GetPrice())) #Tower Cost (Bottom left)
 
                 #Checking for events each frame while game is running
                 self.eventCheck()
@@ -137,19 +149,24 @@ class Main:
                         self.waveOngoing = False
                         if allWaves == []:
                             self.GameEnd("you win!")
+
+                #Checks if a button is hovered over(only for sprite based buttons)
+                mouse = pygame.mouse.get_pos()
+                hoverList = [s for s in self.buttonSpritesList if s.rect.collidepoint(mouse)]
+                for button in hoverList:
+                    button.OnHover()
+                
             elif self.paused:
-                #Clears/Creates and fills the button list needed when the game is paused 
-                pauseButtonList = []
-                pauseButtonList.append({"text" : "Yes!", "xPos" : 450, "yPos": 400, "width" : 100, "height" : 50, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : self.ResetGame})
-                pauseButtonList.append({"text" : "No!", "xPos" : 740, "yPos": 400, "width" : 100, "height" : 50, "colour" : colours["green"], "hoverColour" : colours["bright_green"], "func" : self.ResumeGame})
+                #Resets the button to not having the hover sprite
+                for item in self.pausedButtonSpritesList:
+                    item.FrameReset()
 
                 #####################################################################################
-                #                                      - Foreground UI -                            #
+                #                                 - Foreground UI -                                 #
                 #####################################################################################
-
                 #Draws Rectangles
-                pygame.draw.rect(window, colours["white"], (400, 200, 500, 300))
-                pygame.draw.rect(window, colours["grey"], (400, 200, 500, 300), 5)
+                pygame.draw.rect(window, colours["white"], (400, 200, 500, 300)) #Menu Background
+                pygame.draw.rect(window, colours["grey"], (400, 200, 500, 300), 5) #Menu Border
                 
                 #Draws Text
                 largeText = pygame.font.SysFont("comicsansms", 25)
@@ -161,19 +178,28 @@ class Main:
                 textRect.center = (650, 275)
                 window.blit(textSurf, textRect)
 
+                #####################################################################################
+                #                                 - Actions/Events -                                #
+                #####################################################################################
                 #Checking for events each frame while game is paused
+                mouse = pygame.mouse.get_pos()
+                mouseOverlapList = [s for s in self.pausedButtonSpritesList if s.rect.collidepoint(mouse)]
+
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         quit()
                     
                     #Upon Click
                     if event.type == pygame.MOUSEBUTTONDOWN:
-                        for button in pauseButtonList:
-                            AreaClick(**button)
+                        for item in mouseOverlapList:
+                            item.OnClick()
 
-                #updates pause button visuals
-                for button in pauseButtonList:
-                    ButtonVisuals(**button)
+                #Checks if a button is hovered over(only for sprite based buttons)
+                for button in mouseOverlapList:
+                    button.OnHover()
+
+                #Renders all pause menu sprites
+                self.pausedButtonSpritesList.draw(window)
             
             #Things which need to be done all the time but are dependent on that frames actions
             #updates general button visuals
@@ -181,7 +207,7 @@ class Main:
                 ButtonVisuals(**button)
             
             #Draws rectangles
-            pygame.draw.rect(window, colours["bright_lavender"], (5, 665, 50, 50,), 5)
+            pygame.draw.rect(window, colours["bright_lavender"], (5, 665, 50, 50), 5)
             pygame.draw.rect(window, colours["bright_lavender"], (5, 605, 50, 50), 5)
 
             #Things that need to be loaded when paused or not but need updating before loading
@@ -208,14 +234,15 @@ class Main:
             #Upon Click
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse = pygame.mouse.get_pos()
-                        
+
                 for button in self.buttonList:
                     AreaClick(**button)
 
                 clicked = [s for s in self.buttonSpritesList if s.rect.collidepoint(mouse)]
 
                 if len(clicked) >= 1:
-                    clicked.OnClick()
+                    for item in clicked:
+                        item.OnClick()
 
                 if 1080 > mouse[0] > 0 and 600 > mouse[1] > 0:
                     clicked = [s for s in self.towerSpritesList if s.rect.collidepoint(mouse)]
@@ -288,6 +315,7 @@ class Main:
         self.buttonList = []
         self.buttonList.append({"text" : "Play!", "xPos" : 470, "yPos" : 400, "width" : 300, "height" : 100, "colour" : colours["green"], "hoverColour" : colours["bright_green"], "func" : self.LevelSelect})
         self.buttonList.append({"text" : "Quit!", "xPos" : 570, "yPos": 530, "width" : 100, "height" : 50, "colour" : colours["red"], "hoverColour" : colours["bright_red"], "func" : quit})
+        self.MenuText = TextBox("Angry Cats!", (resolution[0]/2, 300), 115)
     
         while intro:
             for event in pygame.event.get():
@@ -299,10 +327,7 @@ class Main:
                         AreaClick(**button)
                     
             window.fill(colours["white"])
-            largeText = pygame.font.SysFont("comicsansms", 115)
-            textSurf, textRect = TextObjects("Angry Cats!", largeText)
-            textRect.center = ((640), (300))
-            window.blit(textSurf, textRect)
+            self.MenuText.drawCall()
 
             for button in self.buttonList:
                 ButtonVisuals(**button)
@@ -705,6 +730,9 @@ class Button(pygame.sprite.Sprite):
         if self.hoverEnabled:
             self.image = pygame.image.load(self.hoverSprite).convert()
 
+    def FrameReset(self):
+        self.image = pygame.image.load(self.sprite).convert()
+
     def OnClick(self):
         self.func(**self.params)
 
@@ -764,17 +792,6 @@ def ButtonVisuals(text, xPos, yPos, width, height, colour, hoverColour, border=T
     textSurf, textRect = TextObjects(text, smallText)
     textRect.center = ((xPos+(width/2)), (yPos+(height/2)))
     window.blit(textSurf, textRect)
-
-def Darken(colour):
-    newColour = list(colour)
-    for i in range(3):
-        newColour[i] += 30
-        if newColour[i] >= 255:
-            newColour[i] = 255
-        elif newColour[i] <= 0:
-            newColour[i] = 0
-    newColour = tuple(newColour)
-    return newColour
 
 def TextObjects(text, font):
     textSurface = font.render(text, True, colours["black"])
