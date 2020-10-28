@@ -51,4 +51,3 @@ class EndDown(End):
     sprite = "Sprites\\Tiles\\EndDown.png"
 class EndLeft(End):
     sprite = "Sprites\\Tiles\\EndLeft.png"
-
