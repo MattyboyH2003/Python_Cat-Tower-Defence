@@ -89,7 +89,7 @@ class Towers(pygame.sprite.Sprite):
 
 class PistolCat(Towers): #mid range slow shooting
 
-    sprite = "Sprites\\Towers\\Towers\\PistolCatSprite.png"
+    sprite = "Sprites\\Towers\\Towers\\PistolCat\\PistolCatSprite(lvl0).png"
     profile = "Sprites\\Towers\\Profile\\PistolCatProfile.png"
     damage = 1  # Damage is equal to units unravelled per attack
     delay = 500
@@ -110,6 +110,8 @@ class PistolCat(Towers): #mid range slow shooting
         enemy.TakeDamage(self.damage)
     
     def Upgrade1(self):
+        self.image = pygame.image.load("Sprites\\Towers\\Towers\\PistolCat\\PistolCatSprite(lvl1).png").convert()
+        self.image.set_colorkey(colours["background_colour"])
         self.delay = 333
         self.range += 2
         self.value += self.CalculateValueIncrease(self.upgrades[0][1])
@@ -117,12 +119,16 @@ class PistolCat(Towers): #mid range slow shooting
         self.upgrades = [["Level 2", 400, self.Upgrade2], None]
 
     def Upgrade2(self):
+        self.image = pygame.image.load("Sprites\\Towers\\Towers\\PistolCat\\PistolCatSprite(lvl2).png").convert()
+        self.image.set_colorkey(colours["background_colour"])
         self.damage += 1
         self.value += self.CalculateValueIncrease(self.upgrades[0][1])
 
         self.upgrades = [["Level 3", 550, self.Upgrade3], None]
 
     def Upgrade3(self):
+        self.image = pygame.image.load("Sprites\\Towers\\Towers\\PistolCat\\PistolCatSprite(lvl3).png").convert()
+        self.image.set_colorkey(colours["background_colour"])
         self.damage += 1
         self.range += 3
         self.value += self.CalculateValueIncrease(self.upgrades[0][1])

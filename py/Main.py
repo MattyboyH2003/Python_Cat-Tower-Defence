@@ -7,8 +7,6 @@ from Waves import allWaves
 from Colours import *
 from MapList import MapList, AllMaps, AllMapProfiles
 
-#when enabled print statements for testing purposes will show
-
 ########################################################################################################
 #                                              - Setup -                                               #
 ########################################################################################################
@@ -20,7 +18,7 @@ if __name__ == "__main__":
     window = pygame.display.set_mode(resolution)
     windowIcon = pygame.image.load("Sprites\\GUI\\WindowIcon.png")
     pygame.display.set_icon(windowIcon)
-    clock = pygame.time.Clock() 
+    clock = pygame.time.Clock()
 else:
     exit()
 
@@ -28,7 +26,7 @@ else:
 #                                              - Classes -                                             #
 ########################################################################################################
 
-class Main:
+class Main: #Main class for storing almost all functions
     enemyDict = {"a" : WoolLV1, "b" : WoolLV2, "c" : WoolLV3}
     towerList = [PistolCat, AngryCat, StrongCat, BombCat]
     currentWave = allWaves.pop(0)
@@ -57,7 +55,7 @@ class Main:
     pausedButtonSpritesList = pygame.sprite.Group() #Stores all sprit based buttons that are needed in the pause menu
     allSpritesList = pygame.sprite.Group() #list of things to be drawn to screen
 
-    def __init__(self):
+    def __init__(self): #Ran as constructor to set up permanent buttons and other things
         self.waveOngoing = False
         self.paused = False
         self.pathList = None
@@ -235,12 +233,17 @@ class Main:
                         self.waveOngoing = False
                         if allWaves == []:
                             self.GameEnd("you win!")
+                
+                #Resets all buttons to their non hover sprite
+                for button in self.buttonSpritesList:
+                    button.FrameReset()
 
                 #Checks if a button is hovered over(only for sprite based buttons)
                 mouse = pygame.mouse.get_pos()
                 hoverList = [s for s in self.buttonSpritesList if s.rect.collidepoint(mouse)]
                 for button in hoverList:
-                    button.OnHover()            
+                    button.OnHover() 
+        
             elif self.paused:
                 #Resets the button to not having the hover sprite
                 for item in self.pausedButtonSpritesList:
@@ -387,7 +390,7 @@ class Main:
                     for item in clicked:
                         item.OnClick()
 
-                if 1080 > mouse[0] > 0 and 600 > mouse[1] > 0 and self.TowerSelectionMenuEnabled == False:
+                if 1080 > mouse[0] > 0 and 600 > mouse[1] > 0 and not self.TowerSelectionMenuEnabled:
                     clicked = [s for s in self.towerSpritesList if s.rect.collidepoint(mouse)]
                     if len(clicked) >= 1:
                         self.selectedTower = clicked[0]
@@ -404,6 +407,8 @@ class Main:
                     self.currentTower -= 1
                 if event.key == pygame.K_RIGHT:
                     self.currentTower += 1
+                if event.key == pygame.K_w:
+                    self.money += 10000
 
     def UpdateWool(self): #Ran each frame to move and spawn wool
         #Move Wool
@@ -444,7 +449,7 @@ class Main:
         """
 
         mousePositon = pygame.mouse.get_pos()
-        tower = self.towerList[self.currentTower](mousePositon, colours["white"], window)
+        tower = self.towerList[self.currentTower](mousePositon, colours["background_colour"], window)
 
         if pygame.sprite.spritecollide(tower, self.collisionSpritesList, False) == [] and self.money >= tower.GetPrice():
             self.towerSpritesList.add(tower)
@@ -467,16 +472,16 @@ class Main:
         self.money += self.selectedTower.GetValue()
         self.selectedTower = None
 
-    def SetCurrentTower(self, index):
+    def SetCurrentTower(self, index): #Ran upon button press to change the current tower to place
         self.currentTower = index
 
-    def TowerSelectionMenuToggle(self):
+    def TowerSelectionMenuToggle(self): #Ran upon button press to toggle the tower selection menu
         if self.TowerSelectionMenuEnabled:
             self.TowerSelectionMenuEnabled = False
         else:
             self.TowerSelectionMenuEnabled = True
 
-    def TowerSelectionMenu(self):
+    def TowerSelectionMenu(self): #Ran to show the tower selection menu
         numOfTowers = len(self.towerList)
 
         pygame.draw.rect(window, colours["white"], (5, 407, 122, 183)) #Menu Background
@@ -925,7 +930,7 @@ class Main:
         self.allSpritesList.empty()
         self.GameIntro()
 
-class Button(pygame.sprite.Sprite):
+class Button(pygame.sprite.Sprite): #Button class for creating sprite based buttons
     def __init__(self, sprite, hoverSprite, location, func=None, params={}, tags=[]):
         self.func = func
         self.sprite = sprite
@@ -976,7 +981,7 @@ class Button(pygame.sprite.Sprite):
             else:
                 self.func(**self.params)
 
-class TextBox:
+class TextBox: #TextBox class for creating text boxes
     def __init__(self, text, pos, size=20, textColour=colours["black"], tags=[]):
         self.text = text
         self.pos = pos
@@ -1040,7 +1045,6 @@ def ButtonVisuals(text, xPos, yPos, width, height, colour, hoverColour, border=T
 def TextObjects(text, font):
     textSurface = font.render(text, True, colours["black"])
     return textSurface, textSurface.get_rect()
-
 
 ########################################################################################################
 #                                          - Call Functions -                                          #

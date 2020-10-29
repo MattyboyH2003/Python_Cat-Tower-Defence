@@ -11,6 +11,7 @@ colours = {
     "sky_blue" : (59, 196, 217),
 
     #alternative colours
+    "background_colour" : (69, 0, 69),
     "bright_lavender" : (150, 150, 255),
     "bright_red" : (255, 0, 0),
     "bright_green" : (0, 255, 0),
