@@ -47,13 +47,16 @@ class Towers(pygame.sprite.Sprite):
                 self.timeCache = pygame.time.get_ticks() + self.delay
                 return enemy.getWorth()
         return 0
-    
-    def CalculateValueIncrease(self, price):
-        price = price/5
 
-        price = str(price).split(".")[0]
-
-        return int(price)
+    def CheckPlacement(self, main):
+        if pygame.sprite.spritecollide(self, main.collisionSpritesList, False) == [] and main.money >= self.GetPrice():
+            main.towerSpritesList.add(self)
+            main.collisionSpritesList.add(self)
+            main.allSpritesList.add(self)
+            main.money -= self.GetPrice()
+        else:
+            self.kill()
+            del self
 
     def GetSprite(self):
         return self.sprite
@@ -82,6 +85,14 @@ class Towers(pygame.sprite.Sprite):
     
     def __del__(self):
         self = None
+    
+    @staticmethod
+    def CalculateValueIncrease(price):
+        price = price/5
+
+        price = str(price).split(".")[0]
+
+        return int(price)
 
 ########################################################################################################
 #                                           - Tower Types -                                            #

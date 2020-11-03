@@ -47,6 +47,7 @@ class Main: #Main class for storing almost all functions
 
     buttonList = []
 
+    #Sprite groups
     towerSpritesList = pygame.sprite.Group() #stores all towers placed, used to check when enemies are in range of towers
     tileSpritesList = pygame.sprite.Group() #stores all tiles that make up the map, not currently used
     collisionSpritesList = pygame.sprite.Group() #used in towerplacment, if anything in this list is touching a tower it will not be placed
@@ -148,6 +149,10 @@ class Main: #Main class for storing almost all functions
                 self.PreviousTowerSelectionMenuEnabled = self.TowerSelectionMenuEnabled
             #Checks if the tower selected has changed
             if self.previousSelectedTower != self.selectedTower or self.updateUpgrades:
+
+                #Updates the tower profile button image
+                self.towerProfileButton.SetImage(self.towerList[self.currentTower](pygame.math.Vector2(-50, -50), colours["white"], window).GetProfile())
+
                 #Clearing lists of now unneeded things
                 #Unneeded Buttons
                 for sprite in self.buttonSpritesList:
@@ -296,7 +301,6 @@ class Main: #Main class for storing almost all functions
             
             #Draws rectangles for tower selected
             pygame.draw.rect(window, colours["bright_lavender"], (5, 665, 50, 50), 5)
-            #pygame.draw.rect(window, colours["bright_lavender"], (5, 605, 50, 50), 5)
 
             #Things that need to be loaded when paused or not but need updating before loading
             for textBox in self.textBoxList:
@@ -451,16 +455,7 @@ class Main: #Main class for storing almost all functions
         mousePositon = pygame.mouse.get_pos()
         tower = self.towerList[self.currentTower](mousePositon, colours["background_colour"], window)
 
-        if pygame.sprite.spritecollide(tower, self.collisionSpritesList, False) == [] and self.money >= tower.GetPrice():
-            self.towerSpritesList.add(tower)
-            self.collisionSpritesList.add(tower)
-            self.allSpritesList.add(tower)
-            self.money -= tower.GetPrice()
-        else:
-            tower.kill()
-            del tower
-
-        #window.blit(pygame.image.load(self.currentTower.GetSprite()), mousePositon) #Need to replace blits with sprites
+        tower.CheckPlacement(self)
 
     def UpgradeTower(self, upgradeInfo): #Ran uppon button press to tell the tower to upgrade
         self.updateUpgrades = True
@@ -934,6 +929,7 @@ class Button(pygame.sprite.Sprite): #Button class for creating sprite based butt
     def __init__(self, sprite, hoverSprite, location, func=None, params={}, tags=[]):
         self.func = func
         self.sprite = sprite
+        self.defaultSprite = sprite
         self.params = params
         self.tags = tags
 
@@ -960,6 +956,7 @@ class Button(pygame.sprite.Sprite): #Button class for creating sprite based butt
         self.params = params
 
     def SetImage(self, image):
+        self.sprite = image
         self.image = pygame.image.load(image).convert()
 
     def GetTags(self):
