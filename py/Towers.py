@@ -37,6 +37,11 @@ class Towers(pygame.sprite.Sprite):
 
         self.timeCache = 0
 
+    def Attack(self, enemy, enemyList):
+        pygame.draw.line(self.window, (255, 255, 255), self.rect.center, enemy.rect.center, 5)
+
+        enemy.TakeDamage(self.damage)
+
     def UpdateRadius(self):
         self.radius = self.range*10
 
@@ -114,11 +119,6 @@ class PistolCat(Towers): #mid range slow shooting
         self.value = 75
         
         Towers.__init__(self, colour, window)
-
-    def Attack(self, enemy, enemyList):
-        pygame.draw.line(self.window, (255, 255, 255), self.rect.center, enemy.rect.center, 5)
-
-        enemy.TakeDamage(self.damage)
     
     def Upgrade1(self):
         self.image = pygame.image.load("Sprites\\Towers\\Towers\\PistolCat\\PistolCatSprite(lvl1).png").convert()
@@ -191,11 +191,6 @@ class AngryCat(Towers): # cheap, low damage, fast attack, very close range, need
         self.value = 40
 
         Towers.__init__(self, colour, window)
-
-    def Attack(self, enemy, enemyList):
-        pygame.draw.line(self.window, (255, 255, 255), self.rect.center, enemy.rect.center, 5)
-
-        enemy.TakeDamage(self.damage)
     
     def Upgrade1(self):
         
@@ -241,11 +236,6 @@ class StrongCat(Towers): #very expensive, high damage, short range, average atta
         self.value = 300
 
         Towers.__init__(self, colour, window)
-
-    def Attack(self, enemy, enemyList):
-        pygame.draw.line(self.window, (255, 255, 255), self.rect.center, enemy.rect.center, 5)
-
-        enemy.TakeDamage(self.damage)
     
     def Upgrade1(self):
 
