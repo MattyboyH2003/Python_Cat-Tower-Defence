@@ -3,7 +3,7 @@ colours = {
 
     #colours
     "red" : (200, 0, 0),
-    "green" : (0, 200, 0),
+    "green" : (91, 181, 115),
     "purple" : (255, 0, 255),
     "lavender" : (150, 150, 200),
     "brown" : (139, 69, 19),
@@ -14,7 +14,7 @@ colours = {
     "background_colour" : (69, 0, 69),
     "bright_lavender" : (150, 150, 255),
     "bright_red" : (255, 0, 0),
-    "bright_green" : (0, 255, 0),
+    "bright_green" : (101, 191, 125),
     "bright_brown" : (210, 105, 30),
     "bright_blue" : (0, 0, 255),
     "bright_sky_blue" : (117, 237, 255),
